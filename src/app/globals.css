@@ -1,26 +1,60 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-naranja: #f57c00;
+  --color-naranja-hover: #e46f00;
+  --color-oscuro: #2a2a2a;
+  --color-industrial: #3a3a3a;
+  --color-acero: #4a4a4a;
+  --color-borde: #e5e7eb;
+  --color-fondo: #f7f7f7;
+  --color-blanco: #ffffff;
+  --color-gris: #4a4a4a;
+  --color-claro: #e5e7eb;
+  --font-sans: var(--font-montserrat), ui-sans-serif, system-ui, sans-serif;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+
+  body {
+    @apply bg-blanco font-sans text-acero antialiased;
+  }
+
+  ::selection {
+    background: color-mix(in srgb, var(--color-naranja) 28%, white);
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+@layer utilities {
+  .contenedor {
+    @apply mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8;
+  }
+
+  .seccion {
+    @apply py-12 sm:py-14 lg:py-16;
+  }
+
+  .rejilla-industrial {
+    background-image:
+      linear-gradient(to right, rgba(74, 74, 74, 0.08) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(74, 74, 74, 0.08) 1px, transparent 1px);
+    background-size: 32px 32px;
+  }
 }
