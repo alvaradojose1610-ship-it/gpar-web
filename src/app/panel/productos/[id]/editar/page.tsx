@@ -2,6 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
+import { CamposLineaCategoria } from "@/componentes/panel/CamposLineaCategoria";
 import { PaginaPlaceholderPanel } from "@/componentes/panel/PaginaPlaceholderPanel";
 import { prisma } from "@/lib/prisma";
 import { accionActualizarProducto } from "@/modulos/productos/acciones";
@@ -24,6 +25,13 @@ export default async function PaginaEditarProducto({
 
   const producto = await prisma.producto.findUnique({ where: { id } });
   if (!producto) notFound();
+
+  const categorias = await prisma.categoria.findMany({
+    where: {
+      OR: [{ estado: "ACTIVO" }, { id: producto.categoriaId }],
+    },
+    orderBy: [{ linea: "asc" }, { nombre: "asc" }],
+  });
 
   const error =
     q.error === "imagen"
@@ -59,6 +67,7 @@ export default async function PaginaEditarProducto({
             alt={producto.nombre}
             fill
             className="object-cover"
+            unoptimized
           />
         </div>
       ) : null}
@@ -78,6 +87,15 @@ export default async function PaginaEditarProducto({
             className="border border-[#E4E7EC] bg-[#F7F8FA] px-3 py-2"
           />
         </label>
+        <CamposLineaCategoria
+          categorias={categorias.map((c) => ({
+            id: c.id,
+            nombre: c.nombre,
+            linea: c.linea,
+          }))}
+          lineaInicial={producto.linea}
+          categoriaIdInicial={producto.categoriaId}
+        />
         <label className="grid gap-1 text-sm">
           <span className="font-semibold">Descripción</span>
           <textarea

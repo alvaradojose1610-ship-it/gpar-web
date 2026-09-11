@@ -46,6 +46,14 @@ export async function accionCrearProducto(formData: FormData) {
   }
 
   const datos = parsed.data;
+  const categoria = await categoriaDeLinea(
+    datos.categoriaId,
+    datos.linea as LineaNegocio,
+  );
+  if (!categoria) {
+    redirect("/panel/productos/nuevo?error=datos");
+  }
+
   const existe = await prisma.producto.findUnique({
     where: { codigo: datos.codigo },
   });
@@ -81,15 +89,44 @@ export async function accionCrearProducto(formData: FormData) {
     // Producto queda sin imagen; se puede editar después
   }
 
-  revalidatePath("/panel/productos");
-  revalidatePath("/industrial");
-  revalidatePath("/automotriz");
+  await revalidarCatalogoPublico(
+    producto.linea,
+    categoria.codigo,
+    producto.tokenPublico,
+  );
   redirect("/panel/productos");
+}
+
+async function categoriaDeLinea(categoriaId: string, linea: LineaNegocio) {
+  return prisma.categoria.findFirst({
+    where: { id: categoriaId, linea },
+  });
+}
+
+async function revalidarCatalogoPublico(
+  linea: LineaNegocio,
+  categoriaCodigo: string,
+  tokenPublico?: string,
+) {
+  const lineaPath =
+    linea === LineaNegocio.AUTOMOTRIZ ? "automotriz" : "industrial";
+
+  revalidatePath("/panel/productos");
+  revalidatePath("/");
+  revalidatePath("/buscar");
+  revalidatePath(`/${lineaPath}`);
+  revalidatePath(`/${lineaPath}/${categoriaCodigo}`);
+  revalidatePath(`/${lineaPath}`, "layout");
+  if (tokenPublico) {
+    revalidatePath(`/p/${tokenPublico}`);
+  }
 }
 
 const esquemaEditar = z.object({
   id: z.string().min(1),
   nombre: z.string().trim().min(2).max(200),
+  linea: z.enum(["INDUSTRIAL", "AUTOMOTRIZ"]),
+  categoriaId: z.string().min(1),
   descripcion: z.string().trim().max(2000).optional(),
   aplicacion: z.string().trim().max(500).optional(),
   modelo: z.string().trim().max(120).optional(),
@@ -106,6 +143,8 @@ export async function accionActualizarProducto(formData: FormData) {
   const parsed = esquemaEditar.safeParse({
     id: formData.get("id"),
     nombre: formData.get("nombre"),
+    linea: formData.get("linea"),
+    categoriaId: formData.get("categoriaId"),
     descripcion: String(formData.get("descripcion") ?? "") || undefined,
     aplicacion: String(formData.get("aplicacion") ?? "") || undefined,
     modelo: String(formData.get("modelo") ?? "") || undefined,
@@ -123,6 +162,14 @@ export async function accionActualizarProducto(formData: FormData) {
   const datos = parsed.data;
   const actual = await prisma.producto.findUnique({ where: { id: datos.id } });
   if (!actual) redirect("/panel/productos");
+
+  const categoria = await categoriaDeLinea(
+    datos.categoriaId,
+    datos.linea as LineaNegocio,
+  );
+  if (!categoria) {
+    redirect(`/panel/productos/${datos.id}/editar?error=datos`);
+  }
 
   let imagenUrl = actual.imagenUrl;
   if (datos.quitarImagen && imagenUrl) {
@@ -144,6 +191,8 @@ export async function accionActualizarProducto(formData: FormData) {
     where: { id: datos.id },
     data: {
       nombre: datos.nombre,
+      linea: datos.linea as LineaNegocio,
+      categoriaId: datos.categoriaId,
       descripcion: datos.descripcion ?? null,
       aplicacion: datos.aplicacion ?? null,
       modelo: datos.modelo ?? null,
@@ -155,8 +204,10 @@ export async function accionActualizarProducto(formData: FormData) {
     },
   });
 
-  revalidatePath("/panel/productos");
-  revalidatePath("/industrial");
-  revalidatePath("/automotriz");
+  await revalidarCatalogoPublico(
+    datos.linea as LineaNegocio,
+    categoria.codigo,
+    actual.tokenPublico,
+  );
   redirect("/panel/productos");
 }

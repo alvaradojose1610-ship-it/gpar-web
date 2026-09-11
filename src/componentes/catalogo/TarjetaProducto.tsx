@@ -59,6 +59,7 @@ export function TarjetaProducto({
             fill
             className="object-cover"
             sizes="(max-width:480px) 100vw, (max-width:1024px) 50vw, 25vw"
+            unoptimized={producto.imagen.startsWith("http")}
           />
         ) : (
           <div className="placeholder-media flex h-full items-center justify-center">

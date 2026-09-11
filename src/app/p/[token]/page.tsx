@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
@@ -6,6 +7,8 @@ import { BotonAgregarCotizacion } from "@/componentes/catalogo/BotonAgregarCotiz
 import { Contenedor } from "@/componentes/interfaz/Contenedor";
 import { productosCatalogo } from "@/datos/catalogo";
 import { empresa } from "@/configuracion/empresa";
+
+export const dynamic = "force-dynamic";
 
 type Props = {
   params: Promise<{ token: string }>;
@@ -35,6 +38,7 @@ async function resolverProducto(token: string) {
         categoria: desdeBd.categoria.nombre,
         marca: desdeBd.marca?.nombre ?? null,
         tamano: desdeBd.tamano,
+        imagen: desdeBd.imagenUrl,
       };
     }
   } catch {
@@ -52,6 +56,7 @@ async function resolverProducto(token: string) {
     categoria: desdeCatalogo.categoriaId,
     marca: desdeCatalogo.marca ?? null,
     tamano: "tamano" in desdeCatalogo ? (desdeCatalogo.tamano ?? null) : null,
+    imagen: desdeCatalogo.imagen ?? null,
   };
 }
 
@@ -89,6 +94,19 @@ export default async function PaginaFichaQr({ params }: Props) {
       </div>
 
       <Contenedor className="py-8 md:py-12">
+        {producto.imagen ? (
+          <div className="relative mb-6 aspect-[4/3] max-w-md overflow-hidden border border-gpar-line bg-gpar-surface">
+            <Image
+              src={producto.imagen}
+              alt={producto.nombre}
+              fill
+              className="object-cover"
+              sizes="(max-width:768px) 100vw, 448px"
+              unoptimized={producto.imagen.startsWith("http")}
+              priority
+            />
+          </div>
+        ) : null}
         <p className="font-mono text-xs uppercase tracking-[0.12em] text-gpar-ink-3">
           {producto.linea} · {producto.categoria}
         </p>

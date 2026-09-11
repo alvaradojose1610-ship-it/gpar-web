@@ -1,5 +1,7 @@
 import "server-only";
 
+import { unstable_noStore as noStore } from "next/cache";
+
 import {
   categoriasCatalogo as categoriasLocales,
   productosCatalogo as productosLocales,
@@ -24,6 +26,7 @@ import {
 import { imagenCategoria } from "@/datos/imagenes-categorias";
 
 async function conFallback<T>(fn: () => Promise<T>, fallback: T): Promise<T> {
+  noStore();
   try {
     return await fn();
   } catch {

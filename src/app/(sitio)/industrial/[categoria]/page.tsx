@@ -6,6 +6,8 @@ import {
   obtenerProductosPorCategoria,
 } from "@/modulos/catalogo/catalogo-publico";
 
+export const dynamic = "force-dynamic";
+
 type Props = {
   params: Promise<{ categoria: string }>;
 };
