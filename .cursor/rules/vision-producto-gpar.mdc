@@ -24,6 +24,13 @@ Un solo producto Next.js (`gpar-web`): **catálogo/cotizaciones públicos** + **
 
 Middleware solo protege `/panel`. Permisos finales siempre con `requerirSesion` / `requerirPermiso` (DB), no en Edge.
 
+## Git / Vercel
+
+- **Producción = `main`** (Vercel Production Branch y dominio gparsoluciones.com).
+- `produccion` es opcional solo como rama de trabajo; no desplegar prod desde ahí.
+- Secretos solo en env de Vercel / `.env.local` (gitignored). Nunca commit de `.env*`, tokens ni `.vercel/`.
+- Antes de merge a `main`: typecheck/lint y sin credenciales en el diff.
+
 ## Diseño público
 
 Handoff: `design_handoff_gpar/`. Tokens `--gp-*`, tipografía Barlow Condensed + IBM Plex Sans/Mono (`next/font`). Esquinas rectas. CTA: **Solicitar cotización** (no carrito/checkout).
