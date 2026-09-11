@@ -19,9 +19,7 @@ export function SeccionCategorias({
   conteos,
 }: SeccionCategoriasProps) {
   const etiquetaLinea =
-    linea === "industrial"
-      ? "Repuestos industriales"
-      : "Repuestos automotrices";
+    linea === "industrial" ? "Repuestos industriales" : "Carga pesada";
 
   return (
     <section id="catalogo" className="seccion scroll-mt-28">
@@ -44,7 +42,7 @@ export function SeccionCategorias({
 
         <ConmutadorLinea lineaActiva={linea} modo={modoConmutador} />
 
-        {linea === "automotriz" && referencias === 0 ? (
+        {linea === "carga-pesada" && referencias === 0 ? (
           <p className="mb-[18px] text-[15.5px] text-gpar-ink-2">
             Línea en construcción. Escríbenos y te decimos qué tenemos disponible
             hoy.

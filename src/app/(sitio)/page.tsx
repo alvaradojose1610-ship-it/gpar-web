@@ -20,7 +20,9 @@ type PaginaInicioProps = {
 };
 
 function resolverLinea(valor?: string): LineaCatalogo {
-  return valor === "automotriz" ? "automotriz" : "industrial";
+  return valor === "carga-pesada" || valor === "automotriz"
+    ? "carga-pesada"
+    : "industrial";
 }
 
 export default async function PaginaInicio({ searchParams }: PaginaInicioProps) {

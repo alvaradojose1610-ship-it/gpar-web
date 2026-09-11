@@ -62,8 +62,8 @@ export const empresa: Empresa = {
     },
     telefono: {
       etiqueta: "Teléfono",
-      valor: "+58 412-3770003",
-      href: "tel:+584123770003",
+      valor: "+58 424-5140003",
+      href: "tel:+584245140003",
       disponible: true,
     },
   },

@@ -1,6 +1,6 @@
 # GPar — Portal + Panel integrado
 
-Sistema de Distribuidora GPar: catálogo público (industrial / automotriz) + panel interno.
+Sistema de Distribuidora GPar: catálogo público (industrial / carga pesada) + panel interno.
 
 **Sitio:** https://gparsoluciones.com
 
@@ -43,7 +43,7 @@ También sincronizadas en Vercel (production / preview / development).
 | Ruta | Descripción |
 |------|-------------|
 | `/` | Home catálogo |
-| `/industrial`, `/automotriz` | Líneas |
+| `/industrial`, `/carga-pesada` | Líneas |
 | `/buscar`, `/cotizar` | Búsqueda y cotización (guarda en BD) |
 | `/p/[token]` | Ficha QR de estante |
 | `/login` | Acceso panel |

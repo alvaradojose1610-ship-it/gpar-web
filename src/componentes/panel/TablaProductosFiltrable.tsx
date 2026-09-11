@@ -324,7 +324,7 @@ export function TablaProductosFiltrable({
                 onCerrar={() => setAbierto(null)}
                 opciones={[
                   { valor: "INDUSTRIAL", etiqueta: "Industrial" },
-                  { valor: "AUTOMOTRIZ", etiqueta: "Automotriz" },
+                  { valor: "CARGA_PESADA", etiqueta: "Carga Pesada" },
                 ]}
               />
               <CabeceraConLapiz

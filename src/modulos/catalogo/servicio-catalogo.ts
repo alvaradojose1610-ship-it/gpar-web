@@ -13,13 +13,13 @@ import type {
 } from "@/datos/tipos-catalogo";
 
 function lineaAEnum(linea: LineaCatalogo): LineaNegocio {
-  return linea === "automotriz"
-    ? LineaNegocio.AUTOMOTRIZ
+  return linea === "carga-pesada"
+    ? LineaNegocio.CARGA_PESADA
     : LineaNegocio.INDUSTRIAL;
 }
 
 function enumALinea(linea: LineaNegocio): LineaCatalogo {
-  return linea === LineaNegocio.AUTOMOTRIZ ? "automotriz" : "industrial";
+  return linea === LineaNegocio.CARGA_PESADA ? "carga-pesada" : "industrial";
 }
 
 const selectProductoCatalogo = {
@@ -70,10 +70,10 @@ export function mapearProductoBd(
     imagen,
   };
 
-  if (p.linea === LineaNegocio.AUTOMOTRIZ) {
+  if (p.linea === LineaNegocio.CARGA_PESADA) {
     return {
       ...base,
-      linea: "automotriz",
+      linea: "carga-pesada",
       tipo: p.tipo ?? p.categoria.nombre,
       marca: p.marca?.nombre ?? "Por confirmar",
       tamano: p.tamano,

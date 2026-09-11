@@ -12,7 +12,7 @@ datasource db {
 
 enum LineaNegocio {
   INDUSTRIAL
-  AUTOMOTRIZ
+  CARGA_PESADA
 }
 
 enum EstadoRegistro {
@@ -339,7 +339,7 @@ model Producto {
   subcategoria    String?
   aplicacion      String?
   especificaciones Json?
-  /// Automotriz
+  /// Carga pesada
   tipo            String?
   tamano          String?
   posicion        String?

@@ -34,7 +34,7 @@ async function resolverProducto(token: string) {
         nombre: desdeBd.nombre,
         descripcion: desdeBd.descripcion ?? "",
         aplicacion: desdeBd.aplicacion,
-        linea: desdeBd.linea === "AUTOMOTRIZ" ? "automotriz" : "industrial",
+        linea: desdeBd.linea === "CARGA_PESADA" ? "carga-pesada" : "industrial",
         categoria: desdeBd.categoria.nombre,
         marca: desdeBd.marca?.nombre ?? null,
         tamano: desdeBd.tamano,

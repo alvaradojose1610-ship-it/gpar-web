@@ -101,7 +101,7 @@ export default async function PaginaNuevoProducto({ searchParams }: Props) {
         </label>
         <label className="grid gap-1 text-sm">
           <span className="font-semibold text-[#1D2430]">
-            Tipo (automotriz)
+            Tipo (carga pesada)
           </span>
           <input
             name="tipo"
@@ -110,7 +110,7 @@ export default async function PaginaNuevoProducto({ searchParams }: Props) {
         </label>
         <label className="grid gap-1 text-sm">
           <span className="font-semibold text-[#1D2430]">
-            Tamaño (automotriz)
+            Tamaño (carga pesada)
           </span>
           <input
             name="tamano"

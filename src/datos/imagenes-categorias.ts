@@ -17,8 +17,6 @@ export const imagenesCategorias: Record<string, string> = {
   "ventiladores-axiales": "/assets/categorias/categoria-ventiladores.webp",
   "bandas-transportadoras": "/assets/categorias/categoria-bandas-transportadoras.webp",
   "guayas-cadenas-carga": "/assets/categorias/categoria-guayas.webp",
-  "plasticos-industriales": "/assets/categorias/categoria-plasticos.webp",
-  "productos-loctite": "/assets/categorias/categoria-adhesivos.webp",
 };
 
 export function imagenCategoria(codigo: string): string | undefined {

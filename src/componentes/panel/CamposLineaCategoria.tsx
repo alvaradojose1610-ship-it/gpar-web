@@ -5,12 +5,12 @@ import { useMemo, useState } from "react";
 export type CategoriaOpcion = {
   id: string;
   nombre: string;
-  linea: "INDUSTRIAL" | "AUTOMOTRIZ";
+  linea: "INDUSTRIAL" | "CARGA_PESADA";
 };
 
 type Props = {
   categorias: CategoriaOpcion[];
-  lineaInicial?: "INDUSTRIAL" | "AUTOMOTRIZ";
+  lineaInicial?: "INDUSTRIAL" | "CARGA_PESADA";
   categoriaIdInicial?: string;
 };
 
@@ -37,12 +37,12 @@ export function CamposLineaCategoria({
           required
           value={linea}
           onChange={(e) =>
-            setLinea(e.target.value as "INDUSTRIAL" | "AUTOMOTRIZ")
+            setLinea(e.target.value as "INDUSTRIAL" | "CARGA_PESADA")
           }
           className="border border-[#E4E7EC] bg-[#F7F8FA] px-3 py-2"
         >
           <option value="INDUSTRIAL">Industrial</option>
-          <option value="AUTOMOTRIZ">Automotriz</option>
+          <option value="CARGA_PESADA">Carga Pesada</option>
         </select>
       </label>
       <label className="grid gap-1 text-sm">

@@ -8,13 +8,13 @@ import {
 } from "@/modulos/catalogo/catalogo-publico";
 
 export const metadata: Metadata = {
-  title: "Repuestos automotrices",
+  title: "Carga pesada",
   description:
-    "Catálogo de repuestos automotrices: rolineras, correas, retenes y más.",
+    "Catálogo de carga pesada: rolineras, correas, retenes y más.",
 };
 
-export default async function PaginaAutomotriz() {
-  const linea = "automotriz" as const;
+export default async function PaginaCargaPesada() {
+  const linea = "carga-pesada" as const;
   const [categorias, referencias] = await Promise.all([
     obtenerCategoriasPorLinea(linea),
     totalPorLinea(linea),
@@ -32,10 +32,10 @@ export default async function PaginaAutomotriz() {
             Catálogo
           </p>
           <h1 className="font-display text-[clamp(32px,4.4vw,46px)] font-extrabold uppercase leading-none text-gpar-ink">
-            Repuestos automotrices
+            Carga pesada
           </h1>
           <p className="mt-3 max-w-[54ch] text-[15.5px] text-gpar-ink-2">
-            Rolinera, correas y más para taller y público general.
+            Rolinera, correas y más para taller y flota de carga pesada.
           </p>
         </Contenedor>
       </div>

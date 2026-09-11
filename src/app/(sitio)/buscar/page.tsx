@@ -22,7 +22,7 @@ export default async function PaginaBuscar({ searchParams }: Props) {
   const [resultados, catsInd, catsAuto] = await Promise.all([
     q ? obtenerBusqueda(q) : Promise.resolve([]),
     obtenerCategoriasPorLinea("industrial"),
-    obtenerCategoriasPorLinea("automotriz"),
+    obtenerCategoriasPorLinea("carga-pesada"),
   ]);
   const categorias = [...catsInd, ...catsAuto];
 

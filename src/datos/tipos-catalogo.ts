@@ -3,7 +3,7 @@
  * Preparado para sustituir datos simulados por inventario real / BD.
  */
 
-export type LineaCatalogo = "industrial" | "automotriz";
+export type LineaCatalogo = "industrial" | "carga-pesada";
 
 export type CategoriaCatalogo = {
   id: string;
@@ -52,12 +52,12 @@ export type ProductoIndustrial = ProductoBase & {
 };
 
 /**
- * Automotriz — lo pedido + lo necesario para búsqueda y venta.
+ * Carga pesada — lo pedido + lo necesario para búsqueda y venta.
  * nombre, tipo, marca, descripcion, tamaño
  * + codigo, aplicacion, posicion, vehiculo, años.
  */
-export type ProductoAutomotriz = ProductoBase & {
-  linea: "automotriz";
+export type ProductoCargaPesada = ProductoBase & {
+  linea: "carga-pesada";
   /** Tipo de repuesto: rodamiento, correa, reten, etc. */
   tipo: string;
   marca: string;
@@ -73,4 +73,4 @@ export type ProductoAutomotriz = ProductoBase & {
   anioHasta?: number | null;
 };
 
-export type ProductoCatalogo = ProductoIndustrial | ProductoAutomotriz;
+export type ProductoCatalogo = ProductoIndustrial | ProductoCargaPesada;

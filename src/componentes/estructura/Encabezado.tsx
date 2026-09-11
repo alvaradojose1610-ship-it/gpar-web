@@ -1,19 +1,18 @@
 "use client";
 
-import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { FormEvent, useEffect, useRef, useState } from "react";
 import { DrawerCotizacion } from "@/componentes/cotizacion/DrawerCotizacion";
 import { useCotizacion } from "@/componentes/cotizacion/ProveedorCotizacion";
+import { Logo } from "@/componentes/estructura/Logo";
 import { Contenedor } from "@/componentes/interfaz/Contenedor";
-import { empresa } from "@/configuracion/empresa";
 import { cn } from "@/utilidades/cn";
 
 const nav = [
   { etiqueta: "Inicio", href: "/" },
   { etiqueta: "Industrial", href: "/industrial" },
-  { etiqueta: "Automotriz", href: "/automotriz" },
+  { etiqueta: "Carga Pesada", href: "/carga-pesada" },
   { etiqueta: "Contacto", href: "/cotizar" },
 ] as const;
 
@@ -61,28 +60,7 @@ export function Encabezado() {
         className="sticky top-0 z-[60] border-b border-gpar-line bg-gpar-bg"
       >
         <Contenedor className="grid grid-cols-[auto_1fr_auto] items-center gap-3 py-3 lg:grid-cols-[auto_minmax(220px,430px)_1fr_auto]">
-          <Link
-            href="/"
-            className="flex items-center gap-[11px]"
-            aria-label={empresa.nombreLegal}
-          >
-            <Image
-              src="/assets/identidad/logo-gpar.png"
-              alt={empresa.nombreLegal}
-              width={46}
-              height={46}
-              priority
-              className="size-[44px] rounded-full object-contain sm:size-[46px]"
-            />
-            <span className="leading-none">
-              <span className="block text-[11px] uppercase tracking-[0.08em] text-gpar-ink-2">
-                Distribuidora
-              </span>
-              <span className="font-display text-[26px] font-extrabold tracking-[0.02em] text-gpar-orange">
-                GPAR
-              </span>
-            </span>
-          </Link>
+          <Logo prioridad conTexto />
 
           <form
             role="search"

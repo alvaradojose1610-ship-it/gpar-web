@@ -19,6 +19,20 @@ const nextConfig: NextConfig = {
       },
     ],
   },
+  async redirects() {
+    return [
+      {
+        source: "/automotriz",
+        destination: "/carga-pesada",
+        permanent: true,
+      },
+      {
+        source: "/automotriz/:path*",
+        destination: "/carga-pesada/:path*",
+        permanent: true,
+      },
+    ];
+  },
 };
 
 export default nextConfig;

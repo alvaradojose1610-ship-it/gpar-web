@@ -18,7 +18,7 @@ Un solo producto Next.js (`gpar-web`): **catálogo/cotizaciones públicos** + **
 
 | Ámbito | Prefijo | Auth |
 |---|---|---|
-| Web pública | `/`, `/industrial`, `/automotriz`, `/buscar`, `/cotizar`, `/p/[token]` | No |
+| Web pública | `/`, `/industrial`, `/carga-pesada`, `/buscar`, `/cotizar`, `/p/[token]` | No |
 | Login | `/login` | Público |
 | Panel interno | `/panel/*` | Cookie `gpar_sesion` + permisos en servidor |
 
@@ -39,9 +39,9 @@ Sin fotos reales: placeholders / CSS. No Unsplash como producto oficial. Marcas 
 
 ## Líneas de catálogo
 
-- `industrial` | `automotriz`
+- `industrial` | `carga-pesada`
 - Industrial: codigo, modelo, descripcion, aplicacion (+ specs)
-- Automotriz: nombre, tipo, marca, descripcion, tamano, codigo, aplicacion, posicion, vehiculo, años
+- Carga pesada: nombre, tipo, marca, descripcion, tamano, codigo, aplicacion, posicion, vehiculo, años
 
 ## Reutilización (solo lectura)
 
@@ -58,7 +58,7 @@ Sin fotos reales: placeholders / CSS. No Unsplash como producto oficial. Marcas 
 
 ## Contacto confirmado
 
-WhatsApp +58 424-5140003 · Teléfono +58 412-3770003 · Instagram @distribuidoragpar  
+WhatsApp / Teléfono +58 424-5140003 · Instagram @distribuidoragpar  
 Maps: ficha Distribuidora G´Par en Google Maps  
 Correo / dirección textual: pendientes
 
@@ -92,7 +92,7 @@ Usuario `admin` / clave `123` (seed). Roles: ADMINISTRADOR, VENDEDOR, ALMACEN, C
 5. Inventario por movimientos + etiquetas QR ✅
 6. Módulo **Apartado** (reserva con vencimiento)
 7. Contabilidad (después)
-8. Pulido UX, fotos reales (Blob), surtido automotriz completo
+8. Pulido UX, fotos reales (Blob), surtido carga pesada completo
 
 ## Calidad
 

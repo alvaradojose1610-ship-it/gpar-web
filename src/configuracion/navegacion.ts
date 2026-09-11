@@ -6,7 +6,7 @@ export type EnlaceNavegacion = {
 export const navegacionPrincipal: EnlaceNavegacion[] = [
   { etiqueta: "Inicio", href: "/" },
   { etiqueta: "Industrial", href: "/industrial" },
-  { etiqueta: "Automotriz", href: "/automotriz" },
+  { etiqueta: "Carga Pesada", href: "/carga-pesada" },
   { etiqueta: "Contacto", href: "/cotizar" },
 ];
 

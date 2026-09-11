@@ -69,7 +69,7 @@ export default async function PaginaEditarCategoria({
             className="border border-[#E4E7EC] bg-[#F7F8FA] px-3 py-2"
           >
             <option value="INDUSTRIAL">Industrial</option>
-            <option value="AUTOMOTRIZ">Automotriz</option>
+            <option value="CARGA_PESADA">Carga Pesada</option>
           </select>
         </label>
         <label className="grid gap-1 text-sm">

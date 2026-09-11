@@ -1,4 +1,7 @@
-import { categoriasAutomotrices, productosAutomotricesMuestra } from "@/datos/catalogo-automotriz";
+import {
+  categoriasCargaPesada,
+  productosCargaPesadaMuestra,
+} from "@/datos/catalogo-carga-pesada";
 import {
   categoriasIndustriales,
   productosIndustrialesMuestra,
@@ -11,12 +14,12 @@ import type {
 
 export const categoriasCatalogo: CategoriaCatalogo[] = [
   ...categoriasIndustriales,
-  ...categoriasAutomotrices,
+  ...categoriasCargaPesada,
 ];
 
 export const productosCatalogo: ProductoCatalogo[] = [
   ...productosIndustrialesMuestra,
-  ...productosAutomotricesMuestra,
+  ...productosCargaPesadaMuestra,
 ];
 
 export function categoriasPorLinea(linea: LineaCatalogo): CategoriaCatalogo[] {

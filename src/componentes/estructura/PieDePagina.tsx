@@ -43,8 +43,8 @@ export function PieDePagina() {
                 </Link>
               </li>
               <li>
-                <Link href="/automotriz" className="hover:text-white">
-                  Automotriz
+                <Link href="/carga-pesada" className="hover:text-white">
+                  Carga Pesada
                 </Link>
               </li>
               <li>

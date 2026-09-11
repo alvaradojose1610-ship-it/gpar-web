@@ -32,7 +32,7 @@ La marca cubre **dos líneas** y la navegación debe hacerlas explícitas desde 
 
 Implementación esperada: un **conmutador de línea** (dos pestañas / segmented control) encima de la grilla de categorías, y rutas separadas `/industrial` y `/automotriz`. La línea seleccionada persiste en la URL (`?linea=industrial`), no en estado efímero.
 
-Categorías industriales (confirmadas): Rodamientos · Chumaceras · Correas · Poleas · Cadenas y piñones · Acoples · Sellos mecánicos · Estoperas industriales · Mangueras industriales · Motores y reductores · Ventiladores axiales · Bandas transportadoras · Guayas y cadenas de carga · Plásticos industriales · Productos LOCTITE.
+Categorías industriales (confirmadas): Rodamientos · Chumaceras · Correas · Poleas · Cadenas y piñones · Acoples · Sellos mecánicos · Estoperas industriales · Mangueras industriales · Motores y reductores · Ventiladores axiales · Bandas transportadoras · Guayas y cadenas de carga.
 
 Categorías automotrices (**propuestas, por confirmar**): Rodamientos de rueda y masas · Correas y kits de distribución · Bandas de accesorios · Retenes y estoperas · Bombas de agua · Mangueras y abrazaderas · Kits de embrague · Amortiguadores y suspensión · Frenos · Filtros. Ninguna trae referencias todavía; se muestran con el estado "Próximamente" hasta que GPar entregue el listado.
 

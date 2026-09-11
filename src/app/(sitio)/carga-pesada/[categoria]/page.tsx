@@ -14,7 +14,7 @@ type Props = {
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { categoria: categoriaId } = await params;
-  const categoria = await obtenerCategoria("automotriz", categoriaId);
+  const categoria = await obtenerCategoria("carga-pesada", categoriaId);
   if (!categoria) return { title: "Categoría" };
   return {
     title: categoria.nombre,
@@ -22,19 +22,19 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   };
 }
 
-export default async function PaginaCategoriaAutomotriz({ params }: Props) {
+export default async function PaginaCategoriaCargaPesada({ params }: Props) {
   const { categoria: categoriaId } = await params;
-  const categoria = await obtenerCategoria("automotriz", categoriaId);
+  const categoria = await obtenerCategoria("carga-pesada", categoriaId);
   if (!categoria) notFound();
 
   const productos = await obtenerProductosPorCategoria(
-    "automotriz",
+    "carga-pesada",
     categoria.id,
   );
 
   return (
     <VistaCatalogoCategoria
-      linea="automotriz"
+      linea="carga-pesada"
       categoriaNombre={categoria.nombre}
       categoriaDescripcion={categoria.descripcion}
       subcategorias={categoria.subcategorias ?? []}

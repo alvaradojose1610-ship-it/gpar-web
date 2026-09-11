@@ -97,26 +97,12 @@ export const categoriasIndustriales: CategoriaCatalogo[] = [
     descripcion: "Izaje y amarre industrial.",
     publicada: true,
   },
-  {
-    id: "plasticos-industriales",
-    linea: "industrial",
-    nombre: "Plásticos industriales",
-    descripcion: "Materiales plásticos técnicos.",
-    publicada: true,
-  },
-  {
-    id: "productos-loctite",
-    linea: "industrial",
-    nombre: "Productos LOCTITE",
-    descripcion: "Adhesivos y fijadores industriales.",
-    publicada: true,
-  },
 ];
 
 /**
  * Muestras tomadas del listado impreso (ficha: Código, Modelo, Descripción, Aplicación).
  * Temporal: validan la estructura. Completar con el resto del catálogo escaneado.
- * Nota: varias aplicaciones son vehiculares; confirmar si esta hoja va en industrial o automotriz.
+ * Nota: varias aplicaciones son vehiculares; confirmar si esta hoja va en industrial o carga pesada.
  */
 export const productosIndustrialesMuestra: ProductoIndustrial[] = [
   {

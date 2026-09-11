@@ -34,7 +34,7 @@ export function HeroInicio() {
       <Contenedor className="relative py-8 sm:py-11 md:pb-[68px] md:pt-[76px]">
         <div className="max-w-[640px]">
           <span className="mb-4 inline-block border border-gpar-orange-border bg-gpar-orange-soft px-[11px] py-1.5 font-mono text-[11.5px] uppercase tracking-[0.14em] text-gpar-orange-ink sm:mb-5">
-            Industrial y automotriz
+            Industrial y carga pesada
           </span>
           <h1 className="font-display text-[clamp(30px,5.4vw,62px)] font-extrabold uppercase leading-[0.97] tracking-[0.02em] text-gpar-ink">
             Todo para tu
@@ -45,7 +45,7 @@ export function HeroInicio() {
           </h1>
           <p className="mt-3 max-w-[50ch] text-[15.5px] text-gpar-ink-2 sm:mt-4 sm:text-[17px]">
             Rodamientos, correas, chumaceras, motores, mangueras y repuestos
-            automotrices. Arma tu lista y te cotizamos con precio, disponibilidad
+            de carga pesada. Arma tu lista y te cotizamos con precio, disponibilidad
             y tiempo de entrega.
           </p>
           <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
@@ -62,12 +62,12 @@ export function HeroInicio() {
               Ver el catálogo
             </Link>
           </div>
-          <div className="mt-5 flex flex-wrap gap-2">
+          <div className="mt-5 grid grid-cols-2 gap-2 sm:grid-cols-5">
             {chips.map((chip) => (
               <Link
                 key={chip.etiqueta}
                 href={chip.href}
-                className="inline-flex min-h-9 items-center border border-gpar-line bg-gpar-bg px-[13px] py-[7px] text-[12.5px] font-semibold text-gpar-ink hover:border-gpar-orange"
+                className="inline-flex min-h-9 items-center justify-center border border-gpar-line bg-gpar-bg px-2 py-[7px] text-center text-[12.5px] font-semibold text-gpar-ink hover:border-gpar-orange"
               >
                 {chip.etiqueta}
               </Link>

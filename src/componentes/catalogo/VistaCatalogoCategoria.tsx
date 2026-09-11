@@ -8,7 +8,7 @@ import type { ProductoCatalogo } from "@/datos/tipos-catalogo";
 import { cn } from "@/utilidades/cn";
 
 type VistaCatalogoCategoriaProps = {
-  linea: "industrial" | "automotriz";
+  linea: "industrial" | "carga-pesada";
   categoriaNombre: string;
   categoriaDescripcion: string;
   subcategorias: string[];
@@ -45,7 +45,7 @@ export function VistaCatalogoCategoria({
           </Link>
           <span>/</span>
           <Link href={`/${linea}`} className="hover:text-gpar-ink">
-            {linea === "industrial" ? "Industrial" : "Automotriz"}
+            {linea === "industrial" ? "Industrial" : "Carga Pesada"}
           </Link>
           <span>/</span>
           <b className="text-gpar-ink">{categoriaNombre}</b>
@@ -58,7 +58,7 @@ export function VistaCatalogoCategoria({
             <p className="mb-2 font-mono text-[11.5px] uppercase tracking-[0.12em] text-gpar-orange-ink">
               {linea === "industrial"
                 ? "Repuestos industriales"
-                : "Repuestos automotrices"}
+                : "Carga pesada"}
             </p>
             <h1 className="font-display text-[clamp(28px,4.4vw,46px)] font-extrabold uppercase leading-none text-gpar-ink">
               {categoriaNombre}

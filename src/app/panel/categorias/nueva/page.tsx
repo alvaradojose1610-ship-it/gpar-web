@@ -61,7 +61,7 @@ export default async function PaginaNuevaCategoria({ searchParams }: Props) {
             defaultValue="INDUSTRIAL"
           >
             <option value="INDUSTRIAL">Industrial</option>
-            <option value="AUTOMOTRIZ">Automotriz</option>
+            <option value="CARGA_PESADA">Carga Pesada</option>
           </select>
         </label>
         <label className="grid gap-1 text-sm">

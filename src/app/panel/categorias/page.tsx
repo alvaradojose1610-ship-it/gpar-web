@@ -30,7 +30,7 @@ export default async function PaginaPanelCategorias({ searchParams }: Props) {
   return (
     <PaginaPlaceholderPanel
       titulo="Categorías"
-      descripcion="Publicación y orden del catálogo web industrial y automotriz."
+      descripcion="Publicación y orden del catálogo web industrial y carga pesada."
     >
       <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
         <p className="text-sm text-[#5C6675]">

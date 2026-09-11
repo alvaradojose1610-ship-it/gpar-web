@@ -11,7 +11,7 @@ import {
   categoriasIndustriales,
   productosIndustrialesMuestra,
 } from "../src/datos/catalogo-industrial";
-import { categoriasAutomotrices } from "../src/datos/catalogo-automotriz";
+import { categoriasCargaPesada } from "../src/datos/catalogo-carga-pesada";
 import { empresa } from "../src/configuracion/empresa";
 import { cargarEnvLocal } from "./cargar-env";
 
@@ -289,12 +289,54 @@ async function main() {
       mapaCategorias.set(categoria.id, creada.id);
     }
 
-    console.log("Sembrando categorías automotrices…");
-    for (const [indice, categoria] of categoriasAutomotrices.entries()) {
+    const codigosIndustrialesActivos = categoriasIndustriales.map((c) => c.id);
+    const categoriasRetiradas = await prisma.categoria.findMany({
+      where: {
+        linea: LineaNegocio.INDUSTRIAL,
+        codigo: { notIn: codigosIndustrialesActivos },
+        OR: [{ publicada: true }, { estado: "ACTIVO" }],
+      },
+      select: { id: true, codigo: true },
+    });
+    if (categoriasRetiradas.length > 0) {
+      const idsRetiradas = categoriasRetiradas.map((c) => c.id);
+      console.log(
+        `Desactivando categorías industriales retiradas: ${categoriasRetiradas
+          .map((c) => c.codigo)
+          .join(", ")}`,
+      );
+      await prisma.producto.updateMany({
+        where: { categoriaId: { in: idsRetiradas } },
+        data: { visibleWeb: false, estado: "INACTIVO" },
+      });
+      await prisma.categoria.updateMany({
+        where: { id: { in: idsRetiradas } },
+        data: { publicada: false, estado: "INACTIVO" },
+      });
+    }
+
+    const marcaLoctite = await prisma.marca.findFirst({
+      where: { nombre: { equals: "LOCTITE", mode: "insensitive" } },
+      select: { id: true },
+    });
+    if (marcaLoctite) {
+      console.log("Desactivando marca LOCTITE y sus productos…");
+      await prisma.producto.updateMany({
+        where: { marcaId: marcaLoctite.id },
+        data: { visibleWeb: false, estado: "INACTIVO" },
+      });
+      await prisma.marca.update({
+        where: { id: marcaLoctite.id },
+        data: { visibleWeb: false, estado: "INACTIVO" },
+      });
+    }
+
+    console.log("Sembrando categorías de carga pesada…");
+    for (const [indice, categoria] of categoriasCargaPesada.entries()) {
       await prisma.categoria.upsert({
         where: {
           linea_codigo: {
-            linea: LineaNegocio.AUTOMOTRIZ,
+            linea: LineaNegocio.CARGA_PESADA,
             codigo: categoria.id,
           },
         },
@@ -306,7 +348,7 @@ async function main() {
           estado: "ACTIVO",
         },
         create: {
-          linea: LineaNegocio.AUTOMOTRIZ,
+          linea: LineaNegocio.CARGA_PESADA,
           codigo: categoria.id,
           nombre: categoria.nombre,
           descripcion: categoria.descripcion,

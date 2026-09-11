@@ -17,7 +17,7 @@ import { requerirPermiso } from "@/modulos/autenticacion/servicio-sesion";
 const esquema = z.object({
   codigo: z.string().trim().min(2).max(64),
   nombre: z.string().trim().min(2).max(200),
-  linea: z.enum(["INDUSTRIAL", "AUTOMOTRIZ"]),
+  linea: z.enum(["INDUSTRIAL", "CARGA_PESADA"]),
   categoriaId: z.string().min(1),
   descripcion: z.string().trim().max(2000).optional(),
   aplicacion: z.string().trim().max(500).optional(),
@@ -115,7 +115,7 @@ async function revalidarCatalogoPublico(
   tokenPublico?: string,
 ) {
   const lineaPath =
-    linea === LineaNegocio.AUTOMOTRIZ ? "automotriz" : "industrial";
+    linea === LineaNegocio.CARGA_PESADA ? "carga-pesada" : "industrial";
 
   updateTag(TAG_CATALOGO_PUBLICO);
   revalidatePath("/panel/productos");
@@ -132,7 +132,7 @@ async function revalidarCatalogoPublico(
 const esquemaEditar = z.object({
   id: z.string().min(1),
   nombre: z.string().trim().min(2).max(200),
-  linea: z.enum(["INDUSTRIAL", "AUTOMOTRIZ"]),
+  linea: z.enum(["INDUSTRIAL", "CARGA_PESADA"]),
   categoriaId: z.string().min(1),
   descripcion: z.string().trim().max(2000).optional(),
   aplicacion: z.string().trim().max(500).optional(),

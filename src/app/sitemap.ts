@@ -31,7 +31,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 0.9,
     },
     {
-      url: `${base}/automotriz`,
+      url: `${base}/carga-pesada`,
       lastModified: ahora,
       changeFrequency: "weekly",
       priority: 0.8,

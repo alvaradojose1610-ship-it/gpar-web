@@ -30,10 +30,10 @@ export function Logo({
       />
       {conTexto ? (
         <span className="leading-none">
-          <span className="block text-[11px] uppercase tracking-[0.08em] text-gpar-ink-2">
+          <span className="block font-display text-[11px] font-semibold uppercase tracking-[0.14em] text-gpar-orange">
             Distribuidora
           </span>
-          <span className="font-display text-[26px] font-extrabold tracking-[0.02em] text-gpar-orange">
+          <span className="font-display text-[26px] font-extrabold uppercase tracking-[0.02em] text-gpar-ink">
             GPAR
           </span>
         </span>
