@@ -1,5 +1,6 @@
 import Link from "next/link";
 
+import { CamposLineaCategoria } from "@/componentes/panel/CamposLineaCategoria";
 import { PaginaPlaceholderPanel } from "@/componentes/panel/PaginaPlaceholderPanel";
 import { prisma } from "@/lib/prisma";
 import { accionCrearProducto } from "@/modulos/productos/acciones";
@@ -67,37 +68,13 @@ export default async function PaginaNuevoProducto({ searchParams }: Props) {
             className="border border-[#E4E7EC] bg-[#F7F8FA] px-3 py-2"
           />
         </label>
-        <label className="grid gap-1 text-sm">
-          <span className="font-semibold text-[#1D2430]">Línea</span>
-          <select
-            name="linea"
-            required
-            className="border border-[#E4E7EC] bg-[#F7F8FA] px-3 py-2"
-            defaultValue="INDUSTRIAL"
-          >
-            <option value="INDUSTRIAL">Industrial</option>
-            <option value="AUTOMOTRIZ">Automotriz</option>
-          </select>
-        </label>
-        <label className="grid gap-1 text-sm">
-          <span className="font-semibold text-[#1D2430]">Categoría</span>
-          <select
-            name="categoriaId"
-            required
-            className="border border-[#E4E7EC] bg-[#F7F8FA] px-3 py-2"
-            defaultValue=""
-          >
-            <option value="" disabled>
-              Selecciona…
-            </option>
-            {categorias.map((c) => (
-              <option key={c.id} value={c.id}>
-                {c.linea === "AUTOMOTRIZ" ? "Automotriz" : "Industrial"} ·{" "}
-                {c.nombre}
-              </option>
-            ))}
-          </select>
-        </label>
+        <CamposLineaCategoria
+          categorias={categorias.map((c) => ({
+            id: c.id,
+            nombre: c.nombre,
+            linea: c.linea,
+          }))}
+        />
         <label className="grid gap-1 text-sm">
           <span className="font-semibold text-[#1D2430]">Descripción</span>
           <textarea
