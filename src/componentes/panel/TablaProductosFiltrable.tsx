@@ -334,6 +334,7 @@ export function TablaProductosFiltrable({
                         fill
                         className="object-cover"
                         sizes="40px"
+                        unoptimized
                       />
                     ) : (
                       <span className="flex h-full items-center justify-center font-mono text-[9px] text-[#98A2B3]">
@@ -361,7 +362,7 @@ export function TablaProductosFiltrable({
                     className="font-mono text-xs text-[#D96A00] hover:underline"
                     target="_blank"
                   >
-                    Abrir
+                    Abrir ficha
                   </Link>
                 </td>
                 <td className="px-3 py-2">
@@ -375,7 +376,7 @@ export function TablaProductosFiltrable({
                     href={`/panel/productos/${producto.id}/etiqueta`}
                     className="text-xs font-semibold text-[#1D2430] hover:underline"
                   >
-                    Imprimir
+                    Imprimir QR
                   </Link>
                 </td>
               </tr>

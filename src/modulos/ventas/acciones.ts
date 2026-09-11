@@ -6,10 +6,12 @@ import { z } from "zod";
 
 import { siguienteNumeroDocumento } from "@/lib/contador-documento";
 import { prisma } from "@/lib/prisma";
+import { extraerTokenQrProducto } from "@/lib/qr-producto";
 import { requerirSesion } from "@/modulos/autenticacion/servicio-sesion";
 import { obtenerAperturaAbierta } from "@/modulos/caja/servicio-caja";
 import {
   obtenerAlmacenPrincipal,
+  obtenerMapaStock,
   obtenerStockProducto,
 } from "@/modulos/inventario/stock";
 
@@ -34,15 +36,27 @@ export type ProductoPos = {
   stock: number;
 };
 
+/**
+ * Busca por código interno, URL de ficha `/p/<token>` o token público del QR.
+ */
 export async function buscarProductoParaVenta(
-  codigo: string,
+  entrada: string,
 ): Promise<ProductoPos | null> {
   await requerirSesion();
-  const limpio = codigo.trim().toUpperCase();
+  const limpio = entrada.trim();
   if (!limpio) return null;
 
+  const codigo = limpio.toUpperCase();
+  const token = extraerTokenQrProducto(limpio);
+
   const producto = await prisma.producto.findFirst({
-    where: { codigo: limpio, estado: "ACTIVO" },
+    where: {
+      estado: "ACTIVO",
+      OR: [
+        { codigo },
+        ...(token ? [{ tokenPublico: token }] : []),
+      ],
+    },
     select: {
       id: true,
       codigo: true,
@@ -98,10 +112,19 @@ export async function accionConfirmarVenta(formData: FormData) {
     redirect("/panel/ventas/nueva?error=producto");
   }
 
-  // Bloquear si stock insuficiente
+  // Una sola query de stock para todas las líneas (evita N+1)
+  const stockMap = await obtenerMapaStock(ids);
+  const cantidadPorProducto = new Map<string, number>();
   for (const linea of datos.lineas) {
-    const stock = await obtenerStockProducto(linea.productoId);
-    if (stock < linea.cantidad) {
+    cantidadPorProducto.set(
+      linea.productoId,
+      (cantidadPorProducto.get(linea.productoId) ?? 0) + linea.cantidad,
+    );
+  }
+  for (const linea of datos.lineas) {
+    const stock = stockMap.get(linea.productoId) ?? 0;
+    const requerido = cantidadPorProducto.get(linea.productoId) ?? linea.cantidad;
+    if (stock < requerido) {
       redirect(
         `/panel/ventas/nueva?error=stock&codigo=${encodeURIComponent(linea.codigo)}&disp=${stock}`,
       );

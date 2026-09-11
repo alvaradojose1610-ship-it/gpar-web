@@ -1,12 +1,13 @@
 "use server";
 
 import { LineaNegocio } from "@prisma/client";
-import { revalidatePath } from "next/cache";
+import { revalidatePath, updateTag } from "next/cache";
 import { redirect } from "next/navigation";
 import { z } from "zod";
 
+import { TAG_CATALOGO_PUBLICO } from "@/lib/imagen-producto-constantes";
 import {
-  eliminarImagenProducto,
+  eliminarImagenesProducto,
   guardarImagenProducto,
 } from "@/lib/imagen-producto";
 import { prisma } from "@/lib/prisma";
@@ -78,11 +79,14 @@ export async function accionCrearProducto(formData: FormData) {
   });
 
   try {
-    const url = await guardarImagenProducto(formData, producto.id);
-    if (url) {
+    const subida = await guardarImagenProducto(formData, producto.id);
+    if (subida) {
       await prisma.producto.update({
         where: { id: producto.id },
-        data: { imagenUrl: url },
+        data: {
+          imagenUrl: subida.url,
+          imagenThumbUrl: subida.thumbUrl,
+        },
       });
     }
   } catch {
@@ -100,6 +104,7 @@ export async function accionCrearProducto(formData: FormData) {
 async function categoriaDeLinea(categoriaId: string, linea: LineaNegocio) {
   return prisma.categoria.findFirst({
     where: { id: categoriaId, linea },
+    select: { id: true, codigo: true },
   });
 }
 
@@ -111,6 +116,7 @@ async function revalidarCatalogoPublico(
   const lineaPath =
     linea === LineaNegocio.AUTOMOTRIZ ? "automotriz" : "industrial";
 
+  updateTag(TAG_CATALOGO_PUBLICO);
   revalidatePath("/panel/productos");
   revalidatePath("/");
   revalidatePath("/buscar");
@@ -160,7 +166,15 @@ export async function accionActualizarProducto(formData: FormData) {
   }
 
   const datos = parsed.data;
-  const actual = await prisma.producto.findUnique({ where: { id: datos.id } });
+  const actual = await prisma.producto.findUnique({
+    where: { id: datos.id },
+    select: {
+      id: true,
+      tokenPublico: true,
+      imagenUrl: true,
+      imagenThumbUrl: true,
+    },
+  });
   if (!actual) redirect("/panel/productos");
 
   const categoria = await categoriaDeLinea(
@@ -172,16 +186,20 @@ export async function accionActualizarProducto(formData: FormData) {
   }
 
   let imagenUrl = actual.imagenUrl;
-  if (datos.quitarImagen && imagenUrl) {
-    await eliminarImagenProducto(imagenUrl);
+  let imagenThumbUrl = actual.imagenThumbUrl;
+
+  if (datos.quitarImagen && (imagenUrl || imagenThumbUrl)) {
+    await eliminarImagenesProducto(imagenUrl, imagenThumbUrl);
     imagenUrl = null;
+    imagenThumbUrl = null;
   }
 
   try {
     const nueva = await guardarImagenProducto(formData, datos.id);
     if (nueva) {
-      if (imagenUrl) await eliminarImagenProducto(imagenUrl);
-      imagenUrl = nueva;
+      await eliminarImagenesProducto(imagenUrl, imagenThumbUrl);
+      imagenUrl = nueva.url;
+      imagenThumbUrl = nueva.thumbUrl;
     }
   } catch {
     redirect(`/panel/productos/${datos.id}/editar?error=imagen`);
@@ -201,6 +219,7 @@ export async function accionActualizarProducto(formData: FormData) {
       visibleWeb: datos.visibleWeb,
       destacado: datos.destacado,
       imagenUrl,
+      imagenThumbUrl,
     },
   });
 

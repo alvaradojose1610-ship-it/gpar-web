@@ -1,7 +1,9 @@
 import "server-only";
 
 import { LineaNegocio, type Prisma } from "@prisma/client";
+import { unstable_cache } from "next/cache";
 
+import { TAG_CATALOGO_PUBLICO } from "@/lib/imagen-producto-constantes";
 import { prisma } from "@/lib/prisma";
 import { imagenCategoria } from "@/datos/imagenes-categorias";
 import type {
@@ -20,11 +22,42 @@ function enumALinea(linea: LineaNegocio): LineaCatalogo {
   return linea === LineaNegocio.AUTOMOTRIZ ? "automotriz" : "industrial";
 }
 
-type ProductoConRelaciones = Prisma.ProductoGetPayload<{
-  include: { categoria: true; marca: true };
+const selectProductoCatalogo = {
+  id: true,
+  codigo: true,
+  nombre: true,
+  descripcion: true,
+  linea: true,
+  modelo: true,
+  subcategoria: true,
+  aplicacion: true,
+  especificaciones: true,
+  tipo: true,
+  tamano: true,
+  posicion: true,
+  vehiculo: true,
+  anioDesde: true,
+  anioHasta: true,
+  imagenUrl: true,
+  imagenThumbUrl: true,
+  destacado: true,
+  categoria: { select: { codigo: true, nombre: true } },
+  marca: { select: { nombre: true } },
+} satisfies Prisma.ProductoSelect;
+
+type ProductoCatalogoFila = Prisma.ProductoGetPayload<{
+  select: typeof selectProductoCatalogo;
 }>;
 
-export function mapearProductoBd(p: ProductoConRelaciones): ProductoCatalogo {
+/** Listados: thumb preferido. Ficha detalle puede usar imagenUrl completa. */
+export function mapearProductoBd(
+  p: ProductoCatalogoFila,
+  opciones?: { preferirCompleta?: boolean },
+): ProductoCatalogo {
+  const imagen = opciones?.preferirCompleta
+    ? (p.imagenUrl ?? p.imagenThumbUrl)
+    : (p.imagenThumbUrl ?? p.imagenUrl);
+
   const base = {
     id: p.id,
     codigo: p.codigo,
@@ -34,7 +67,7 @@ export function mapearProductoBd(p: ProductoConRelaciones): ProductoCatalogo {
     marca: p.marca?.nombre ?? null,
     aplicacion: p.aplicacion,
     destacado: p.destacado,
-    imagen: p.imagenUrl,
+    imagen,
   };
 
   if (p.linea === LineaNegocio.AUTOMOTRIZ) {
@@ -73,6 +106,13 @@ export async function listarCategoriasBd(
       estado: "ACTIVO",
       ...(linea ? { linea: lineaAEnum(linea) } : {}),
     },
+    select: {
+      codigo: true,
+      linea: true,
+      nombre: true,
+      descripcion: true,
+      publicada: true,
+    },
     orderBy: [{ orden: "asc" }, { nombre: "asc" }],
   });
 
@@ -86,12 +126,16 @@ export async function listarCategoriasBd(
   }));
 }
 
+const LIMITE_LISTADO_DEFAULT = 120;
+
 export async function listarProductosBd(opciones?: {
   linea?: LineaCatalogo;
   categoriaCodigo?: string;
   soloDestacados?: boolean;
   limite?: number;
 }): Promise<ProductoCatalogo[]> {
+  const take = opciones?.limite ?? LIMITE_LISTADO_DEFAULT;
+
   const filas = await prisma.producto.findMany({
     where: {
       estado: "ACTIVO",
@@ -102,15 +146,33 @@ export async function listarProductosBd(opciones?: {
         : {}),
       ...(opciones?.soloDestacados ? { destacado: true } : {}),
     },
-    include: { categoria: true, marca: true },
+    select: selectProductoCatalogo,
     orderBy: [{ destacado: "desc" }, { nombre: "asc" }],
-    take: opciones?.limite,
+    take,
   });
 
-  return filas.map(mapearProductoBd);
+  return filas.map((p) => mapearProductoBd(p));
 }
 
-export async function buscarProductosBd(consulta: string): Promise<ProductoCatalogo[]> {
+export async function contarProductosBd(opciones?: {
+  linea?: LineaCatalogo;
+  categoriaCodigo?: string;
+}): Promise<number> {
+  return prisma.producto.count({
+    where: {
+      estado: "ACTIVO",
+      visibleWeb: true,
+      ...(opciones?.linea ? { linea: lineaAEnum(opciones.linea) } : {}),
+      ...(opciones?.categoriaCodigo
+        ? { categoria: { codigo: opciones.categoriaCodigo } }
+        : {}),
+    },
+  });
+}
+
+export async function buscarProductosBd(
+  consulta: string,
+): Promise<ProductoCatalogo[]> {
   const q = consulta.trim();
   if (!q) return [];
 
@@ -126,10 +188,47 @@ export async function buscarProductosBd(consulta: string): Promise<ProductoCatal
         { vehiculo: { contains: q, mode: "insensitive" } },
       ],
     },
-    include: { categoria: true, marca: true },
+    select: selectProductoCatalogo,
     take: 60,
     orderBy: { nombre: "asc" },
   });
 
-  return filas.map(mapearProductoBd);
+  return filas.map((p) => mapearProductoBd(p));
+}
+
+function claveCache(opciones: unknown) {
+  return JSON.stringify(opciones ?? {});
+}
+
+/** Listados públicos cacheados ~5 min; se invalidan con updateTag al editar productos. */
+export function listarCategoriasBdCache(linea?: LineaCatalogo) {
+  return unstable_cache(
+    () => listarCategoriasBd(linea),
+    ["catalogo-categorias", claveCache(linea)],
+    { tags: [TAG_CATALOGO_PUBLICO], revalidate: 300 },
+  )();
+}
+
+export function listarProductosBdCache(opciones?: {
+  linea?: LineaCatalogo;
+  categoriaCodigo?: string;
+  soloDestacados?: boolean;
+  limite?: number;
+}) {
+  return unstable_cache(
+    () => listarProductosBd(opciones),
+    ["catalogo-productos", claveCache(opciones)],
+    { tags: [TAG_CATALOGO_PUBLICO], revalidate: 300 },
+  )();
+}
+
+export function contarProductosBdCache(opciones?: {
+  linea?: LineaCatalogo;
+  categoriaCodigo?: string;
+}) {
+  return unstable_cache(
+    () => contarProductosBd(opciones),
+    ["catalogo-conteo", claveCache(opciones)],
+    { tags: [TAG_CATALOGO_PUBLICO], revalidate: 300 },
+  )();
 }

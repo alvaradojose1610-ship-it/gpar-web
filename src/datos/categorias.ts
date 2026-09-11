@@ -37,6 +37,7 @@ export const categorias: Categoria[] = [
     descripcion: "Transmisión para equipos de producción.",
     href: "/#categorias",
     icono: Link2,
+    imagen: "/assets/categorias/categoria-correas.webp",
   },
   {
     id: "poleas",
@@ -44,6 +45,7 @@ export const categorias: Categoria[] = [
     descripcion: "Sistemas de transmisión y acoplamiento.",
     href: "/#categorias",
     icono: Disc3,
+    imagen: "/assets/categorias/categoria-poleas.webp",
   },
   {
     id: "motores",
@@ -51,6 +53,7 @@ export const categorias: Categoria[] = [
     descripcion: "Impulso para operaciones industriales.",
     href: "/#categorias",
     icono: Cog,
+    imagen: "/assets/categorias/categoria-motores.webp",
   },
   {
     id: "herramientas",

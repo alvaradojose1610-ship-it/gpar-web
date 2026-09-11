@@ -1,7 +1,7 @@
-import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
+import { CampoImagenProducto } from "@/componentes/panel/CampoImagenProducto";
 import { CamposLineaCategoria } from "@/componentes/panel/CamposLineaCategoria";
 import { PaginaPlaceholderPanel } from "@/componentes/panel/PaginaPlaceholderPanel";
 import { prisma } from "@/lib/prisma";
@@ -58,18 +58,6 @@ export default async function PaginaEditarProducto({
         <p className="mb-4 border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-800">
           {error}
         </p>
-      ) : null}
-
-      {producto.imagenUrl ? (
-        <div className="relative mb-4 h-40 w-56 overflow-hidden border border-[#E4E7EC] bg-[#F7F8FA]">
-          <Image
-            src={producto.imagenUrl}
-            alt={producto.nombre}
-            fill
-            className="object-cover"
-            unoptimized
-          />
-        </div>
       ) : null}
 
       <form
@@ -137,21 +125,10 @@ export default async function PaginaEditarProducto({
             className="border border-[#E4E7EC] bg-[#F7F8FA] px-3 py-2"
           />
         </label>
-        <label className="grid gap-1 text-sm">
-          <span className="font-semibold">Nueva foto</span>
-          <input
-            name="imagen"
-            type="file"
-            accept="image/jpeg,image/png,image/webp"
-            className="border border-[#E4E7EC] bg-[#F7F8FA] px-3 py-2"
-          />
-        </label>
-        {producto.imagenUrl ? (
-          <label className="flex items-center gap-2 text-sm">
-            <input name="quitarImagen" type="checkbox" />
-            Quitar foto actual
-          </label>
-        ) : null}
+        <CampoImagenProducto
+          imagenUrlActual={producto.imagenUrl}
+          nombreProducto={producto.nombre}
+        />
         <label className="flex items-center gap-2 text-sm">
           <input
             name="visibleWeb"

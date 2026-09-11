@@ -1,5 +1,6 @@
 import Link from "next/link";
 
+import { CampoImagenProducto } from "@/componentes/panel/CampoImagenProducto";
 import { CamposLineaCategoria } from "@/componentes/panel/CamposLineaCategoria";
 import { PaginaPlaceholderPanel } from "@/componentes/panel/PaginaPlaceholderPanel";
 import { prisma } from "@/lib/prisma";
@@ -115,18 +116,7 @@ export default async function PaginaNuevoProducto({ searchParams }: Props) {
             className="border border-[#E4E7EC] bg-[#F7F8FA] px-3 py-2"
           />
         </label>
-        <label className="grid gap-1 text-sm">
-          <span className="font-semibold text-[#1D2430]">Foto (opcional)</span>
-          <input
-            name="imagen"
-            type="file"
-            accept="image/jpeg,image/png,image/webp"
-            className="border border-[#E4E7EC] bg-[#F7F8FA] px-3 py-2"
-          />
-          <span className="text-xs text-[#8A94A2]">
-            JPG, PNG o WebP · máx. 1.5 MB. Requiere Blob en Vercel.
-          </span>
-        </label>
+        <CampoImagenProducto />
         <label className="flex items-center gap-2 text-sm text-[#1D2430]">
           <input name="visibleWeb" type="checkbox" defaultChecked />
           Visible en la web

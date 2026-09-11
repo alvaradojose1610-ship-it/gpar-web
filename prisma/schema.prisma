@@ -338,6 +338,8 @@ model Producto {
   anioDesde       Int?
   anioHasta       Int?
   imagenUrl       String?
+  /// Miniatura WebP (~320px) para listados; reduce egress/Blob.
+  imagenThumbUrl  String?
   visibleWeb      Boolean        @default(true)
   destacado       Boolean        @default(false)
   stockMinimo     Decimal        @default(0) @db.Decimal(18, 3)

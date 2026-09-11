@@ -3,6 +3,10 @@
 import { useState, useTransition } from "react";
 
 import {
+  EscanerQrProducto,
+  type ResultadoEscaneoQr,
+} from "@/componentes/panel/EscanerQrProducto";
+import {
   accionConfirmarVenta,
   buscarProductoParaVenta,
   type ProductoPos,
@@ -30,46 +34,33 @@ export function FormularioPos({ tieneCajaAbierta }: Props) {
   const [mensaje, setMensaje] = useState<string | null>(null);
   const [pending, startTransition] = useTransition();
 
-  function buscar() {
-    setMensaje(null);
-    startTransition(async () => {
-      const hallado = await buscarProductoParaVenta(codigo);
-      if (!hallado) {
-        setProducto(null);
-        setMensaje("No se encontró un producto con ese código.");
-        return;
-      }
-      setProducto(hallado);
-      setPrecio(String(hallado.precioVenta || ""));
-      if (hallado.stock <= 0) {
-        setMensaje(`Sin stock disponible (${hallado.stock}).`);
-      }
-    });
+  function aplicarProductoHallado(hallado: ProductoPos) {
+    setProducto(hallado);
+    setCodigo(hallado.codigo);
+    setPrecio(String(hallado.precioVenta || ""));
+    if (hallado.stock <= 0) {
+      setMensaje(`Sin stock disponible (${hallado.stock}).`);
+    } else {
+      setMensaje(null);
+    }
   }
 
-  function agregarLinea() {
-    if (!producto) {
-      setMensaje("Busca un producto por código primero.");
-      return;
-    }
-    const cant = Number(cantidad);
-    const precioNum = Number(precio);
-    if (!(cant > 0) || !(precioNum >= 0)) {
-      setMensaje("Cantidad y precio deben ser válidos.");
-      return;
-    }
-
-    const ya = lineas.find((l) => l.productoId === producto.id);
-    const cantidadFinal = (ya?.cantidad ?? 0) + cant;
-    if (cantidadFinal > producto.stock) {
-      setMensaje(
-        `Stock insuficiente para ${producto.codigo}. Disponible: ${producto.stock}.`,
-      );
-      return;
-    }
+  function agregarProductoALineas(
+    hallado: ProductoPos,
+    cant: number,
+    precioNum: number,
+  ): string | null {
+    let errorStock: string | null = null;
 
     setLineas((prev) => {
-      const idx = prev.findIndex((l) => l.productoId === producto.id);
+      const ya = prev.find((l) => l.productoId === hallado.id);
+      const cantidadFinal = (ya?.cantidad ?? 0) + cant;
+      if (cantidadFinal > hallado.stock) {
+        errorStock = `Stock insuficiente para ${hallado.codigo}. Disponible: ${hallado.stock}.`;
+        return prev;
+      }
+
+      const idx = prev.findIndex((l) => l.productoId === hallado.id);
       if (idx >= 0) {
         const copia = [...prev];
         copia[idx] = {
@@ -82,19 +73,85 @@ export function FormularioPos({ tieneCajaAbierta }: Props) {
       return [
         ...prev,
         {
-          productoId: producto.id,
-          codigo: producto.codigo,
-          nombre: producto.nombre,
+          productoId: hallado.id,
+          codigo: hallado.codigo,
+          nombre: hallado.nombre,
           cantidad: cant,
           precioUnitario: precioNum,
-          stock: producto.stock,
+          stock: hallado.stock,
         },
       ];
     });
+
+    if (errorStock) return errorStock;
+
     setCodigo("");
     setProducto(null);
     setCantidad("1");
     setPrecio("");
+    return null;
+  }
+
+  function buscar() {
+    setMensaje(null);
+    startTransition(async () => {
+      const hallado = await buscarProductoParaVenta(codigo);
+      if (!hallado) {
+        setProducto(null);
+        setMensaje("No se encontró un producto con ese código o QR.");
+        return;
+      }
+      aplicarProductoHallado(hallado);
+    });
+  }
+
+  async function alEscanearQr(contenido: string): Promise<ResultadoEscaneoQr> {
+    const hallado = await buscarProductoParaVenta(contenido);
+    if (!hallado) {
+      return {
+        ok: false,
+        error: "No se encontró un producto para este QR.",
+      };
+    }
+    if (hallado.stock <= 0) {
+      aplicarProductoHallado(hallado);
+      return {
+        ok: false,
+        error: `Sin stock: ${hallado.codigo} · ${hallado.nombre}.`,
+      };
+    }
+
+    const errorStock = agregarProductoALineas(
+      hallado,
+      1,
+      hallado.precioVenta || 0,
+    );
+    if (errorStock) {
+      aplicarProductoHallado(hallado);
+      return { ok: false, error: errorStock };
+    }
+
+    setMensaje(`Agregado: ${hallado.codigo} · ${hallado.nombre}`);
+    return { ok: true };
+  }
+
+  function agregarLinea() {
+    if (!producto) {
+      setMensaje("Busca un producto por código o escanea el QR primero.");
+      return;
+    }
+    const cant = Number(cantidad);
+    const precioNum = Number(precio);
+    if (!(cant > 0) || !(precioNum >= 0)) {
+      setMensaje("Cantidad y precio deben ser válidos.");
+      return;
+    }
+
+    const errorStock = agregarProductoALineas(producto, cant, precioNum);
+    if (errorStock) {
+      setMensaje(errorStock);
+      return;
+    }
     setMensaje(null);
   }
 
@@ -123,7 +180,7 @@ export function FormularioPos({ tieneCajaAbierta }: Props) {
           <input
             value={codigo}
             onChange={(e) => setCodigo(e.target.value)}
-            placeholder="Código"
+            placeholder="Código o URL del QR"
             className="min-w-[10rem] flex-1 border border-[#E4E7EC] bg-[#F7F8FA] px-3 py-2 text-sm"
             autoFocus
             onKeyDown={(e) => {
@@ -141,6 +198,7 @@ export function FormularioPos({ tieneCajaAbierta }: Props) {
           >
             Buscar
           </button>
+          <EscanerQrProducto onCodigo={alEscanearQr} />
         </div>
         {producto ? (
           <p className="text-sm text-[#1D2430]">
@@ -180,7 +238,11 @@ export function FormularioPos({ tieneCajaAbierta }: Props) {
           Agregar línea
         </button>
         {mensaje ? (
-          <p className="text-sm text-red-700">{mensaje}</p>
+          <p
+            className={`text-sm ${mensaje.startsWith("Agregado") ? "text-[#1D2430]" : "text-red-700"}`}
+          >
+            {mensaje}
+          </p>
         ) : null}
       </div>
 

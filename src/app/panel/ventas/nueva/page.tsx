@@ -36,7 +36,7 @@ export default async function PaginaNuevaVenta({ searchParams }: Props) {
   return (
     <PaginaPlaceholderPanel
       titulo="Punto de venta"
-      descripcion="Busca por código, agrega líneas y confirma. Se bloquea si no hay stock."
+      descripcion="Busca por código, escanea el QR del estante, agrega líneas y confirma. Se bloquea si no hay stock."
     >
       <p className="mb-4 flex flex-wrap gap-4">
         <Link

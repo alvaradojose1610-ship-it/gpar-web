@@ -10,14 +10,25 @@ export const dynamic = "force-dynamic";
 export default async function PaginaPanelProductos() {
   await requerirSesion();
 
-  const productos = await prisma.producto.findMany({
-    where: { estado: "ACTIVO" },
-    include: { categoria: true, marca: true },
-    orderBy: [{ linea: "asc" }, { codigo: "asc" }],
-    take: 500,
-  });
-
-  const total = await prisma.producto.count({ where: { estado: "ACTIVO" } });
+  const [productos, total] = await Promise.all([
+    prisma.producto.findMany({
+      where: { estado: "ACTIVO" },
+      select: {
+        id: true,
+        codigo: true,
+        nombre: true,
+        linea: true,
+        visibleWeb: true,
+        tokenPublico: true,
+        imagenUrl: true,
+        imagenThumbUrl: true,
+        categoria: { select: { nombre: true } },
+      },
+      orderBy: [{ linea: "asc" }, { codigo: "asc" }],
+      take: 500,
+    }),
+    prisma.producto.count({ where: { estado: "ACTIVO" } }),
+  ]);
 
   const filas = productos.map((producto) => ({
     id: producto.id,
@@ -27,7 +38,7 @@ export default async function PaginaPanelProductos() {
     categoriaNombre: producto.categoria.nombre,
     visibleWeb: producto.visibleWeb,
     tokenPublico: producto.tokenPublico,
-    imagenUrl: producto.imagenUrl,
+    imagenUrl: producto.imagenThumbUrl ?? producto.imagenUrl,
   }));
 
   return (

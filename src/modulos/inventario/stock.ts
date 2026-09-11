@@ -1,6 +1,6 @@
 import "server-only";
 
-import type { TipoMovimientoInventario } from "@prisma/client";
+import { Prisma, type TipoMovimientoInventario } from "@prisma/client";
 
 import { prisma } from "@/lib/prisma";
 
@@ -26,7 +26,10 @@ export function esSalidaInventario(tipo: TipoMovimientoInventario): boolean {
 
 /** Stock = sum(entradas) − sum(salidas) de MovimientoInventario. */
 export function calcularStockDesdeMovimientos(
-  movimientos: { tipo: TipoMovimientoInventario; cantidad: { toString(): string } | number }[],
+  movimientos: {
+    tipo: TipoMovimientoInventario;
+    cantidad: { toString(): string } | number;
+  }[],
 ): number {
   let stock = 0;
   for (const m of movimientos) {
@@ -38,14 +41,11 @@ export function calcularStockDesdeMovimientos(
 }
 
 export async function obtenerStockProducto(productoId: string): Promise<number> {
-  const movimientos = await prisma.movimientoInventario.findMany({
-    where: { productoId },
-    select: { tipo: true, cantidad: true },
-  });
-  return calcularStockDesdeMovimientos(movimientos);
+  const mapa = await obtenerMapaStock([productoId]);
+  return mapa.get(productoId) ?? 0;
 }
 
-/** Mapa productoId → stock para listados. */
+/** Mapa productoId → stock para listados (1 query agregada). */
 export async function obtenerMapaStock(
   productoIds: string[],
 ): Promise<Map<string, number>> {
@@ -56,16 +56,30 @@ export async function obtenerMapaStock(
     mapa.set(id, 0);
   }
 
-  const movimientos = await prisma.movimientoInventario.findMany({
-    where: { productoId: { in: productoIds } },
-    select: { productoId: true, tipo: true, cantidad: true },
-  });
+  type Fila = { productoId: string; stock: Prisma.Decimal | number | string };
 
-  for (const m of movimientos) {
-    const actual = mapa.get(m.productoId) ?? 0;
-    const cantidad = Number(m.cantidad);
-    if (esEntradaInventario(m.tipo)) mapa.set(m.productoId, actual + cantidad);
-    else if (esSalidaInventario(m.tipo)) mapa.set(m.productoId, actual - cantidad);
+  const filas = await prisma.$queryRaw<Fila[]>`
+    SELECT
+      m."productoId" AS "productoId",
+      COALESCE(
+        SUM(
+          CASE
+            WHEN m.tipo::text IN ('ENTRADA_COMPRA', 'AJUSTE_ENTRADA', 'ANULACION_VENTA')
+              THEN m.cantidad
+            WHEN m.tipo::text IN ('SALIDA_VENTA', 'AJUSTE_SALIDA', 'ANULACION_COMPRA')
+              THEN -m.cantidad
+            ELSE 0
+          END
+        ),
+        0
+      ) AS stock
+    FROM movimientos_inventario m
+    WHERE m."productoId" IN (${Prisma.join(productoIds)})
+    GROUP BY m."productoId"
+  `;
+
+  for (const fila of filas) {
+    mapa.set(fila.productoId, Number(fila.stock));
   }
 
   return mapa;

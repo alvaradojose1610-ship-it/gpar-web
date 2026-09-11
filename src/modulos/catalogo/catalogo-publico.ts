@@ -1,7 +1,5 @@
 import "server-only";
 
-import { unstable_noStore as noStore } from "next/cache";
-
 import {
   categoriasCatalogo as categoriasLocales,
   productosCatalogo as productosLocales,
@@ -20,13 +18,13 @@ import type {
 } from "@/datos/tipos-catalogo";
 import {
   buscarProductosBd,
-  listarCategoriasBd,
-  listarProductosBd,
+  contarProductosBdCache,
+  listarCategoriasBdCache,
+  listarProductosBdCache,
 } from "@/modulos/catalogo/servicio-catalogo";
 import { imagenCategoria } from "@/datos/imagenes-categorias";
 
 async function conFallback<T>(fn: () => Promise<T>, fallback: T): Promise<T> {
-  noStore();
   try {
     return await fn();
   } catch {
@@ -38,7 +36,7 @@ export async function obtenerCategoriasPorLinea(
   linea: LineaCatalogo,
 ): Promise<CategoriaCatalogo[]> {
   return conFallback(async () => {
-    const filas = await listarCategoriasBd(linea);
+    const filas = await listarCategoriasBdCache(linea);
     if (filas.length > 0) return filas;
     return categoriasLineaLocal(linea).map((c) => ({
       ...c,
@@ -55,7 +53,7 @@ export async function obtenerCategoria(
   categoriaId: string,
 ): Promise<CategoriaCatalogo | undefined> {
   return conFallback(async () => {
-    const filas = await listarCategoriasBd(linea);
+    const filas = await listarCategoriasBdCache(linea);
     const encontrada = filas.find((c) => c.id === categoriaId);
     return encontrada ?? categoriaLocal(linea, categoriaId);
   }, categoriaLocal(linea, categoriaId));
@@ -66,9 +64,10 @@ export async function obtenerProductosPorCategoria(
   categoriaId: string,
 ): Promise<ProductoCatalogo[]> {
   return conFallback(async () => {
-    const filas = await listarProductosBd({
+    const filas = await listarProductosBdCache({
       linea,
       categoriaCodigo: categoriaId,
+      limite: 120,
     });
     return filas.length > 0
       ? filas
@@ -80,12 +79,12 @@ export async function obtenerProductosDestacados(
   limite = 8,
 ): Promise<ProductoCatalogo[]> {
   return conFallback(async () => {
-    const destacados = await listarProductosBd({
+    const destacados = await listarProductosBdCache({
       soloDestacados: true,
       limite,
     });
     if (destacados.length > 0) return destacados;
-    const todos = await listarProductosBd({ limite });
+    const todos = await listarProductosBdCache({ limite });
     return todos.length > 0 ? todos : destacadosLocal(limite);
   }, destacadosLocal(limite));
 }
@@ -93,6 +92,7 @@ export async function obtenerProductosDestacados(
 export async function obtenerBusqueda(
   consulta: string,
 ): Promise<ProductoCatalogo[]> {
+  // Búsqueda no cacheada: cada query es distinta.
   return conFallback(
     () => buscarProductosBd(consulta),
     buscarLocal(consulta),
@@ -103,21 +103,26 @@ export async function contarEnCategoria(
   linea: LineaCatalogo,
   categoriaId: string,
 ): Promise<number> {
-  const productos = await obtenerProductosPorCategoria(linea, categoriaId);
-  return productos.length;
+  return conFallback(async () => {
+    const n = await contarProductosBdCache({
+      linea,
+      categoriaCodigo: categoriaId,
+    });
+    return n > 0 ? n : contarLocal(linea, categoriaId);
+  }, contarLocal(linea, categoriaId));
 }
 
 export async function totalPorLinea(linea: LineaCatalogo): Promise<number> {
   return conFallback(async () => {
-    const filas = await listarProductosBd({ linea });
-    return filas.length > 0 ? filas.length : totalLocal(linea);
+    const n = await contarProductosBdCache({ linea });
+    return n > 0 ? n : totalLocal(linea);
   }, totalLocal(linea));
 }
 
 /** Catálogo plano para el cliente (cotización / drawer). */
 export async function obtenerCatalogoCliente(): Promise<ProductoCatalogo[]> {
   return conFallback(async () => {
-    const filas = await listarProductosBd({ limite: 500 });
+    const filas = await listarProductosBdCache({ limite: 500 });
     return filas.length > 0 ? filas : productosLocales;
   }, productosLocales);
 }

@@ -1,6 +1,12 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  experimental: {
+    // Multipart con imagen ya comprimida en cliente (~1 MB) + resto de campos.
+    serverActions: {
+      bodySizeLimit: "4mb",
+    },
+  },
   images: {
     remotePatterns: [
       {
