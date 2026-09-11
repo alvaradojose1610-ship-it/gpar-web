@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import { Contenedor } from "@/componentes/interfaz/Contenedor";
 import { categoriasPorLinea } from "@/datos/catalogo";
@@ -16,7 +17,15 @@ export function HeroInicio() {
 
   return (
     <section className="relative border-b border-gpar-line bg-gpar-surface">
-      <div className="placeholder-media absolute inset-0" aria-hidden />
+      <Image
+        src="/assets/hero/hero-principal.webp"
+        alt=""
+        fill
+        priority
+        className="object-cover object-[70%_center]"
+        sizes="100vw"
+        aria-hidden
+      />
       <div
         className="absolute inset-0 bg-[linear-gradient(180deg,rgba(255,255,255,0.95)_0%,rgba(255,255,255,0.88)_60%,rgba(255,255,255,0.72)_100%)] md:inset-[0_0_46px_0] md:bg-[linear-gradient(100deg,rgba(255,255,255,0.97)_0%,rgba(255,255,255,0.93)_46%,rgba(255,255,255,0.62)_72%,rgba(255,255,255,0.30)_100%)]"
         aria-hidden

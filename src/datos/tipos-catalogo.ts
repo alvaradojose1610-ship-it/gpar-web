@@ -13,6 +13,8 @@ export type CategoriaCatalogo = {
   /** Si false, la UI puede mostrar "Próximamente". */
   publicada: boolean;
   subcategorias?: string[];
+  /** Ruta pública o URL de foto de categoría. */
+  imagen?: string;
 };
 
 /**

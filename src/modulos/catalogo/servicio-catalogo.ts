@@ -3,6 +3,7 @@ import "server-only";
 import { LineaNegocio, type Prisma } from "@prisma/client";
 
 import { prisma } from "@/lib/prisma";
+import { imagenCategoria } from "@/datos/imagenes-categorias";
 import type {
   CategoriaCatalogo,
   LineaCatalogo,
@@ -81,6 +82,7 @@ export async function listarCategoriasBd(
     nombre: c.nombre,
     descripcion: c.descripcion ?? "",
     publicada: c.publicada,
+    imagen: imagenCategoria(c.codigo),
   }));
 }
 

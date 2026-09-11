@@ -46,7 +46,7 @@ export default async function PaginaPanelProductos() {
               <th className="px-3 py-2 font-semibold">Categoría</th>
               <th className="px-3 py-2 font-semibold">Web</th>
               <th className="px-3 py-2 font-semibold">QR</th>
-              <th className="px-3 py-2 font-semibold">Etiqueta</th>
+              <th className="px-3 py-2 font-semibold">Acciones</th>
             </tr>
           </thead>
           <tbody>
@@ -78,6 +78,12 @@ export default async function PaginaPanelProductos() {
                   </Link>
                 </td>
                 <td className="px-3 py-2">
+                  <Link
+                    href={`/panel/productos/${producto.id}/editar`}
+                    className="mr-3 text-xs font-semibold text-[#D96A00] hover:underline"
+                  >
+                    Editar
+                  </Link>
                   <Link
                     href={`/panel/productos/${producto.id}/etiqueta`}
                     className="text-xs font-semibold text-[#1D2430] hover:underline"

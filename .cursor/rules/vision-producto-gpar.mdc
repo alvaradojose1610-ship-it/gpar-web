@@ -58,9 +58,15 @@ Correo / teléfono fijo / dirección textual: pendientes
 
 Usuario `admin` / clave `123` (seed). Roles: ADMINISTRADOR, VENDEDOR, ALMACEN, CONSULTA.
 
-## Imágenes de producto
+## Imágenes
 
-Campo `Producto.imagenUrl` (Vercel Blob, como Óptica/Repuestos). Hoy la web usa placeholders CSS: **no** hay fotos del catálogo escaneado. Flujo: subir foto en panel → Blob → `imagenUrl` → `next/image` en tarjetas.
+**Catálogo impreso (fotos):** solo referencia de estructura/categorías en `public/assets/catalogo-referencia/`. No publicar recortes con marca ajena.
+
+**Categorías web:** assets propios `categoria-*.webp` mapeados en `src/datos/imagenes-categorias.ts`.
+
+**Productos:** panel crear/editar → Vercel Blob → `Producto.imagenUrl`. Requiere `BLOB_READ_WRITE_TOKEN`.
+
+**Marcas:** no exhibir logos oficiales hasta autorización de GPar.
 
 ## Stock, cotización y apartados
 

@@ -1,0 +1,1 @@
+export const MAX_IMAGEN_PRODUCTO_BYTES = 1.5 * 1024 * 1024;

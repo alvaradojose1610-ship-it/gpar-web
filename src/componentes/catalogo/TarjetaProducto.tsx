@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { useCotizacion } from "@/componentes/cotizacion/ProveedorCotizacion";
 import type { ProductoCatalogo } from "@/datos/tipos-catalogo";
 import { cn } from "@/utilidades/cn";
@@ -47,14 +48,28 @@ export function TarjetaProducto({
     >
       <div
         className={cn(
-          "placeholder-media relative border-b border-gpar-line-soft",
+          "relative overflow-hidden border-b border-gpar-line-soft bg-gpar-surface",
           compacta ? "h-[130px]" : "h-[150px]",
         )}
       >
+        {producto.imagen ? (
+          <Image
+            src={producto.imagen}
+            alt={producto.nombre}
+            fill
+            className="object-cover"
+            sizes="(max-width:480px) 100vw, (max-width:1024px) 50vw, 25vw"
+          />
+        ) : (
+          <div className="placeholder-media flex h-full items-center justify-center">
+            <span className="px-3 text-center font-mono text-[11px] uppercase tracking-[0.08em] text-gpar-ink-3">
+              {producto.codigo}
+            </span>
+          </div>
+        )}
         <span className="absolute right-2 top-2 border border-gpar-line bg-gpar-bg px-1.5 py-0.5 font-mono text-[10px] text-gpar-ink">
           Consultar
         </span>
-        <span className="sr-only">{producto.nombre}</span>
       </div>
 
       <div className="flex flex-1 flex-col gap-2 p-[15px]">

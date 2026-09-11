@@ -21,6 +21,7 @@ import {
   listarCategoriasBd,
   listarProductosBd,
 } from "@/modulos/catalogo/servicio-catalogo";
+import { imagenCategoria } from "@/datos/imagenes-categorias";
 
 async function conFallback<T>(fn: () => Promise<T>, fallback: T): Promise<T> {
   try {
@@ -35,8 +36,15 @@ export async function obtenerCategoriasPorLinea(
 ): Promise<CategoriaCatalogo[]> {
   return conFallback(async () => {
     const filas = await listarCategoriasBd(linea);
-    return filas.length > 0 ? filas : categoriasLineaLocal(linea);
-  }, categoriasLineaLocal(linea));
+    if (filas.length > 0) return filas;
+    return categoriasLineaLocal(linea).map((c) => ({
+      ...c,
+      imagen: imagenCategoria(c.id) ?? c.imagen,
+    }));
+  }, categoriasLineaLocal(linea).map((c) => ({
+    ...c,
+    imagen: imagenCategoria(c.id) ?? c.imagen,
+  })));
 }
 
 export async function obtenerCategoria(
