@@ -25,9 +25,13 @@ export type Empresa = {
   };
 };
 
+/** Ubicación confirmada en Google Maps (Distribuidora G´Par). */
+const MAPS_UBICACION =
+  "https://www.google.com/maps/place/Distribuidora+G%C2%B4Par/@10.0807562,-69.3255478,17z/data=!3m1!4b1!4m6!3m5!1s0x8e875dd08f25e9df:0xc689a15c99f6e72!8m2!3d10.0807562!4d-69.3255478!16s%2Fg%2F11bwkdqcsk";
+
 /**
  * Datos de empresa centralizados.
- * Correo, teléfono fijo y dirección textual: pendiente de confirmar.
+ * Correo y dirección textual: pendiente de confirmar.
  */
 export const empresa: Empresa = {
   nombre: "GPar",
@@ -53,14 +57,14 @@ export const empresa: Empresa = {
     direccion: {
       etiqueta: "Ubicación",
       valor: "Ver en Google Maps",
-      href: "https://maps.app.goo.gl/gUUG6rsq42k1fafH6",
+      href: MAPS_UBICACION,
       disponible: true,
     },
     telefono: {
       etiqueta: "Teléfono",
-      valor: null,
-      href: null,
-      disponible: false,
+      valor: "+58 412-3770003",
+      href: "tel:+584123770003",
+      disponible: true,
     },
   },
   redes: {
@@ -79,7 +83,7 @@ export const empresa: Empresa = {
     maps: {
       etiqueta: "Google Maps",
       valor: "Ubicación",
-      href: "https://maps.app.goo.gl/gUUG6rsq42k1fafH6",
+      href: MAPS_UBICACION,
       disponible: true,
     },
   },

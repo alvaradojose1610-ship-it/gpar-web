@@ -122,11 +122,21 @@ export function PieDePagina() {
                   </a>
                 </li>
               ) : null}
+              {empresa.contacto.telefono.disponible ? (
+                <li>
+                  Teléfono:{" "}
+                  <a
+                    href={empresa.contacto.telefono.href ?? undefined}
+                    className="hover:text-white"
+                  >
+                    {empresa.contacto.telefono.valor}
+                  </a>
+                </li>
+              ) : (
+                <li>Teléfono: por confirmar</li>
+              )}
               {!empresa.contacto.correo.disponible ? (
                 <li>Correo: por confirmar</li>
-              ) : null}
-              {!empresa.contacto.telefono.disponible ? (
-                <li>Teléfono: por confirmar</li>
               ) : null}
             </ul>
           </div>
