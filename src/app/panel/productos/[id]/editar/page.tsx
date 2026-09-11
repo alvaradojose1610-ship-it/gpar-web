@@ -6,7 +6,8 @@ import { CamposLineaCategoria } from "@/componentes/panel/CamposLineaCategoria";
 import { PaginaPlaceholderPanel } from "@/componentes/panel/PaginaPlaceholderPanel";
 import { prisma } from "@/lib/prisma";
 import { accionActualizarProducto } from "@/modulos/productos/acciones";
-import { requerirSesion } from "@/modulos/autenticacion/servicio-sesion";
+import { CODIGOS_PERMISO } from "@/configuracion/permisos";
+import { requerirPermiso } from "@/modulos/autenticacion/servicio-sesion";
 
 export const dynamic = "force-dynamic";
 
@@ -19,7 +20,7 @@ export default async function PaginaEditarProducto({
   params,
   searchParams,
 }: Props) {
-  await requerirSesion();
+  await requerirPermiso(CODIGOS_PERMISO.PRODUCTOS_EDITAR, "/panel/productos");
   const { id } = await params;
   const q = await searchParams;
 

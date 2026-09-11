@@ -3,13 +3,19 @@ import { PrismaClient, LineaNegocio } from "@prisma/client";
 import bcrypt from "bcryptjs";
 import { Pool } from "pg";
 
-import { LISTA_PERMISOS } from "../src/configuracion/permisos";
+import {
+  LISTA_PERMISOS,
+  PERMISOS_POR_ROL_SISTEMA,
+} from "../src/configuracion/permisos";
 import {
   categoriasIndustriales,
   productosIndustrialesMuestra,
 } from "../src/datos/catalogo-industrial";
 import { categoriasAutomotrices } from "../src/datos/catalogo-automotriz";
 import { empresa } from "../src/configuracion/empresa";
+import { cargarEnvLocal } from "./cargar-env";
+
+cargarEnvLocal();
 
 const CLAVE_ADMIN = "123";
 const USUARIO_ADMIN = "admin";
@@ -115,7 +121,18 @@ async function main() {
     const permisos = await prisma.permiso.findMany();
     const porCodigo = new Map(permisos.map((p) => [p.codigo, p.id]));
 
-    async function asignarPermisos(rolId: string, codigos: string[]) {
+    async function sincronizarPermisosRol(rolId: string, codigos: string[]) {
+      const idsDeseados = new Set(
+        codigos
+          .map((codigo) => porCodigo.get(codigo))
+          .filter((id): id is string => Boolean(id)),
+      );
+      const actuales = await prisma.rolPermiso.findMany({ where: { rolId } });
+      for (const rp of actuales) {
+        if (!idsDeseados.has(rp.permisoId)) {
+          await prisma.rolPermiso.delete({ where: { id: rp.id } });
+        }
+      }
       for (const codigo of codigos) {
         const permisoId = porCodigo.get(codigo);
         if (!permisoId) continue;
@@ -127,32 +144,22 @@ async function main() {
       }
     }
 
-    await asignarPermisos(
+    await sincronizarPermisosRol(
       rolAdmin.id,
-      permisos.map((p) => p.codigo),
+      [...PERMISOS_POR_ROL_SISTEMA.ADMINISTRADOR],
     );
-    await asignarPermisos(rolVendedor.id, [
-      "panel.ver",
-      "productos.ver",
-      "cotizaciones.ver",
-      "cotizaciones.editar",
-      "ventas.ver",
-      "ventas.crear",
-    ]);
-    await asignarPermisos(rolAlmacen.id, [
-      "panel.ver",
-      "productos.ver",
-      "productos.editar",
-      "compras.ver",
-      "inventario.ver",
-    ]);
-    await asignarPermisos(rolConsulta.id, [
-      "panel.ver",
-      "productos.ver",
-      "cotizaciones.ver",
-      "ventas.ver",
-      "inventario.ver",
-    ]);
+    await sincronizarPermisosRol(
+      rolVendedor.id,
+      [...PERMISOS_POR_ROL_SISTEMA.VENDEDOR],
+    );
+    await sincronizarPermisosRol(
+      rolAlmacen.id,
+      [...PERMISOS_POR_ROL_SISTEMA.ALMACEN],
+    );
+    await sincronizarPermisosRol(
+      rolConsulta.id,
+      [...PERMISOS_POR_ROL_SISTEMA.CONSULTA],
+    );
 
     console.log("Sembrando usuario admin…");
     const claveHash = await bcrypt.hash(CLAVE_ADMIN, 12);

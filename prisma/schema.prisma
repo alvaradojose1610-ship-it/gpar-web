@@ -32,6 +32,13 @@ enum EstadoCotizacion {
   ANULADA
 }
 
+enum EstadoApartado {
+  ACTIVO
+  VENCIDO
+  CONVERTIDO
+  CANCELADO
+}
+
 enum OrigenCotizacion {
   WEB
   PANEL
@@ -137,6 +144,7 @@ model Usuario {
   movimientosCaja       MovimientoCaja[]       @relation("MovimientosCajaUsuario")
   ventas                Venta[]                @relation("VentasUsuario")
   cotizacionesAtendidas Cotizacion[]           @relation("CotizacionesAtendidaPor")
+  apartados             Apartado[]             @relation("ApartadosUsuario")
 
   @@map("usuarios")
 }
@@ -287,16 +295,17 @@ model MovimientoCaja {
 // ---------------------------------------------------------------------------
 
 model Categoria {
-  id            String       @id @default(cuid())
+  id            String         @id @default(cuid())
   linea         LineaNegocio
   codigo        String
   nombre        String
   descripcion   String?
-  publicada     Boolean      @default(true)
-  orden         Int          @default(0)
+  imagenUrl     String?
+  publicada     Boolean        @default(true)
+  orden         Int            @default(0)
   estado        EstadoRegistro @default(ACTIVO)
-  creadoEn      DateTime     @default(now())
-  actualizadoEn DateTime     @updatedAt
+  creadoEn      DateTime       @default(now())
+  actualizadoEn DateTime       @updatedAt
   productos     Producto[]
 
   @@unique([linea, codigo])
@@ -356,6 +365,7 @@ model Producto {
   movimientos     MovimientoInventario[]
   detallesVenta   DetalleVenta[]
   detallesCotizacion DetalleCotizacion[]
+  detallesApartado DetalleApartado[]
 
   @@index([tokenPublico])
   @@index([codigo])
@@ -387,6 +397,7 @@ model Cliente {
   ventas          Venta[]
   cotizaciones    Cotizacion[]
   cuentasPorCobrar CuentaPorCobrar[]
+  apartados       Apartado[]
 
   @@index([nombre])
   @@index([telefono])
@@ -596,6 +607,7 @@ model Venta {
   detalles        DetalleVenta[]
   cuentaPorCobrar CuentaPorCobrar?
   cotizacion      Cotizacion?
+  apartado        Apartado?
 
   @@index([fecha])
   @@index([usuarioId])
@@ -671,4 +683,44 @@ model PagoCuentaPorPagar {
   cuentaPorPagar    CuentaPorPagar @relation(fields: [cuentaPorPagarId], references: [id], onDelete: Cascade)
 
   @@map("pagos_cuenta_por_pagar")
+}
+
+// ---------------------------------------------------------------------------
+// Apartados (reserva temporal de stock)
+// ---------------------------------------------------------------------------
+
+model Apartado {
+  id             String         @id @default(cuid())
+  numero         String         @unique
+  clienteId      String?
+  nombreContacto String
+  telefono       String?
+  vencimientoEn  DateTime
+  estado         EstadoApartado @default(ACTIVO)
+  observaciones  String?
+  usuarioId      String
+  ventaId        String?        @unique
+  creadoEn       DateTime       @default(now())
+  actualizadoEn  DateTime       @updatedAt
+  cliente        Cliente?       @relation(fields: [clienteId], references: [id], onDelete: SetNull)
+  usuario        Usuario        @relation("ApartadosUsuario", fields: [usuarioId], references: [id], onDelete: Restrict)
+  venta          Venta?         @relation(fields: [ventaId], references: [id], onDelete: SetNull)
+  detalles       DetalleApartado[]
+
+  @@index([estado, vencimientoEn])
+  @@map("apartados")
+}
+
+model DetalleApartado {
+  id             String   @id @default(cuid())
+  apartadoId     String
+  productoId     String
+  cantidad       Decimal  @db.Decimal(18, 3)
+  precioUnitario Decimal? @db.Decimal(18, 2)
+  apartado       Apartado @relation(fields: [apartadoId], references: [id], onDelete: Cascade)
+  producto       Producto @relation(fields: [productoId], references: [id], onDelete: Restrict)
+
+  @@index([productoId])
+  @@index([apartadoId])
+  @@map("detalles_apartado")
 }

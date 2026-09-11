@@ -185,6 +185,18 @@ export function FormularioNuevaCompra({ proveedores }: Props) {
         </label>
 
         <label className="grid max-w-xl gap-1 text-sm">
+          <span className="font-semibold text-[#1D2430]">Condición de pago</span>
+          <select
+            name="condicionPago"
+            defaultValue="CONTADO"
+            className="border border-[#E4E7EC] bg-white px-3 py-2"
+          >
+            <option value="CONTADO">Contado</option>
+            <option value="CREDITO">Crédito (crea CxP)</option>
+          </select>
+        </label>
+
+        <label className="grid max-w-xl gap-1 text-sm">
           <span className="font-semibold text-[#1D2430]">Observaciones</span>
           <textarea
             name="observaciones"

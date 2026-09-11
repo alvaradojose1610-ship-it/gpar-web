@@ -3,12 +3,13 @@ import Link from "next/link";
 import { TablaProductosFiltrable } from "@/componentes/panel/TablaProductosFiltrable";
 import { PaginaPlaceholderPanel } from "@/componentes/panel/PaginaPlaceholderPanel";
 import { prisma } from "@/lib/prisma";
-import { requerirSesion } from "@/modulos/autenticacion/servicio-sesion";
+import { CODIGOS_PERMISO } from "@/configuracion/permisos";
+import { requerirPermiso } from "@/modulos/autenticacion/servicio-sesion";
 
 export const dynamic = "force-dynamic";
 
 export default async function PaginaPanelProductos() {
-  await requerirSesion();
+  await requerirPermiso(CODIGOS_PERMISO.PRODUCTOS_VER, "/panel/productos");
 
   const [productos, total] = await Promise.all([
     prisma.producto.findMany({

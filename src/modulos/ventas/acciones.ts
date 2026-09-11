@@ -7,12 +7,16 @@ import { z } from "zod";
 import { siguienteNumeroDocumento } from "@/lib/contador-documento";
 import { prisma } from "@/lib/prisma";
 import { extraerTokenQrProducto } from "@/lib/qr-producto";
-import { requerirSesion } from "@/modulos/autenticacion/servicio-sesion";
-import { obtenerAperturaAbierta } from "@/modulos/caja/servicio-caja";
+import { CODIGOS_PERMISO } from "@/configuracion/permisos";
+import { requerirPermiso } from "@/modulos/autenticacion/servicio-sesion";
+import {
+  obtenerAperturaAbierta,
+  registrarAnulacionVentaEnCaja,
+} from "@/modulos/caja/servicio-caja";
 import {
   obtenerAlmacenPrincipal,
-  obtenerMapaStock,
-  obtenerStockProducto,
+  obtenerMapaStockDisponible,
+  obtenerStockDisponible,
 } from "@/modulos/inventario/stock";
 
 const esquemaLinea = z.object({
@@ -25,6 +29,7 @@ const esquemaLinea = z.object({
 const esquemaVenta = z.object({
   nombreCliente: z.string().trim().max(200).optional(),
   observaciones: z.string().trim().max(1000).optional(),
+  condicionPago: z.enum(["CONTADO", "CREDITO"]).default("CONTADO"),
   lineas: z.array(esquemaLinea).min(1).max(200),
 });
 
@@ -42,7 +47,7 @@ export type ProductoPos = {
 export async function buscarProductoParaVenta(
   entrada: string,
 ): Promise<ProductoPos | null> {
-  await requerirSesion();
+  await requerirPermiso(CODIGOS_PERMISO.VENTAS_CREAR);
   const limpio = entrada.trim();
   if (!limpio) return null;
 
@@ -66,7 +71,7 @@ export async function buscarProductoParaVenta(
   });
   if (!producto) return null;
 
-  const stock = await obtenerStockProducto(producto.id);
+  const stock = await obtenerStockDisponible(producto.id);
 
   return {
     id: producto.id,
@@ -78,7 +83,7 @@ export async function buscarProductoParaVenta(
 }
 
 export async function accionConfirmarVenta(formData: FormData) {
-  const sesion = await requerirSesion();
+  const sesion = await requerirPermiso(CODIGOS_PERMISO.VENTAS_CREAR);
 
   let lineasRaw: unknown = [];
   try {
@@ -90,6 +95,7 @@ export async function accionConfirmarVenta(formData: FormData) {
   const parsed = esquemaVenta.safeParse({
     nombreCliente: String(formData.get("nombreCliente") ?? "") || undefined,
     observaciones: String(formData.get("observaciones") ?? "") || undefined,
+    condicionPago: String(formData.get("condicionPago") ?? "CONTADO"),
     lineas: lineasRaw,
   });
 
@@ -98,6 +104,7 @@ export async function accionConfirmarVenta(formData: FormData) {
   }
 
   const datos = parsed.data;
+  const esCredito = datos.condicionPago === "CREDITO";
   const almacen = await obtenerAlmacenPrincipal();
   if (!almacen) {
     redirect("/panel/ventas/nueva?error=almacen");
@@ -112,8 +119,13 @@ export async function accionConfirmarVenta(formData: FormData) {
     redirect("/panel/ventas/nueva?error=producto");
   }
 
-  // Una sola query de stock para todas las líneas (evita N+1)
-  const stockMap = await obtenerMapaStock(ids);
+  const cotizacionId = String(formData.get("cotizacionId") ?? "").trim() || null;
+  const apartadoId = String(formData.get("apartadoId") ?? "").trim() || null;
+
+  // Stock disponible = físico − apartados activos (excluye el apartado en conversión)
+  const stockMap = await obtenerMapaStockDisponible(ids, {
+    excluirApartadoId: apartadoId ?? undefined,
+  });
   const cantidadPorProducto = new Map<string, number>();
   for (const linea of datos.lineas) {
     cantidadPorProducto.set(
@@ -161,6 +173,33 @@ export async function accionConfirmarVenta(formData: FormData) {
   const apertura = await obtenerAperturaAbierta();
   const numero = await siguienteNumeroDocumento("venta", "VEN");
 
+  if (cotizacionId) {
+    const cot = await prisma.cotizacion.findUnique({
+      where: { id: cotizacionId },
+      select: { id: true, ventaId: true, estado: true },
+    });
+    if (!cot || cot.ventaId || cot.estado === "CONVERTIDA") {
+      redirect("/panel/ventas/nueva?error=cotizacion");
+    }
+  }
+
+  if (apartadoId) {
+    const apa = await prisma.apartado.findUnique({
+      where: { id: apartadoId },
+      select: { id: true, estado: true, ventaId: true, vencimientoEn: true },
+    });
+    if (
+      !apa ||
+      apa.ventaId ||
+      apa.estado !== "ACTIVO" ||
+      apa.vencimientoEn <= new Date()
+    ) {
+      redirect("/panel/ventas/nueva?error=apartado");
+    }
+  }
+
+  let ventaId = "";
+
   await prisma.$transaction(async (tx) => {
     const venta = await tx.venta.create({
       data: {
@@ -174,10 +213,11 @@ export async function accionConfirmarVenta(formData: FormData) {
         impuesto: 0,
         total,
         estadoDocumento: "CONFIRMADA",
-        condicionPago: "CONTADO",
+        condicionPago: datos.condicionPago,
         observaciones: datos.observaciones ?? null,
       },
     });
+    ventaId = venta.id;
 
     for (const linea of datos.lineas) {
       const subtotalLinea =
@@ -208,7 +248,17 @@ export async function accionConfirmarVenta(formData: FormData) {
       });
     }
 
-    if (apertura) {
+    if (esCredito) {
+      await tx.cuentaPorCobrar.create({
+        data: {
+          ventaId: venta.id,
+          clienteId: clienteId,
+          total,
+          saldo: total,
+          estado: "PENDIENTE",
+        },
+      });
+    } else if (apertura) {
       await tx.movimientoCaja.create({
         data: {
           aperturaCajaId: apertura.id,
@@ -221,10 +271,102 @@ export async function accionConfirmarVenta(formData: FormData) {
         },
       });
     }
+
+    if (cotizacionId) {
+      await tx.cotizacion.update({
+        where: { id: cotizacionId },
+        data: {
+          estado: "CONVERTIDA",
+          ventaId: venta.id,
+          atendidaPorId: sesion.id,
+          clienteId: clienteId ?? undefined,
+        },
+      });
+    }
+
+    if (apartadoId) {
+      await tx.apartado.update({
+        where: { id: apartadoId },
+        data: {
+          estado: "CONVERTIDO",
+          ventaId: venta.id,
+          clienteId: clienteId ?? undefined,
+        },
+      });
+    }
   });
 
   revalidatePath("/panel/ventas");
   revalidatePath("/panel/inventario");
   revalidatePath("/panel/caja");
-  redirect("/panel/ventas");
+  revalidatePath("/panel/cuentas-por-cobrar");
+  redirect(`/panel/ventas/${ventaId}`);
+}
+
+export async function accionAnularVenta(formData: FormData) {
+  const sesion = await requerirPermiso(
+    CODIGOS_PERMISO.VENTAS_CREAR,
+    "/panel/ventas",
+  );
+
+  const id = String(formData.get("id") ?? "");
+  if (!id) redirect("/panel/ventas?error=datos");
+
+  const venta = await prisma.venta.findUnique({
+    where: { id },
+    include: { detalles: true, cuentaPorCobrar: true },
+  });
+  if (!venta || venta.estadoDocumento !== "CONFIRMADA") {
+    redirect("/panel/ventas?error=anular");
+  }
+
+  const almacen = await obtenerAlmacenPrincipal();
+  if (!almacen) redirect("/panel/ventas?error=almacen");
+
+  await prisma.$transaction(async (tx) => {
+    await tx.venta.update({
+      where: { id },
+      data: { estadoDocumento: "ANULADA" },
+    });
+
+    for (const linea of venta.detalles) {
+      await tx.movimientoInventario.create({
+        data: {
+          productoId: linea.productoId,
+          almacenId: almacen.id,
+          tipo: "ANULACION_VENTA",
+          cantidad: linea.cantidad,
+          referencia: venta.numero,
+          observaciones: `Anulación venta ${venta.numero}`,
+          usuarioId: sesion.id,
+        },
+      });
+    }
+
+    await registrarAnulacionVentaEnCaja(tx, {
+      aperturaCajaId: venta.aperturaCajaId,
+      usuarioId: sesion.id,
+      numeroVenta: venta.numero,
+      monto: Number(venta.total),
+    });
+
+    if (venta.cuentaPorCobrar && venta.cuentaPorCobrar.estado !== "ANULADA") {
+      await tx.cuentaPorCobrar.update({
+        where: { id: venta.cuentaPorCobrar.id },
+        data: { estado: "ANULADA", saldo: 0 },
+      });
+    }
+
+    await tx.cotizacion.updateMany({
+      where: { ventaId: id },
+      data: { estado: "ANULADA" },
+    });
+  });
+
+  revalidatePath("/panel/ventas");
+  revalidatePath(`/panel/ventas/${id}`);
+  revalidatePath("/panel/inventario");
+  revalidatePath("/panel/caja");
+  revalidatePath("/panel/cuentas-por-cobrar");
+  redirect(`/panel/ventas/${id}?ok=anulada`);
 }

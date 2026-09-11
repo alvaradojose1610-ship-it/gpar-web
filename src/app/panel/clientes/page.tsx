@@ -2,16 +2,16 @@ import Link from "next/link";
 
 import { PaginaPlaceholderPanel } from "@/componentes/panel/PaginaPlaceholderPanel";
 import { prisma } from "@/lib/prisma";
-import { requerirSesion } from "@/modulos/autenticacion/servicio-sesion";
+import { CODIGOS_PERMISO } from "@/configuracion/permisos";
+import { requerirPermiso } from "@/modulos/autenticacion/servicio-sesion";
 
 export const dynamic = "force-dynamic";
 
 export default async function PaginaPanelClientes() {
-  await requerirSesion();
+  await requerirPermiso(CODIGOS_PERMISO.CLIENTES_VER, "/panel/clientes");
 
   const clientes = await prisma.cliente.findMany({
-    where: { estado: "ACTIVO" },
-    orderBy: { nombre: "asc" },
+    orderBy: [{ estado: "asc" }, { nombre: "asc" }],
     take: 200,
   });
 
@@ -42,6 +42,8 @@ export default async function PaginaPanelClientes() {
                 <th className="px-3 py-2 font-semibold">Empresa</th>
                 <th className="px-3 py-2 font-semibold">Teléfono</th>
                 <th className="px-3 py-2 font-semibold">Correo</th>
+                <th className="px-3 py-2 font-semibold">Estado</th>
+                <th className="px-3 py-2 font-semibold"> </th>
               </tr>
             </thead>
             <tbody>
@@ -61,6 +63,15 @@ export default async function PaginaPanelClientes() {
                   </td>
                   <td className="px-3 py-2 text-[#5C6675]">
                     {c.correo || "—"}
+                  </td>
+                  <td className="px-3 py-2 text-[#5C6675]">{c.estado}</td>
+                  <td className="px-3 py-2 text-right">
+                    <Link
+                      href={`/panel/clientes/${c.id}/editar`}
+                      className="text-sm font-semibold text-[#D96A00] hover:underline"
+                    >
+                      Editar
+                    </Link>
                   </td>
                 </tr>
               ))}

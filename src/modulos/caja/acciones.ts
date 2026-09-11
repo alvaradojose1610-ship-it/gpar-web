@@ -5,7 +5,8 @@ import { redirect } from "next/navigation";
 import { z } from "zod";
 
 import { prisma } from "@/lib/prisma";
-import { requerirSesion } from "@/modulos/autenticacion/servicio-sesion";
+import { CODIGOS_PERMISO } from "@/configuracion/permisos";
+import { requerirPermiso } from "@/modulos/autenticacion/servicio-sesion";
 import { obtenerOCrearCajaPrincipal } from "@/modulos/caja/servicio-caja";
 
 const esquemaAbrir = z.object({
@@ -13,7 +14,7 @@ const esquemaAbrir = z.object({
 });
 
 export async function accionAbrirCaja(formData: FormData) {
-  const sesion = await requerirSesion();
+  const sesion = await requerirPermiso(CODIGOS_PERMISO.CAJA_EDITAR);
 
   const yaAbierta = await prisma.aperturaCaja.findFirst({
     where: { estado: "ABIERTA" },
@@ -32,7 +33,7 @@ export async function accionAbrirCaja(formData: FormData) {
   const caja = await obtenerOCrearCajaPrincipal();
 
   await prisma.$transaction(async (tx) => {
-    const apertura = await tx.aperturaCaja.create({
+    const aperturaNueva = await tx.aperturaCaja.create({
       data: {
         cajaId: caja.id,
         usuarioAperturaId: sesion.id,
@@ -43,7 +44,7 @@ export async function accionAbrirCaja(formData: FormData) {
 
     await tx.movimientoCaja.create({
       data: {
-        aperturaCajaId: apertura.id,
+        aperturaCajaId: aperturaNueva.id,
         usuarioId: sesion.id,
         tipo: "APERTURA",
         metodoPago: "EFECTIVO",
@@ -55,7 +56,7 @@ export async function accionAbrirCaja(formData: FormData) {
 
   revalidatePath("/panel/caja");
   revalidatePath("/panel/ventas");
-  redirect("/panel/caja");
+  redirect("/panel/caja?ok=abierta");
 }
 
 const esquemaCerrar = z.object({
@@ -64,7 +65,7 @@ const esquemaCerrar = z.object({
 });
 
 export async function accionCerrarCaja(formData: FormData) {
-  const sesion = await requerirSesion();
+  const sesion = await requerirPermiso(CODIGOS_PERMISO.CAJA_EDITAR);
 
   const apertura = await prisma.aperturaCaja.findFirst({
     where: { estado: "ABIERTA" },
@@ -107,5 +108,5 @@ export async function accionCerrarCaja(formData: FormData) {
 
   revalidatePath("/panel/caja");
   revalidatePath("/panel/ventas");
-  redirect("/panel/caja");
+  redirect("/panel/caja?ok=cerrada");
 }

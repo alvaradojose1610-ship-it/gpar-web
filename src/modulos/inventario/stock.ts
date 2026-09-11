@@ -88,3 +88,57 @@ export async function obtenerMapaStock(
 export async function obtenerAlmacenPrincipal() {
   return prisma.almacen.findUnique({ where: { codigo: "PRINCIPAL" } });
 }
+
+/** Cantidades reservadas por apartados activos no vencidos. */
+export async function obtenerMapaReservado(
+  productoIds: string[],
+  opciones?: { excluirApartadoId?: string },
+): Promise<Map<string, number>> {
+  const mapa = new Map<string, number>();
+  if (productoIds.length === 0) return mapa;
+  for (const id of productoIds) mapa.set(id, 0);
+
+  const ahora = new Date();
+  const filas = await prisma.detalleApartado.groupBy({
+    by: ["productoId"],
+    where: {
+      productoId: { in: productoIds },
+      apartado: {
+        estado: "ACTIVO",
+        vencimientoEn: { gt: ahora },
+        ...(opciones?.excluirApartadoId
+          ? { id: { not: opciones.excluirApartadoId } }
+          : {}),
+      },
+    },
+    _sum: { cantidad: true },
+  });
+
+  for (const fila of filas) {
+    mapa.set(fila.productoId, Number(fila._sum.cantidad ?? 0));
+  }
+  return mapa;
+}
+
+/** Stock físico menos reservas de apartados activos. */
+export async function obtenerMapaStockDisponible(
+  productoIds: string[],
+  opciones?: { excluirApartadoId?: string },
+): Promise<Map<string, number>> {
+  const [stock, reservado] = await Promise.all([
+    obtenerMapaStock(productoIds),
+    obtenerMapaReservado(productoIds, opciones),
+  ]);
+  const mapa = new Map<string, number>();
+  for (const id of productoIds) {
+    mapa.set(id, (stock.get(id) ?? 0) - (reservado.get(id) ?? 0));
+  }
+  return mapa;
+}
+
+export async function obtenerStockDisponible(
+  productoId: string,
+): Promise<number> {
+  const mapa = await obtenerMapaStockDisponible([productoId]);
+  return mapa.get(productoId) ?? 0;
+}

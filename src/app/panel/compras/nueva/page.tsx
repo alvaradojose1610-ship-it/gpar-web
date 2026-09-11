@@ -3,7 +3,8 @@ import Link from "next/link";
 import { FormularioNuevaCompra } from "@/componentes/panel/FormularioNuevaCompra";
 import { PaginaPlaceholderPanel } from "@/componentes/panel/PaginaPlaceholderPanel";
 import { prisma } from "@/lib/prisma";
-import { requerirSesion } from "@/modulos/autenticacion/servicio-sesion";
+import { CODIGOS_PERMISO } from "@/configuracion/permisos";
+import { requerirPermiso } from "@/modulos/autenticacion/servicio-sesion";
 
 export const dynamic = "force-dynamic";
 
@@ -20,7 +21,7 @@ const mensajesError: Record<string, string> = {
 };
 
 export default async function PaginaNuevaCompra({ searchParams }: Props) {
-  await requerirSesion();
+  await requerirPermiso(CODIGOS_PERMISO.COMPRAS_EDITAR, "/panel/compras");
   const params = await searchParams;
 
   const proveedores = await prisma.proveedor.findMany({

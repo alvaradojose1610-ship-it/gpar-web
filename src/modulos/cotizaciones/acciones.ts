@@ -1,11 +1,13 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import { redirect } from "next/navigation";
 import { z } from "zod";
 
 import { siguienteNumeroDocumento } from "@/lib/contador-documento";
 import { prisma } from "@/lib/prisma";
-import { requerirSesion } from "@/modulos/autenticacion/servicio-sesion";
+import { CODIGOS_PERMISO } from "@/configuracion/permisos";
+import { requerirPermiso } from "@/modulos/autenticacion/servicio-sesion";
 
 const esquemaItem = z.object({
   codigo: z.string().trim().min(1).max(64),
@@ -125,7 +127,10 @@ const estadosPermitidos = [
 ] as const;
 
 export async function accionActualizarEstadoCotizacion(formData: FormData) {
-  const sesion = await requerirSesion("/panel/cotizaciones");
+  const sesion = await requerirPermiso(
+    CODIGOS_PERMISO.COTIZACIONES_EDITAR,
+    "/panel/cotizaciones",
+  );
   const id = String(formData.get("id") ?? "");
   const estado = String(formData.get("estado") ?? "");
 
@@ -146,4 +151,35 @@ export async function accionActualizarEstadoCotizacion(formData: FormData) {
 
   revalidatePath("/panel/cotizaciones");
   revalidatePath(`/panel/cotizaciones/${id}`);
+}
+
+/** Marca la cotización como en conversión y abre el POS prellenado. */
+export async function accionConvertirCotizacionAVenta(formData: FormData) {
+  const sesion = await requerirPermiso(
+    CODIGOS_PERMISO.COTIZACIONES_EDITAR,
+    "/panel/cotizaciones",
+  );
+
+  const id = String(formData.get("id") ?? "");
+  if (!id) redirect("/panel/cotizaciones?error=datos");
+
+  const cotizacion = await prisma.cotizacion.findUnique({
+    where: { id },
+    select: { id: true, estado: true, ventaId: true },
+  });
+  if (!cotizacion) redirect("/panel/cotizaciones?error=datos");
+  if (cotizacion.ventaId || cotizacion.estado === "CONVERTIDA") {
+    redirect(`/panel/cotizaciones/${id}?error=ya-convertida`);
+  }
+  if (cotizacion.estado === "ANULADA" || cotizacion.estado === "RECHAZADA") {
+    redirect(`/panel/cotizaciones/${id}?error=estado`);
+  }
+
+  await prisma.cotizacion.update({
+    where: { id },
+    data: { atendidaPorId: sesion.id },
+  });
+
+  revalidatePath(`/panel/cotizaciones/${id}`);
+  redirect(`/panel/ventas/nueva?cotizacionId=${id}`);
 }

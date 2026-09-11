@@ -4,11 +4,12 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
 
-import { navegacionPanel } from "@/configuracion/navegacion-panel";
+import type { ItemNavegacionPanel } from "@/configuracion/navegacion-panel";
 import { accionCerrarSesion } from "@/modulos/autenticacion/acciones";
 
 type Props = {
   nombreUsuario: string;
+  itemsNav: ItemNavegacionPanel[];
   children: React.ReactNode;
 };
 
@@ -17,7 +18,7 @@ function enlaceActivo(pathname: string, href: string, exacto?: boolean) {
   return pathname === href || pathname.startsWith(`${href}/`);
 }
 
-export function ShellPanel({ nombreUsuario, children }: Props) {
+export function ShellPanel({ nombreUsuario, itemsNav, children }: Props) {
   const pathname = usePathname();
   const [abierto, setAbierto] = useState(false);
 
@@ -50,11 +51,11 @@ export function ShellPanel({ nombreUsuario, children }: Props) {
 
         <nav className="flex-1 overflow-y-auto px-2 py-3" aria-label="Panel">
           <ul className="space-y-1">
-            {navegacionPanel.map((item) => {
+            {itemsNav.map((item) => {
               const activo = enlaceActivo(
                 pathname,
                 item.href,
-                "exacto" in item ? item.exacto : false,
+                item.exacto ?? false,
               );
               return (
                 <li key={item.href}>

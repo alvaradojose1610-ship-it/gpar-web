@@ -8,6 +8,7 @@ import {
   useMemo,
   useRef,
   useState,
+  useSyncExternalStore,
   type FormEvent,
 } from "react";
 
@@ -53,6 +54,114 @@ function leerFiltrosGuardados(): Filtros {
   }
 }
 
+let cacheFiltros: Filtros | null = null;
+const listenersFiltros = new Set<() => void>();
+
+function getFiltrosSnapshot(): Filtros {
+  if (cacheFiltros === null) cacheFiltros = leerFiltrosGuardados();
+  return cacheFiltros;
+}
+
+function getFiltrosServerSnapshot(): Filtros {
+  return FILTROS_VACIOS;
+}
+
+function subscribeFiltros(onStoreChange: () => void) {
+  listenersFiltros.add(onStoreChange);
+  return () => listenersFiltros.delete(onStoreChange);
+}
+
+function escribirFiltros(siguiente: Filtros) {
+  cacheFiltros = siguiente;
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(siguiente));
+  listenersFiltros.forEach((l) => l());
+}
+
+function PanelFiltro({
+  valorInicial,
+  onAplicar,
+  onCerrar,
+  etiqueta,
+  opciones,
+}: {
+  valorInicial: string;
+  onAplicar: (valor: string) => void;
+  onCerrar: () => void;
+  etiqueta: string;
+  opciones?: { valor: string; etiqueta: string }[];
+}) {
+  const [borrador, setBorrador] = useState(valorInicial);
+  const panelRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    function onDoc(e: MouseEvent) {
+      if (!panelRef.current?.contains(e.target as Node)) onCerrar();
+    }
+    function onEsc(e: KeyboardEvent) {
+      if (e.key === "Escape") onCerrar();
+    }
+    document.addEventListener("mousedown", onDoc);
+    document.addEventListener("keydown", onEsc);
+    return () => {
+      document.removeEventListener("mousedown", onDoc);
+      document.removeEventListener("keydown", onEsc);
+    };
+  }, [onCerrar]);
+
+  function enviar(e: FormEvent) {
+    e.preventDefault();
+    onAplicar(borrador.trim());
+  }
+
+  return (
+    <div
+      ref={panelRef}
+      className="absolute left-0 top-full z-30 mt-1 w-52 border border-[#E4E7EC] bg-white p-2 shadow-[0_8px_24px_rgba(29,36,48,0.12)]"
+    >
+      <form onSubmit={enviar} className="flex flex-col gap-2">
+        {opciones ? (
+          <select
+            value={borrador}
+            onChange={(e) => setBorrador(e.target.value)}
+            className="min-h-9 border border-[#E4E7EC] bg-[#F7F8FA] px-2 text-xs text-[#1D2430]"
+            autoFocus
+          >
+            <option value="">Todos</option>
+            {opciones.map((o) => (
+              <option key={o.valor} value={o.valor}>
+                {o.etiqueta}
+              </option>
+            ))}
+          </select>
+        ) : (
+          <input
+            value={borrador}
+            onChange={(e) => setBorrador(e.target.value)}
+            placeholder={`Filtrar ${etiqueta.toLowerCase()}…`}
+            className="min-h-9 border border-[#E4E7EC] bg-[#F7F8FA] px-2 text-xs text-[#1D2430]"
+            autoFocus
+          />
+        )}
+        <div className="flex gap-1.5">
+          <button
+            type="submit"
+            className="min-h-8 flex-1 bg-[#F57C00] px-2 text-[11px] font-bold text-[#1D2430]"
+          >
+            Guardar
+          </button>
+          <button
+            type="button"
+            className="min-h-8 px-2 text-[11px] font-semibold text-[#5C6675] hover:text-[#1D2430]"
+            onClick={() => onAplicar("")}
+          >
+            Limpiar
+          </button>
+        </div>
+      </form>
+    </div>
+  );
+}
+
 function CabeceraConLapiz({
   etiqueta,
   columna,
@@ -74,34 +183,6 @@ function CabeceraConLapiz({
   onCerrar: () => void;
   opciones?: { valor: string; etiqueta: string }[];
 }) {
-  const [borrador, setBorrador] = useState(valor);
-  const panelRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    if (abierto) setBorrador(valor);
-  }, [abierto, valor]);
-
-  useEffect(() => {
-    if (!abierto) return;
-    function onDoc(e: MouseEvent) {
-      if (!panelRef.current?.contains(e.target as Node)) onCerrar();
-    }
-    function onEsc(e: KeyboardEvent) {
-      if (e.key === "Escape") onCerrar();
-    }
-    document.addEventListener("mousedown", onDoc);
-    document.addEventListener("keydown", onEsc);
-    return () => {
-      document.removeEventListener("mousedown", onDoc);
-      document.removeEventListener("keydown", onEsc);
-    };
-  }, [abierto, onCerrar]);
-
-  function enviar(e: FormEvent) {
-    e.preventDefault();
-    onAplicar(borrador.trim());
-  }
-
   return (
     <th className="relative px-3 py-2 font-semibold">
       <div className="flex items-center gap-1">
@@ -121,53 +202,15 @@ function CabeceraConLapiz({
         </button>
       </div>
       {abierto ? (
-        <div
-          ref={panelRef}
-          className="absolute left-0 top-full z-30 mt-1 w-52 border border-[#E4E7EC] bg-white p-2 shadow-[0_8px_24px_rgba(29,36,48,0.12)]"
-        >
-          <form onSubmit={enviar} className="flex flex-col gap-2">
-            {opciones ? (
-              <select
-                value={borrador}
-                onChange={(e) => setBorrador(e.target.value)}
-                className="min-h-9 border border-[#E4E7EC] bg-[#F7F8FA] px-2 text-xs text-[#1D2430]"
-                autoFocus
-              >
-                <option value="">Todos</option>
-                {opciones.map((o) => (
-                  <option key={o.valor} value={o.valor}>
-                    {o.etiqueta}
-                  </option>
-                ))}
-              </select>
-            ) : (
-              <input
-                value={borrador}
-                onChange={(e) => setBorrador(e.target.value)}
-                placeholder={`Filtrar ${etiqueta.toLowerCase()}…`}
-                className="min-h-9 border border-[#E4E7EC] bg-[#F7F8FA] px-2 text-xs text-[#1D2430]"
-                autoFocus
-              />
-            )}
-            <div className="flex gap-1.5">
-              <button
-                type="submit"
-                className="min-h-8 flex-1 bg-[#F57C00] px-2 text-[11px] font-bold text-[#1D2430]"
-              >
-                Guardar
-              </button>
-              <button
-                type="button"
-                className="min-h-8 px-2 text-[11px] font-semibold text-[#5C6675] hover:text-[#1D2430]"
-                onClick={() => onAplicar("")}
-              >
-                Limpiar
-              </button>
-            </div>
-          </form>
-        </div>
+        <PanelFiltro
+          key={`${columna}-${valor}`}
+          valorInicial={valor}
+          onAplicar={onAplicar}
+          onCerrar={onCerrar}
+          etiqueta={etiqueta}
+          opciones={opciones}
+        />
       ) : null}
-      {/* columna id used for a11y / future */}
       <span className="sr-only">{columna}</span>
     </th>
   );
@@ -178,18 +221,15 @@ export function TablaProductosFiltrable({
 }: {
   productos: FilaProducto[];
 }) {
-  const [filtros, setFiltros] = useState<Filtros>(FILTROS_VACIOS);
-  const [listo, setListo] = useState(false);
+  const filtros = useSyncExternalStore(
+    subscribeFiltros,
+    getFiltrosSnapshot,
+    getFiltrosServerSnapshot,
+  );
   const [abierto, setAbierto] = useState<ColumnaFiltro | null>(null);
 
-  useEffect(() => {
-    setFiltros(leerFiltrosGuardados());
-    setListo(true);
-  }, []);
-
   function guardarFiltros(siguiente: Filtros) {
-    setFiltros(siguiente);
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(siguiente));
+    escribirFiltros(siguiente);
     setAbierto(null);
   }
 
@@ -228,8 +268,7 @@ export function TablaProductosFiltrable({
     <div className="space-y-3">
       <div className="flex flex-wrap items-center justify-between gap-2 text-xs text-[#5C6675]">
         <p>
-          {listo ? filtrados.length : productos.length} de {productos.length}{" "}
-          visibles
+          {filtrados.length} de {productos.length} visibles
           {hayFiltros ? " · filtros activos" : null}
         </p>
         {hayFiltros ? (

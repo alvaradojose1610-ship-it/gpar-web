@@ -1,30 +1,29 @@
-"use client";
-
-import { FormEvent, useState } from "react";
 import { Search } from "lucide-react";
+
 import { cn } from "@/utilidades/cn";
 
 type BuscadorCatalogoProps = {
   className?: string;
   id?: string;
   variante?: "claro" | "hero";
+  valorInicial?: string;
 };
 
 export function BuscadorCatalogo({
   className,
   id = "busqueda-catalogo",
   variante = "claro",
+  valorInicial = "",
 }: BuscadorCatalogoProps) {
-  const [mensaje, setMensaje] = useState<string | null>(null);
   const esHero = variante === "hero";
 
-  function manejarEnvio(evento: FormEvent<HTMLFormElement>) {
-    evento.preventDefault();
-    setMensaje("El catálogo completo estará disponible próximamente.");
-  }
-
   return (
-    <form onSubmit={manejarEnvio} className={cn("w-full", className)} role="search">
+    <form
+      action="/buscar"
+      method="get"
+      className={cn("w-full", className)}
+      role="search"
+    >
       <label htmlFor={id} className="sr-only">
         Buscar por código, producto, marca o descripción
       </label>
@@ -46,8 +45,9 @@ export function BuscadorCatalogo({
           />
           <input
             id={id}
-            name="busqueda"
+            name="q"
             type="search"
+            defaultValue={valorInicial}
             placeholder="Buscar por código, producto, marca o descripción"
             className="w-full bg-transparent py-3.5 text-sm text-acero placeholder:text-acero/45 focus:outline-none sm:py-4 sm:text-[0.95rem]"
             autoComplete="off"
@@ -60,17 +60,6 @@ export function BuscadorCatalogo({
           Buscar
         </button>
       </div>
-      {mensaje ? (
-        <p
-          role="status"
-          className={cn(
-            "mt-2 text-xs sm:text-sm",
-            esHero ? "text-blanco/70" : "text-acero/65",
-          )}
-        >
-          {mensaje}
-        </p>
-      ) : null}
     </form>
   );
 }

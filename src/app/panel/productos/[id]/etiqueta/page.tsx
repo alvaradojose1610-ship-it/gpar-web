@@ -6,7 +6,8 @@ import QRCode from "qrcode";
 import { BotonImprimir } from "@/componentes/panel/BotonImprimir";
 import { empresa } from "@/configuracion/empresa";
 import { prisma } from "@/lib/prisma";
-import { requerirSesion } from "@/modulos/autenticacion/servicio-sesion";
+import { CODIGOS_PERMISO } from "@/configuracion/permisos";
+import { requerirPermiso } from "@/modulos/autenticacion/servicio-sesion";
 
 export const dynamic = "force-dynamic";
 
@@ -21,7 +22,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 }
 
 export default async function PaginaEtiquetaProducto({ params }: Props) {
-  await requerirSesion();
+  await requerirPermiso(CODIGOS_PERMISO.PRODUCTOS_VER, "/panel/productos");
   const { id } = await params;
 
   const producto = await prisma.producto.findUnique({

@@ -73,9 +73,12 @@ async function comprimirVariantes(buffer: Buffer) {
 /** Sube `imagen` del FormData a Vercel Blob (WebP + thumb). Sin archivo → null. */
 export async function guardarImagenProducto(
   formData: FormData,
-  productoId?: string,
+  entidadId?: string,
+  opciones?: { carpeta?: "productos" | "categorias"; campo?: string },
 ): Promise<ImagenProductoSubida | null> {
-  const archivo = formData.get("imagen");
+  const campo = opciones?.campo ?? "imagen";
+  const carpeta = opciones?.carpeta ?? "productos";
+  const archivo = formData.get(campo);
   if (!(archivo instanceof File) || archivo.size === 0) return null;
 
   const extension = extensionDe(archivo);
@@ -106,9 +109,9 @@ export async function guardarImagenProducto(
   const { principal, thumb } = await comprimirVariantes(buffer);
 
   const id = randomUUID();
-  const prefijo = productoId
-    ? `gpar/productos/${productoId}`
-    : `gpar/productos`;
+  const prefijo = entidadId
+    ? `gpar/${carpeta}/${entidadId}`
+    : `gpar/${carpeta}`;
   const keyPrincipal = `${prefijo}/${id}.webp`;
   const keyThumb = `${prefijo}/${id}-thumb.webp`;
 

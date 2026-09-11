@@ -112,6 +112,7 @@ export async function listarCategoriasBd(
       nombre: true,
       descripcion: true,
       publicada: true,
+      imagenUrl: true,
     },
     orderBy: [{ orden: "asc" }, { nombre: "asc" }],
   });
@@ -122,7 +123,7 @@ export async function listarCategoriasBd(
     nombre: c.nombre,
     descripcion: c.descripcion ?? "",
     publicada: c.publicada,
-    imagen: imagenCategoria(c.codigo),
+    imagen: c.imagenUrl ?? imagenCategoria(c.codigo),
   }));
 }
 

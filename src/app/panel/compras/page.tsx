@@ -2,12 +2,13 @@ import Link from "next/link";
 
 import { PaginaPlaceholderPanel } from "@/componentes/panel/PaginaPlaceholderPanel";
 import { prisma } from "@/lib/prisma";
-import { requerirSesion } from "@/modulos/autenticacion/servicio-sesion";
+import { CODIGOS_PERMISO } from "@/configuracion/permisos";
+import { requerirPermiso } from "@/modulos/autenticacion/servicio-sesion";
 
 export const dynamic = "force-dynamic";
 
 export default async function PaginaPanelCompras() {
-  await requerirSesion();
+  await requerirPermiso(CODIGOS_PERMISO.COMPRAS_VER, "/panel/compras");
 
   const compras = await prisma.compra.findMany({
     orderBy: { creadoEn: "desc" },
@@ -48,6 +49,7 @@ export default async function PaginaPanelCompras() {
                 <th className="px-3 py-2 font-semibold">Total</th>
                 <th className="px-3 py-2 font-semibold">Estado</th>
                 <th className="px-3 py-2 font-semibold">Fecha</th>
+                <th className="px-3 py-2 font-semibold"> </th>
               </tr>
             </thead>
             <tbody>
@@ -73,6 +75,14 @@ export default async function PaginaPanelCompras() {
                   </td>
                   <td className="px-3 py-2 text-xs text-[#8A94A2]">
                     {c.fecha.toLocaleString("es-VE")}
+                  </td>
+                  <td className="px-3 py-2 text-right">
+                    <Link
+                      href={`/panel/compras/${c.id}`}
+                      className="text-sm font-semibold text-[#D96A00] hover:underline"
+                    >
+                      Ver
+                    </Link>
                   </td>
                 </tr>
               ))}

@@ -23,15 +23,29 @@ type Linea = {
 
 type Props = {
   tieneCajaAbierta: boolean;
+  cotizacionId?: string;
+  apartadoId?: string;
+  nombreClienteInicial?: string;
+  lineasIniciales?: Linea[];
 };
 
-export function FormularioPos({ tieneCajaAbierta }: Props) {
+export function FormularioPos({
+  tieneCajaAbierta,
+  cotizacionId,
+  apartadoId,
+  nombreClienteInicial = "",
+  lineasIniciales = [],
+}: Props) {
   const [codigo, setCodigo] = useState("");
   const [cantidad, setCantidad] = useState("1");
   const [precio, setPrecio] = useState("");
   const [producto, setProducto] = useState<ProductoPos | null>(null);
-  const [lineas, setLineas] = useState<Linea[]>([]);
-  const [mensaje, setMensaje] = useState<string | null>(null);
+  const [lineas, setLineas] = useState<Linea[]>(lineasIniciales);
+  const [mensaje, setMensaje] = useState<string | null>(
+    lineasIniciales.length > 0
+      ? `Cotización cargada: ${lineasIniciales.length} línea(s). Revisa stock y confirma.`
+      : null,
+  );
   const [pending, startTransition] = useTransition();
 
   function aplicarProductoHallado(hallado: ProductoPos) {
@@ -247,6 +261,12 @@ export function FormularioPos({ tieneCajaAbierta }: Props) {
       </div>
 
       <form action={accionConfirmarVenta} className="grid gap-4">
+        {cotizacionId ? (
+          <input type="hidden" name="cotizacionId" value={cotizacionId} />
+        ) : null}
+        {apartadoId ? (
+          <input type="hidden" name="apartadoId" value={apartadoId} />
+        ) : null}
         <label className="grid max-w-xl gap-1 text-sm">
           <span className="font-semibold text-[#1D2430]">
             Cliente (opcional)
@@ -254,8 +274,20 @@ export function FormularioPos({ tieneCajaAbierta }: Props) {
           <input
             name="nombreCliente"
             placeholder="Nombre"
+            defaultValue={nombreClienteInicial}
             className="border border-[#E4E7EC] bg-white px-3 py-2"
           />
+        </label>
+        <label className="grid max-w-xl gap-1 text-sm">
+          <span className="font-semibold text-[#1D2430]">Condición de pago</span>
+          <select
+            name="condicionPago"
+            defaultValue="CONTADO"
+            className="border border-[#E4E7EC] bg-white px-3 py-2"
+          >
+            <option value="CONTADO">Contado (ingresa a caja)</option>
+            <option value="CREDITO">Crédito (crea CxC, sin caja)</option>
+          </select>
         </label>
         <label className="grid max-w-xl gap-1 text-sm">
           <span className="font-semibold text-[#1D2430]">Observaciones</span>

@@ -5,7 +5,8 @@ import { CamposLineaCategoria } from "@/componentes/panel/CamposLineaCategoria";
 import { PaginaPlaceholderPanel } from "@/componentes/panel/PaginaPlaceholderPanel";
 import { prisma } from "@/lib/prisma";
 import { accionCrearProducto } from "@/modulos/productos/acciones";
-import { requerirSesion } from "@/modulos/autenticacion/servicio-sesion";
+import { CODIGOS_PERMISO } from "@/configuracion/permisos";
+import { requerirPermiso } from "@/modulos/autenticacion/servicio-sesion";
 
 export const dynamic = "force-dynamic";
 
@@ -14,7 +15,7 @@ type Props = {
 };
 
 export default async function PaginaNuevoProducto({ searchParams }: Props) {
-  await requerirSesion();
+  await requerirPermiso(CODIGOS_PERMISO.PRODUCTOS_EDITAR, "/panel/productos");
   const params = await searchParams;
   const categorias = await prisma.categoria.findMany({
     where: { estado: "ACTIVO" },

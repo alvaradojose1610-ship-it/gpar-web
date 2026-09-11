@@ -2,8 +2,11 @@ import Link from "next/link";
 
 import { FormularioPos } from "@/componentes/panel/FormularioPos";
 import { PaginaPlaceholderPanel } from "@/componentes/panel/PaginaPlaceholderPanel";
+import { CODIGOS_PERMISO } from "@/configuracion/permisos";
+import { prisma } from "@/lib/prisma";
+import { requerirPermiso } from "@/modulos/autenticacion/servicio-sesion";
 import { obtenerAperturaAbierta } from "@/modulos/caja/servicio-caja";
-import { requerirSesion } from "@/modulos/autenticacion/servicio-sesion";
+import { obtenerMapaStockDisponible } from "@/modulos/inventario/stock";
 
 export const dynamic = "force-dynamic";
 
@@ -12,11 +15,13 @@ type Props = {
     error?: string;
     codigo?: string;
     disp?: string;
+    cotizacionId?: string;
+    apartadoId?: string;
   }>;
 };
 
 export default async function PaginaNuevaVenta({ searchParams }: Props) {
-  await requerirSesion();
+  await requerirPermiso(CODIGOS_PERMISO.VENTAS_CREAR, "/panel/ventas");
   const params = await searchParams;
   const apertura = await obtenerAperturaAbierta();
 
@@ -31,6 +36,125 @@ export default async function PaginaNuevaVenta({ searchParams }: Props) {
     mensajeError = "No existe el almacén PRINCIPAL. Ejecuta el seed.";
   } else if (params.error === "producto") {
     mensajeError = "Algún producto no es válido.";
+  } else if (params.error === "cotizacion") {
+    mensajeError = "La cotización ya fue convertida o no es válida.";
+  } else if (params.error === "apartado") {
+    mensajeError = "El apartado no está activo o ya venció.";
+  }
+
+  let cotizacionId: string | undefined;
+  let apartadoId: string | undefined;
+  let nombreClienteInicial = "";
+  const lineasIniciales: Array<{
+    productoId: string;
+    codigo: string;
+    nombre: string;
+    cantidad: number;
+    precioUnitario: number;
+    stock: number;
+  }> = [];
+
+  if (params.cotizacionId) {
+    const cotizacion = await prisma.cotizacion.findUnique({
+      where: { id: params.cotizacionId },
+      include: {
+        detalles: {
+          include: {
+            producto: {
+              select: {
+                id: true,
+                codigo: true,
+                nombre: true,
+                precioVenta: true,
+                estado: true,
+              },
+            },
+          },
+        },
+      },
+    });
+
+    if (
+      cotizacion &&
+      !cotizacion.ventaId &&
+      cotizacion.estado !== "CONVERTIDA" &&
+      cotizacion.estado !== "ANULADA"
+    ) {
+      cotizacionId = cotizacion.id;
+      nombreClienteInicial = cotizacion.nombreContacto;
+
+      const productoIds = cotizacion.detalles
+        .map((d) => d.productoId ?? d.producto?.id)
+        .filter((id): id is string => Boolean(id));
+
+      const stockMap = await obtenerMapaStockDisponible(productoIds);
+
+      for (const d of cotizacion.detalles) {
+        const producto = d.producto;
+        if (!producto || producto.estado !== "ACTIVO") continue;
+        lineasIniciales.push({
+          productoId: producto.id,
+          codigo: producto.codigo,
+          nombre: producto.nombre,
+          cantidad: Number(d.cantidad),
+          precioUnitario: Number(
+            d.precioUnitario ?? producto.precioVenta ?? 0,
+          ),
+          stock: stockMap.get(producto.id) ?? 0,
+        });
+      }
+    }
+  }
+
+  if (params.apartadoId) {
+    const apartado = await prisma.apartado.findUnique({
+      where: { id: params.apartadoId },
+      include: {
+        detalles: {
+          include: {
+            producto: {
+              select: {
+                id: true,
+                codigo: true,
+                nombre: true,
+                precioVenta: true,
+                estado: true,
+              },
+            },
+          },
+        },
+      },
+    });
+
+    if (
+      apartado &&
+      apartado.estado === "ACTIVO" &&
+      !apartado.ventaId &&
+      apartado.vencimientoEn > new Date()
+    ) {
+      apartadoId = apartado.id;
+      nombreClienteInicial = apartado.nombreContacto;
+      const productoIds = apartado.detalles.map((d) => d.productoId);
+      // Incluir la propia reserva del apartado en el stock mostrado
+      const stockMap = await obtenerMapaStockDisponible(productoIds);
+      // Al convertir, esta línea del apartado deja de reservarse; sumamos su cantidad al disponible mostrado.
+      for (const d of apartado.detalles) {
+        const producto = d.producto;
+        if (!producto || producto.estado !== "ACTIVO") continue;
+        const disponible =
+          (stockMap.get(producto.id) ?? 0) + Number(d.cantidad);
+        lineasIniciales.push({
+          productoId: producto.id,
+          codigo: producto.codigo,
+          nombre: producto.nombre,
+          cantidad: Number(d.cantidad),
+          precioUnitario: Number(
+            d.precioUnitario ?? producto.precioVenta ?? 0,
+          ),
+          stock: disponible,
+        });
+      }
+    }
   }
 
   return (
@@ -59,7 +183,13 @@ export default async function PaginaNuevaVenta({ searchParams }: Props) {
         </p>
       ) : null}
 
-      <FormularioPos tieneCajaAbierta={Boolean(apertura)} />
+      <FormularioPos
+        tieneCajaAbierta={Boolean(apertura)}
+        cotizacionId={cotizacionId}
+        apartadoId={apartadoId}
+        nombreClienteInicial={nombreClienteInicial}
+        lineasIniciales={lineasIniciales}
+      />
     </PaginaPlaceholderPanel>
   );
 }

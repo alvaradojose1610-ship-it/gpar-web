@@ -4,9 +4,9 @@ import {
   createContext,
   useCallback,
   useContext,
-  useEffect,
   useMemo,
   useState,
+  useSyncExternalStore,
   type ReactNode,
 } from "react";
 import { productosCatalogo } from "@/datos/catalogo";
@@ -79,10 +79,37 @@ function leerStorage(): EstadoCotizacion {
   }
 }
 
-function productoVirtual(
-  codigo: string,
-  nombre: string,
-): ProductoCatalogo {
+const VACIO: EstadoCotizacion = {};
+let cacheEstado: EstadoCotizacion | null = null;
+const listeners = new Set<() => void>();
+
+function getSnapshot(): EstadoCotizacion {
+  if (cacheEstado === null) cacheEstado = leerStorage();
+  return cacheEstado;
+}
+
+function getServerSnapshot(): EstadoCotizacion {
+  return VACIO;
+}
+
+function subscribe(onStoreChange: () => void) {
+  listeners.add(onStoreChange);
+  return () => listeners.delete(onStoreChange);
+}
+
+function setEstadoStore(
+  siguiente:
+    | EstadoCotizacion
+    | ((prev: EstadoCotizacion) => EstadoCotizacion),
+) {
+  const prev = getSnapshot();
+  const next = typeof siguiente === "function" ? siguiente(prev) : siguiente;
+  cacheEstado = next;
+  window.localStorage.setItem(CLAVE_STORAGE, JSON.stringify(next));
+  listeners.forEach((l) => l());
+}
+
+function productoVirtual(codigo: string, nombre: string): ProductoCatalogo {
   const real = productosCatalogo.find((p) => p.codigo === codigo);
   if (real) return real;
   return {
@@ -121,19 +148,8 @@ function construirMensajeWhatsApp(items: ItemCotizacion[]): string {
 }
 
 export function ProveedorCotizacion({ children }: { children: ReactNode }) {
-  const [estado, setEstado] = useState<EstadoCotizacion>({});
-  const [hidratado, setHidratado] = useState(false);
+  const estado = useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot);
   const [drawerAbierto, setDrawerAbierto] = useState(false);
-
-  useEffect(() => {
-    setEstado(leerStorage());
-    setHidratado(true);
-  }, []);
-
-  useEffect(() => {
-    if (!hidratado) return;
-    window.localStorage.setItem(CLAVE_STORAGE, JSON.stringify(estado));
-  }, [estado, hidratado]);
 
   const items = useMemo(() => {
     const resultado: ItemCotizacion[] = [];
@@ -168,7 +184,7 @@ export function ProveedorCotizacion({ children }: { children: ReactNode }) {
     (codigo: string, cantidad = 1, nombre?: string) => {
       const cat = productosCatalogo.find((p) => p.codigo === codigo);
       const etiqueta = nombre || cat?.nombre || codigo;
-      setEstado((prev) => ({
+      setEstadoStore((prev) => ({
         ...prev,
         [codigo]: {
           cantidad:
@@ -181,7 +197,7 @@ export function ProveedorCotizacion({ children }: { children: ReactNode }) {
   );
 
   const quitar = useCallback((codigo: string) => {
-    setEstado((prev) => {
+    setEstadoStore((prev) => {
       const siguiente = { ...prev };
       delete siguiente[codigo];
       return siguiente;
@@ -190,7 +206,7 @@ export function ProveedorCotizacion({ children }: { children: ReactNode }) {
 
   const establecerCantidad = useCallback((codigo: string, cantidad: number) => {
     const n = Math.floor(cantidad);
-    setEstado((prev) => {
+    setEstadoStore((prev) => {
       if (n <= 0) {
         const siguiente = { ...prev };
         delete siguiente[codigo];

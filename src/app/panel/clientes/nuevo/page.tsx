@@ -2,7 +2,8 @@ import Link from "next/link";
 
 import { PaginaPlaceholderPanel } from "@/componentes/panel/PaginaPlaceholderPanel";
 import { accionCrearCliente } from "@/modulos/clientes/acciones";
-import { requerirSesion } from "@/modulos/autenticacion/servicio-sesion";
+import { CODIGOS_PERMISO } from "@/configuracion/permisos";
+import { requerirPermiso } from "@/modulos/autenticacion/servicio-sesion";
 
 export const dynamic = "force-dynamic";
 
@@ -11,7 +12,7 @@ type Props = {
 };
 
 export default async function PaginaNuevoCliente({ searchParams }: Props) {
-  await requerirSesion();
+  await requerirPermiso(CODIGOS_PERMISO.CLIENTES_EDITAR, "/panel/clientes");
   const params = await searchParams;
 
   return (

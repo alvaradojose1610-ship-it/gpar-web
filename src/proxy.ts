@@ -9,7 +9,7 @@ import { verificarJwtHs256 } from "@/lib/verificar-jwt-hs256";
  * Público: resto del sitio, /login, /p/*, /api/auth/*.
  * La autorización fina (permisos) se valida en servidor con la BD.
  */
-export async function middleware(request: NextRequest) {
+export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
   const esPanel = pathname === "/panel" || pathname.startsWith("/panel/");

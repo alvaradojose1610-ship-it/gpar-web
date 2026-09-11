@@ -2,7 +2,8 @@ import Link from "next/link";
 
 import { PaginaPlaceholderPanel } from "@/componentes/panel/PaginaPlaceholderPanel";
 import { accionCrearProveedor } from "@/modulos/proveedores/acciones";
-import { requerirSesion } from "@/modulos/autenticacion/servicio-sesion";
+import { CODIGOS_PERMISO } from "@/configuracion/permisos";
+import { requerirPermiso } from "@/modulos/autenticacion/servicio-sesion";
 
 export const dynamic = "force-dynamic";
 
@@ -11,7 +12,7 @@ type Props = {
 };
 
 export default async function PaginaNuevoProveedor({ searchParams }: Props) {
-  await requerirSesion();
+  await requerirPermiso(CODIGOS_PERMISO.PROVEEDORES_EDITAR, "/panel/proveedores");
   const params = await searchParams;
   const mensajeError =
     params.error === "datos" ? "Revisa los datos del formulario." : null;

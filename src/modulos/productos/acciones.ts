@@ -11,7 +11,8 @@ import {
   guardarImagenProducto,
 } from "@/lib/imagen-producto";
 import { prisma } from "@/lib/prisma";
-import { requerirSesion } from "@/modulos/autenticacion/servicio-sesion";
+import { CODIGOS_PERMISO } from "@/configuracion/permisos";
+import { requerirPermiso } from "@/modulos/autenticacion/servicio-sesion";
 
 const esquema = z.object({
   codigo: z.string().trim().min(2).max(64),
@@ -27,7 +28,7 @@ const esquema = z.object({
 });
 
 export async function accionCrearProducto(formData: FormData) {
-  await requerirSesion();
+  await requerirPermiso(CODIGOS_PERMISO.PRODUCTOS_EDITAR);
 
   const parsed = esquema.safeParse({
     codigo: formData.get("codigo"),
@@ -144,7 +145,7 @@ const esquemaEditar = z.object({
 });
 
 export async function accionActualizarProducto(formData: FormData) {
-  await requerirSesion();
+  await requerirPermiso(CODIGOS_PERMISO.PRODUCTOS_EDITAR);
 
   const parsed = esquemaEditar.safeParse({
     id: formData.get("id"),

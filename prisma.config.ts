@@ -1,5 +1,9 @@
 import { defineConfig } from "prisma/config";
 
+import { cargarEnvLocal } from "./prisma/cargar-env";
+
+cargarEnvLocal();
+
 /**
  * Configuración Prisma ORM 7+.
  * Las URLs ya no van en schema.prisma.

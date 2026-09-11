@@ -6,12 +6,14 @@ import {
   accionCerrarCaja,
 } from "@/modulos/caja/acciones";
 import { obtenerAperturaAbierta } from "@/modulos/caja/servicio-caja";
-import { requerirSesion } from "@/modulos/autenticacion/servicio-sesion";
+import { CODIGOS_PERMISO } from "@/configuracion/permisos";
+import { prisma } from "@/lib/prisma";
+import { requerirPermiso } from "@/modulos/autenticacion/servicio-sesion";
 
 export const dynamic = "force-dynamic";
 
 type Props = {
-  searchParams: Promise<{ error?: string }>;
+  searchParams: Promise<{ error?: string; ok?: string }>;
 };
 
 const mensajesError: Record<string, string> = {
@@ -20,14 +22,50 @@ const mensajesError: Record<string, string> = {
   "sin-apertura": "No hay caja abierta para cerrar.",
 };
 
+const mensajesOk: Record<string, string> = {
+  abierta: "Caja abierta correctamente.",
+  cerrada: "Caja cerrada correctamente.",
+};
+
+const INGRESOS = new Set([
+  "APERTURA",
+  "VENTA",
+  "COBRO_CUENTA",
+  "INGRESO_MANUAL",
+]);
+const EGRESOS = new Set([
+  "ANULACION_VENTA",
+  "PAGO_PROVEEDOR",
+  "EGRESO_MANUAL",
+]);
+
 export default async function PaginaPanelCaja({ searchParams }: Props) {
-  await requerirSesion();
+  await requerirPermiso(CODIGOS_PERMISO.CAJA_VER, "/panel/caja");
   const params = await searchParams;
   const apertura = await obtenerAperturaAbierta();
 
   const mensajeError = params.error
     ? (mensajesError[params.error] ?? "No se pudo completar la operación.")
     : null;
+  const mensajeOk = params.ok ? (mensajesOk[params.ok] ?? null) : null;
+
+  let totalIngresos = 0;
+  let totalEgresos = 0;
+  let esperado = 0;
+
+  if (apertura) {
+    const movimientos = await prisma.movimientoCaja.findMany({
+      where: { aperturaCajaId: apertura.id },
+      orderBy: { creadoEn: "desc" },
+    });
+    for (const m of movimientos) {
+      const monto = Number(m.monto);
+      if (INGRESOS.has(m.tipo)) totalIngresos += monto;
+      if (EGRESOS.has(m.tipo)) totalEgresos += monto;
+    }
+    // APERTURA ya viene en ingresos → esperado = ingresos − egresos
+    esperado = Math.round((totalIngresos - totalEgresos) * 100) / 100;
+  }
 
   return (
     <PaginaPlaceholderPanel
@@ -48,6 +86,11 @@ export default async function PaginaPanelCaja({ searchParams }: Props) {
           {mensajeError}
         </p>
       ) : null}
+      {mensajeOk ? (
+        <p className="mb-4 border border-emerald-200 bg-emerald-50 px-3 py-2 text-sm text-emerald-900">
+          {mensajeOk}
+        </p>
+      ) : null}
 
       {apertura ? (
         <div className="grid max-w-xl gap-4 border border-[#E4E7EC] bg-white p-4">
@@ -66,6 +109,19 @@ export default async function PaginaPanelCaja({ searchParams }: Props) {
             <p className="mt-1 text-sm text-[#1D2430]">
               Monto apertura: {Number(apertura.montoApertura).toFixed(2)} USD
             </p>
+            <div className="mt-3 grid gap-1 border-t border-[#E4E7EC] pt-3 text-sm">
+              <p>
+                <span className="text-[#5C6675]">Ingresos del turno: </span>
+                {totalIngresos.toFixed(2)} USD
+              </p>
+              <p>
+                <span className="text-[#5C6675]">Egresos del turno: </span>
+                {totalEgresos.toFixed(2)} USD
+              </p>
+              <p className="font-semibold text-[#1D2430]">
+                Esperado en caja: {esperado.toFixed(2)} USD
+              </p>
+            </div>
           </div>
 
           {apertura.movimientos.length > 0 ? (
@@ -76,7 +132,9 @@ export default async function PaginaPanelCaja({ searchParams }: Props) {
               <ul className="grid gap-1 text-sm text-[#5C6675]">
                 {apertura.movimientos.map((m) => (
                   <li key={m.id}>
-                    {m.tipo} · {Number(m.monto).toFixed(2)} ·{" "}
+                    {m.tipo}
+                    {m.referencia ? ` · ${m.referencia}` : ""} ·{" "}
+                    {Number(m.monto).toFixed(2)} ·{" "}
                     {m.creadoEn.toLocaleString("es-VE")}
                   </li>
                 ))}
@@ -84,16 +142,21 @@ export default async function PaginaPanelCaja({ searchParams }: Props) {
             </div>
           ) : null}
 
-          <form action={accionCerrarCaja} className="grid gap-3 border-t border-[#E4E7EC] pt-4">
+          <form
+            action={accionCerrarCaja}
+            className="grid gap-3 border-t border-[#E4E7EC] pt-4"
+          >
             <label className="grid gap-1 text-sm">
-              <span className="font-semibold text-[#1D2430]">Monto de cierre</span>
+              <span className="font-semibold text-[#1D2430]">
+                Monto de cierre
+              </span>
               <input
                 name="montoCierre"
                 type="number"
                 min="0"
                 step="0.01"
                 required
-                defaultValue={Number(apertura.montoApertura)}
+                defaultValue={esperado.toFixed(2)}
                 className="border border-[#E4E7EC] bg-[#F7F8FA] px-3 py-2"
               />
             </label>

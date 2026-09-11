@@ -2,8 +2,13 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 
 import { PaginaPlaceholderPanel } from "@/componentes/panel/PaginaPlaceholderPanel";
+import { CODIGOS_PERMISO } from "@/configuracion/permisos";
 import { prisma } from "@/lib/prisma";
-import { requerirSesion } from "@/modulos/autenticacion/servicio-sesion";
+import {
+  requerirPermiso,
+  tienePermiso,
+} from "@/modulos/autenticacion/servicio-sesion";
+import { accionRegistrarAjusteInventario } from "@/modulos/inventario/acciones";
 import {
   esEntradaInventario,
   obtenerStockProducto,
@@ -13,11 +18,20 @@ export const dynamic = "force-dynamic";
 
 type Props = {
   params: Promise<{ productoId: string }>;
+  searchParams: Promise<{ ok?: string; error?: string; disp?: string }>;
 };
 
-export default async function PaginaDetalleInventario({ params }: Props) {
-  await requerirSesion();
+export default async function PaginaDetalleInventario({
+  params,
+  searchParams,
+}: Props) {
+  const sesion = await requerirPermiso(
+    CODIGOS_PERMISO.INVENTARIO_VER,
+    "/panel/inventario",
+  );
   const { productoId } = await params;
+  const q = await searchParams;
+  const puedeAjustar = tienePermiso(sesion, CODIGOS_PERMISO.INVENTARIO_EDITAR);
 
   const producto = await prisma.producto.findUnique({
     where: { id: productoId },
@@ -71,6 +85,70 @@ export default async function PaginaDetalleInventario({ params }: Props) {
           ← Inventario
         </Link>
       </p>
+
+      {q.ok === "ajuste" ? (
+        <p className="mb-4 border border-emerald-200 bg-emerald-50 px-3 py-2 text-sm text-emerald-900">
+          Ajuste registrado.
+        </p>
+      ) : null}
+      {q.error === "stock" ? (
+        <p className="mb-4 border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-800">
+          Stock insuficiente{q.disp != null ? ` (disponible: ${q.disp})` : ""}.
+        </p>
+      ) : null}
+      {q.error === "datos" ? (
+        <p className="mb-4 border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-800">
+          Revisa cantidad y tipo de ajuste.
+        </p>
+      ) : null}
+
+      {puedeAjustar ? (
+        <form
+          action={accionRegistrarAjusteInventario}
+          className="mb-8 grid max-w-xl gap-3 border border-[#E4E7EC] bg-white p-4"
+        >
+          <h2 className="text-sm font-semibold uppercase tracking-[0.08em] text-[#5C6675]">
+            Ajuste de inventario
+          </h2>
+          <input type="hidden" name="productoId" value={producto.id} />
+          <label className="grid gap-1 text-sm">
+            <span className="font-semibold">Tipo</span>
+            <select
+              name="tipo"
+              className="border border-[#E4E7EC] bg-[#F7F8FA] px-3 py-2"
+              defaultValue="AJUSTE_ENTRADA"
+            >
+              <option value="AJUSTE_ENTRADA">Entrada (+)</option>
+              <option value="AJUSTE_SALIDA">Salida (−)</option>
+            </select>
+          </label>
+          <label className="grid gap-1 text-sm">
+            <span className="font-semibold">Cantidad</span>
+            <input
+              name="cantidad"
+              type="number"
+              min={0.001}
+              step="any"
+              required
+              className="border border-[#E4E7EC] bg-[#F7F8FA] px-3 py-2"
+            />
+          </label>
+          <label className="grid gap-1 text-sm">
+            <span className="font-semibold">Observaciones</span>
+            <input
+              name="observaciones"
+              className="border border-[#E4E7EC] bg-[#F7F8FA] px-3 py-2"
+              placeholder="Motivo del ajuste"
+            />
+          </label>
+          <button
+            type="submit"
+            className="inline-flex min-h-10 items-center justify-center bg-[#F57C00] px-4 text-sm font-bold text-[#1D2430]"
+          >
+            Registrar ajuste
+          </button>
+        </form>
+      ) : null}
 
       <section className="mb-8">
         <h2 className="mb-3 text-sm font-semibold uppercase tracking-[0.08em] text-[#5C6675]">
@@ -149,16 +227,14 @@ export default async function PaginaDetalleInventario({ params }: Props) {
                     key={d.id}
                     className="border-b border-[#EEF0F3] last:border-0"
                   >
-                    <td className="px-3 py-2 font-mono text-xs text-[#1D2430]">
+                    <td className="px-3 py-2 font-mono text-xs">
                       {d.compra.numero}
                     </td>
-                    <td className="px-3 py-2 text-[#1D2430]">
+                    <td className="px-3 py-2">
                       {d.compra.proveedor.razonSocial}
                     </td>
-                    <td className="px-3 py-2 text-[#5C6675]">
-                      {Number(d.cantidad)}
-                    </td>
-                    <td className="px-3 py-2 text-[#1D2430]">
+                    <td className="px-3 py-2">{Number(d.cantidad)}</td>
+                    <td className="px-3 py-2">
                       {Number(d.costoUnitario).toFixed(2)}
                     </td>
                     <td className="px-3 py-2 text-xs text-[#8A94A2]">
