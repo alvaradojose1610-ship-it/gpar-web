@@ -1,117 +1,89 @@
-"use client";
-
-import Image from "next/image";
 import Link from "next/link";
-import { FormEvent, useState } from "react";
-import { Search } from "lucide-react";
 import { Contenedor } from "@/componentes/interfaz/Contenedor";
-import { EnlaceBoton } from "@/componentes/interfaz/EnlaceBoton";
+import { categoriasPorLinea } from "@/datos/catalogo";
 
 const chips = [
-  { etiqueta: "Rodamientos", href: "/#categorias" },
-  { etiqueta: "Correas", href: "/#categorias" },
-  { etiqueta: "Motores", href: "/#categorias" },
-  { etiqueta: "Lubricantes", href: "/#categorias" },
-  { etiqueta: "Tornillería", href: "/#categorias" },
+  { etiqueta: "Rodamientos", href: "/industrial/rodamientos" },
+  { etiqueta: "Chumaceras", href: "/industrial/chumaceras" },
+  { etiqueta: "Correas", href: "/industrial/correas" },
+  { etiqueta: "Motores", href: "/industrial/motores-reductores" },
+  { etiqueta: "Mangueras", href: "/industrial/mangueras-industriales" },
 ] as const;
 
 export function HeroInicio() {
-  const [mensaje, setMensaje] = useState<string | null>(null);
-
-  function manejarBusqueda(evento: FormEvent<HTMLFormElement>) {
-    evento.preventDefault();
-    setMensaje("El catálogo completo estará disponible próximamente.");
-  }
+  const nombresStrip = categoriasPorLinea("industrial").map((c) => c.nombre);
+  const stripDuplicado = [...nombresStrip, ...nombresStrip];
 
   return (
-    <section className="relative isolate min-h-[520px] overflow-hidden sm:min-h-[560px] lg:min-h-[620px]">
-      <Image
-        src="/assets/hero/hero-principal.webp"
-        alt="Trabajo industrial en taller"
-        fill
-        priority
-        sizes="100vw"
-        className="object-cover object-center"
+    <section className="relative border-b border-gpar-line bg-gpar-surface">
+      <div className="placeholder-media absolute inset-0" aria-hidden />
+      <div
+        className="absolute inset-0 bg-[linear-gradient(180deg,rgba(255,255,255,0.95)_0%,rgba(255,255,255,0.88)_60%,rgba(255,255,255,0.72)_100%)] md:inset-[0_0_46px_0] md:bg-[linear-gradient(100deg,rgba(255,255,255,0.97)_0%,rgba(255,255,255,0.93)_46%,rgba(255,255,255,0.62)_72%,rgba(255,255,255,0.30)_100%)]"
+        aria-hidden
       />
-      <div className="absolute inset-0 bg-acero/55" />
-      <div className="absolute inset-0 bg-gradient-to-b from-acero/40 via-acero/50 to-acero/75" />
 
-      <Contenedor className="relative flex min-h-[520px] items-center py-14 sm:min-h-[560px] lg:min-h-[620px]">
-        <div className="mx-auto w-full max-w-3xl space-y-6 text-center sm:space-y-7">
-          <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-naranja">
-            Suministros industriales
-          </p>
-
-          <h1 className="text-3xl font-bold tracking-tight text-blanco sm:text-4xl lg:text-[2.75rem]">
-            ¿Qué producto estás buscando?
+      <Contenedor className="relative py-11 md:pb-[68px] md:pt-[76px]">
+        <div className="max-w-[640px]">
+          <span className="mb-5 inline-block border border-gpar-orange-border bg-gpar-orange-soft px-[11px] py-1.5 font-mono text-[11.5px] uppercase tracking-[0.14em] text-gpar-orange-ink">
+            Industrial y automotriz
+          </span>
+          <h1 className="font-display text-[clamp(34px,5.4vw,62px)] font-extrabold uppercase leading-[0.97] tracking-[0.02em] text-gpar-ink">
+            Todo para tu
+            <br />
+            planta y tu taller,
+            <br />
+            <em className="not-italic text-gpar-orange">en un solo lugar</em>
           </h1>
-
-          <p className="mx-auto max-w-xl text-sm leading-relaxed text-blanco/80 sm:text-base">
-            Encuentra rápidamente repuestos, componentes y suministros
-            industriales.
+          <p className="mt-4 max-w-[50ch] text-[17px] text-gpar-ink-2">
+            Rodamientos, correas, chumaceras, motores, mangueras y repuestos
+            automotrices. Arma tu lista y te cotizamos con precio, disponibilidad
+            y tiempo de entrega.
           </p>
-
-          <form
-            onSubmit={manejarBusqueda}
-            role="search"
-            className="mx-auto w-full max-w-2xl"
-          >
-            <label htmlFor="busqueda-portal" className="sr-only">
-              Buscar por código, producto o marca
-            </label>
-            <div className="flex overflow-hidden rounded-xl border border-blanco/20 bg-blanco shadow-[0_18px_50px_rgba(0,0,0,0.28)] focus-within:ring-2 focus-within:ring-naranja">
-              <div className="flex min-w-0 flex-1 items-center gap-3 px-4">
-                <Search className="size-5 shrink-0 text-acero/40" aria-hidden />
-                <input
-                  id="busqueda-portal"
-                  name="busqueda"
-                  type="search"
-                  placeholder="Buscar por código, producto o marca"
-                  className="w-full bg-transparent py-4 text-sm text-acero placeholder:text-acero/45 focus:outline-none sm:text-base"
-                  autoComplete="off"
-                />
-              </div>
-              <button
-                type="submit"
-                className="shrink-0 bg-naranja px-5 text-sm font-semibold text-blanco transition-colors hover:bg-naranja-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-naranja focus-visible:ring-offset-2 sm:px-7"
-              >
-                Buscar
-              </button>
-            </div>
-            {mensaje ? (
-              <p role="status" className="mt-3 text-sm text-blanco/75">
-                {mensaje}
-              </p>
-            ) : null}
-          </form>
-
-          <div className="flex flex-wrap items-center justify-center gap-2">
+          <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
+            <Link
+              href="/cotizar"
+              className="inline-flex min-h-11 items-center justify-center bg-gpar-orange px-6 text-sm font-bold text-gpar-ink hover:bg-gpar-orange-ink"
+            >
+              Solicitar cotización
+            </Link>
+            <Link
+              href="#catalogo"
+              className="inline-flex min-h-11 items-center justify-center border border-gpar-ink bg-gpar-bg px-6 text-sm font-semibold text-gpar-ink hover:bg-gpar-ink hover:text-white"
+            >
+              Ver el catálogo
+            </Link>
+          </div>
+          <div className="mt-5 flex flex-wrap gap-2">
             {chips.map((chip) => (
               <Link
                 key={chip.etiqueta}
                 href={chip.href}
-                className="rounded-full border border-blanco/25 bg-blanco/10 px-3.5 py-1.5 text-xs font-semibold text-blanco backdrop-blur-sm transition-colors hover:border-naranja hover:bg-blanco/15 hover:text-naranja focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-naranja"
+                className="inline-flex min-h-9 items-center border border-gpar-line bg-gpar-bg px-[13px] py-[7px] text-[12.5px] font-semibold text-gpar-ink hover:border-gpar-orange"
               >
                 {chip.etiqueta}
               </Link>
             ))}
           </div>
-
-          <div className="flex flex-col items-center justify-center gap-2.5 pt-1 sm:flex-row">
-            <EnlaceBoton href="/#categorias" tamano="md">
-              Explorar categorías
-            </EnlaceBoton>
-            <EnlaceBoton
-              href="/#cotizacion"
-              variante="contorno"
-              tamano="md"
-              className="border-blanco/35 bg-transparent text-blanco hover:border-naranja hover:bg-transparent hover:text-naranja"
-            >
-              Solicitar cotización
-            </EnlaceBoton>
-          </div>
         </div>
       </Contenedor>
+
+      <div
+        className="relative overflow-hidden whitespace-nowrap border-t border-gpar-line bg-gpar-bg py-[11px]"
+        aria-hidden="true"
+      >
+        <div
+          data-strip
+          className="inline-flex gap-6 font-display text-[15px] font-bold uppercase tracking-[0.05em] text-gpar-ink-4"
+          style={{ animation: "gp-strip 42s linear infinite" }}
+        >
+          {stripDuplicado.map((nombre, i) => (
+            <span key={`${nombre}-${i}`} className="inline-flex items-center gap-6">
+              <span>{nombre}</span>
+              <i className="not-italic text-gpar-orange">/</i>
+            </span>
+          ))}
+        </div>
+      </div>
     </section>
   );
 }

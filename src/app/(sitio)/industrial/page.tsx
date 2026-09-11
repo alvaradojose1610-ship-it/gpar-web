@@ -1,0 +1,52 @@
+import type { Metadata } from "next";
+import { SeccionCategorias } from "@/componentes/inicio/SeccionCategorias";
+import { Contenedor } from "@/componentes/interfaz/Contenedor";
+import {
+  contarEnCategoria,
+  obtenerCategoriasPorLinea,
+  totalPorLinea,
+} from "@/modulos/catalogo/catalogo-publico";
+
+export const metadata: Metadata = {
+  title: "Repuestos industriales",
+  description:
+    "Catálogo de repuestos industriales: rodamientos, correas, chumaceras, motores y más.",
+};
+
+export default async function PaginaIndustrial() {
+  const linea = "industrial" as const;
+  const [categorias, referencias] = await Promise.all([
+    obtenerCategoriasPorLinea(linea),
+    totalPorLinea(linea),
+  ]);
+  const conteosEntries = await Promise.all(
+    categorias.map(async (c) => [c.id, await contarEnCategoria(linea, c.id)] as const),
+  );
+  const conteos = Object.fromEntries(conteosEntries);
+
+  return (
+    <>
+      <div className="border-b border-gpar-line bg-gpar-surface">
+        <Contenedor className="py-8">
+          <p className="mb-2 font-mono text-[11.5px] uppercase tracking-[0.12em] text-gpar-orange-ink">
+            Catálogo
+          </p>
+          <h1 className="font-display text-[clamp(32px,4.4vw,46px)] font-extrabold uppercase leading-none text-gpar-ink">
+            Repuestos industriales
+          </h1>
+          <p className="mt-3 max-w-[54ch] text-[15.5px] text-gpar-ink-2">
+            Explora las categorías industriales y agrega referencias a tu
+            cotización.
+          </p>
+        </Contenedor>
+      </div>
+      <SeccionCategorias
+        linea={linea}
+        modoConmutador="ruta"
+        categorias={categorias}
+        referencias={referencias}
+        conteos={conteos}
+      />
+    </>
+  );
+}

@@ -1,63 +1,64 @@
-import Image from "next/image";
-import Link from "next/link";
-import { ArrowRight } from "lucide-react";
+import { ConmutadorLinea } from "@/componentes/catalogo/ConmutadorLinea";
+import { TarjetaCategoria } from "@/componentes/catalogo/TarjetaCategoria";
 import { Contenedor } from "@/componentes/interfaz/Contenedor";
-import { EncabezadoSeccion } from "@/componentes/interfaz/EncabezadoSeccion";
-import { categorias } from "@/datos/categorias";
+import type { CategoriaCatalogo, LineaCatalogo } from "@/datos/tipos-catalogo";
 
-export function SeccionCategorias() {
+type SeccionCategoriasProps = {
+  linea?: LineaCatalogo;
+  modoConmutador?: "ruta" | "query";
+  categorias: CategoriaCatalogo[];
+  referencias: number;
+  conteos: Record<string, number>;
+};
+
+export function SeccionCategorias({
+  linea = "industrial",
+  modoConmutador = "query",
+  categorias,
+  referencias,
+  conteos,
+}: SeccionCategoriasProps) {
+  const etiquetaLinea =
+    linea === "industrial"
+      ? "Repuestos industriales"
+      : "Repuestos automotrices";
+
   return (
-    <section id="categorias" className="seccion scroll-mt-24 bg-fondo">
+    <section id="catalogo" className="seccion scroll-mt-28">
       <Contenedor>
-        <EncabezadoSeccion
-          titulo="Categorías"
-          descripcion="Selecciona una línea de producto para continuar."
-        />
+        <div className="mb-6 flex flex-wrap items-end justify-between gap-5">
+          <div>
+            <h2 className="font-display text-[clamp(28px,3.4vw,38px)] font-extrabold uppercase leading-[1.05] text-gpar-ink">
+              Nuestras categorías
+            </h2>
+            <p className="mt-2 text-[15.5px] text-gpar-ink-2">
+              Escoge una línea de producto: se abre su propia página con todo el
+              detalle.
+            </p>
+          </div>
+          <span className="font-mono text-[11.5px] text-gpar-ink-3">
+            {referencias > 0 ? `${referencias}+ referencias` : etiquetaLinea} ·{" "}
+            {categorias.length} categorías
+          </span>
+        </div>
 
-        <div className="grid grid-cols-2 gap-3 md:grid-cols-3 xl:grid-cols-5">
-          {categorias.map((categoria) => {
-            const Icono = categoria.icono;
+        <ConmutadorLinea lineaActiva={linea} modo={modoConmutador} />
 
-            return (
-              <article
-                key={categoria.id}
-                className="group overflow-hidden rounded-md border border-borde bg-blanco"
-              >
-                <div className="relative aspect-[2/1] overflow-hidden bg-fondo">
-                  {categoria.imagen ? (
-                    <Image
-                      src={categoria.imagen}
-                      alt={categoria.nombre}
-                      fill
-                      sizes="(max-width: 768px) 50vw, 20vw"
-                      className="object-cover transition-transform duration-300 group-hover:scale-[1.03]"
-                    />
-                  ) : (
-                    <div className="absolute inset-0 flex items-center justify-center bg-fondo">
-                      <div className="absolute inset-0 rejilla-industrial" />
-                      <Icono
-                        className="relative size-5 text-naranja"
-                        strokeWidth={1.5}
-                        aria-hidden
-                      />
-                    </div>
-                  )}
-                </div>
-                <div className="space-y-1.5 p-3">
-                  <h3 className="text-sm font-semibold text-acero">
-                    {categoria.nombre}
-                  </h3>
-                  <Link
-                    href={categoria.href}
-                    className="inline-flex items-center gap-1 text-[11px] font-semibold text-naranja hover:text-naranja-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-naranja"
-                  >
-                    Ver productos
-                    <ArrowRight className="size-3" />
-                  </Link>
-                </div>
-              </article>
-            );
-          })}
+        {linea === "automotriz" && referencias === 0 ? (
+          <p className="mb-[18px] text-[15.5px] text-gpar-ink-2">
+            Línea en construcción. Escríbenos y te decimos qué tenemos disponible
+            hoy.
+          </p>
+        ) : null}
+
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+          {categorias.map((categoria) => (
+            <TarjetaCategoria
+              key={categoria.id}
+              categoria={categoria}
+              cantidadItems={conteos[categoria.id] ?? 0}
+            />
+          ))}
         </div>
       </Contenedor>
     </section>

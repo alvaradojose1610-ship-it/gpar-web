@@ -1,78 +1,187 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
-import { Menu, X } from "lucide-react";
-import { useState } from "react";
-import { Logo } from "@/componentes/estructura/Logo";
+import { usePathname, useRouter } from "next/navigation";
+import { FormEvent, useEffect, useRef, useState } from "react";
+import { DrawerCotizacion } from "@/componentes/cotizacion/DrawerCotizacion";
+import { useCotizacion } from "@/componentes/cotizacion/ProveedorCotizacion";
 import { Contenedor } from "@/componentes/interfaz/Contenedor";
-import { EnlaceBoton } from "@/componentes/interfaz/EnlaceBoton";
-import {
-  navegacionAccion,
-  navegacionPrincipal,
-} from "@/configuracion/navegacion";
+import { empresa } from "@/configuracion/empresa";
 import { cn } from "@/utilidades/cn";
 
+const nav = [
+  { etiqueta: "Inicio", href: "/" },
+  { etiqueta: "Industrial", href: "/industrial" },
+  { etiqueta: "Automotriz", href: "/automotriz" },
+  { etiqueta: "Contacto", href: "/cotizar" },
+] as const;
+
 export function Encabezado() {
-  const [abierto, setAbierto] = useState(false);
+  const pathname = usePathname();
+  const router = useRouter();
+  const { totalUnidades, abrirDrawer } = useCotizacion();
+  const [menuAbierto, setMenuAbierto] = useState(false);
+  const headerRef = useRef<HTMLElement>(null);
+
+  useEffect(() => {
+    const el = headerRef.current;
+    if (!el || typeof ResizeObserver === "undefined") return;
+
+    const medir = () => {
+      document.documentElement.style.setProperty(
+        "--gp-header-h",
+        `${Math.ceil(el.getBoundingClientRect().height)}px`,
+      );
+    };
+
+    const observer = new ResizeObserver(medir);
+    observer.observe(el);
+    medir();
+    return () => observer.disconnect();
+  }, [menuAbierto]);
+
+  function manejarBusqueda(evento: FormEvent<HTMLFormElement>) {
+    evento.preventDefault();
+    const form = evento.currentTarget;
+    const data = new FormData(form);
+    const q = String(data.get("q") ?? "").trim();
+    if (!q) {
+      router.push("/buscar");
+      return;
+    }
+    router.push(`/buscar?q=${encodeURIComponent(q)}`);
+    setMenuAbierto(false);
+  }
 
   return (
-    <header className="sticky top-0 z-50 border-b border-borde bg-blanco">
-      <Contenedor className="flex h-16 items-center justify-between gap-3">
-        <Logo prioridad />
-
-        <nav
-          className="hidden items-center gap-0.5 lg:flex"
-          aria-label="Navegación principal"
-        >
-          {navegacionPrincipal.map((enlace) => (
-            <Link
-              key={enlace.href}
-              href={enlace.href}
-              className="rounded-md px-3 py-2 text-sm font-semibold text-acero/80 transition-colors hover:bg-fondo hover:text-acero focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-naranja"
-            >
-              {enlace.etiqueta}
-            </Link>
-          ))}
-        </nav>
-
-        <div className="flex items-center gap-2">
-          <EnlaceBoton href={navegacionAccion.href} tamano="sm">
-            {navegacionAccion.etiqueta}
-          </EnlaceBoton>
-
-          <button
-            type="button"
-            className="inline-flex size-11 items-center justify-center rounded-md border border-borde text-acero transition-colors hover:bg-fondo focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-naranja lg:hidden"
-            aria-expanded={abierto}
-            aria-controls="menu-movil"
-            aria-label={abierto ? "Cerrar menú" : "Abrir menú"}
-            onClick={() => setAbierto((valor) => !valor)}
-          >
-            {abierto ? <X className="size-5" /> : <Menu className="size-5" />}
-          </button>
-        </div>
-      </Contenedor>
-
-      <div
-        id="menu-movil"
-        className={cn(
-          "border-t border-borde bg-blanco lg:hidden",
-          abierto ? "block" : "hidden",
-        )}
+    <>
+      <header
+        ref={headerRef}
+        className="sticky top-0 z-[60] border-b border-gpar-line bg-gpar-bg"
       >
-        <Contenedor className="flex flex-col gap-1 py-3">
-          {navegacionPrincipal.map((enlace) => (
-            <Link
-              key={enlace.href}
-              href={enlace.href}
-              className="rounded-md px-3 py-3 text-base font-semibold text-acero hover:bg-fondo focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-naranja"
-              onClick={() => setAbierto(false)}
+        <Contenedor className="grid grid-cols-[auto_1fr_auto] items-center gap-3 py-3 lg:grid-cols-[auto_minmax(220px,430px)_1fr_auto]">
+          <Link
+            href="/"
+            className="flex items-center gap-[11px]"
+            aria-label={empresa.nombreLegal}
+          >
+            <Image
+              src="/assets/identidad/logo-gpar.png"
+              alt={empresa.nombreLegal}
+              width={46}
+              height={46}
+              priority
+              className="size-[44px] rounded-full object-contain sm:size-[46px]"
+            />
+            <span className="leading-none">
+              <span className="block text-[11px] uppercase tracking-[0.08em] text-gpar-ink-2">
+                Distribuidora
+              </span>
+              <span className="font-display text-[26px] font-extrabold tracking-[0.02em] text-gpar-orange">
+                GPAR
+              </span>
+            </span>
+          </Link>
+
+          <form
+            role="search"
+            action="/buscar"
+            onSubmit={manejarBusqueda}
+            className="col-span-full order-3 flex items-center gap-2 border border-gpar-line bg-gpar-surface px-3 py-2 lg:col-auto lg:order-none"
+          >
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src="/assets/iconos/buscar.svg" alt="" width={18} height={18} />
+            <input
+              type="search"
+              name="q"
+              placeholder="Busca por producto, código o marca"
+              aria-label="Buscar en el catálogo"
+              className="min-w-0 flex-1 border-0 bg-transparent text-sm outline-none"
+              autoComplete="off"
+            />
+            <button
+              type="submit"
+              className="min-h-9 bg-gpar-orange px-3.5 text-[12.5px] font-semibold text-gpar-ink hover:bg-gpar-orange-ink"
             >
-              {enlace.etiqueta}
-            </Link>
-          ))}
+              Buscar
+            </button>
+          </form>
+
+          <nav
+            className="hidden items-center gap-[18px] text-sm font-medium text-gpar-ink-2 md:flex"
+            aria-label="Principal"
+          >
+            {nav.map((enlace) => {
+              const activo =
+                enlace.href === "/"
+                  ? pathname === "/"
+                  : pathname === enlace.href ||
+                    pathname.startsWith(`${enlace.href}/`);
+              return (
+                <Link
+                  key={enlace.href}
+                  href={enlace.href}
+                  aria-current={activo ? "page" : undefined}
+                  className={cn(
+                    "hover:text-gpar-ink",
+                    activo && "text-gpar-ink",
+                  )}
+                >
+                  {enlace.etiqueta}
+                </Link>
+              );
+            })}
+          </nav>
+
+          <div className="flex items-center gap-2 justify-self-end">
+            <button
+              type="button"
+              aria-haspopup="dialog"
+              className="flex min-h-11 items-center gap-2 border border-gpar-ink bg-gpar-bg px-3.5 text-[13.5px] font-semibold text-gpar-ink hover:bg-gpar-ink hover:text-white"
+              onClick={abrirDrawer}
+            >
+              Mi cotización{" "}
+              <span className="inline-flex h-[22px] min-w-[22px] items-center justify-center bg-gpar-orange px-1 font-mono text-xs text-gpar-ink">
+                {totalUnidades}
+              </span>
+            </button>
+            <button
+              type="button"
+              className="inline-flex size-11 items-center justify-center border border-gpar-line bg-gpar-bg md:hidden"
+              aria-expanded={menuAbierto}
+              aria-controls="menu-movil"
+              aria-label={menuAbierto ? "Cerrar menú" : "Abrir menú"}
+              onClick={() => setMenuAbierto((v) => !v)}
+            >
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src="/assets/iconos/menu.svg" alt="" width={22} height={22} />
+            </button>
+          </div>
         </Contenedor>
-      </div>
-    </header>
+
+        <div
+          id="menu-movil"
+          className={cn(
+            "border-t border-gpar-line bg-gpar-bg md:hidden",
+            menuAbierto ? "block" : "hidden",
+          )}
+        >
+          <Contenedor className="flex flex-col gap-1 py-3">
+            {nav.map((enlace) => (
+              <Link
+                key={enlace.href}
+                href={enlace.href}
+                className="px-1 py-3 text-base font-semibold text-gpar-ink"
+                onClick={() => setMenuAbierto(false)}
+              >
+                {enlace.etiqueta}
+              </Link>
+            ))}
+          </Contenedor>
+        </div>
+      </header>
+      <DrawerCotizacion />
+    </>
   );
 }

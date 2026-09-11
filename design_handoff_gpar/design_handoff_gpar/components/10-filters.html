@@ -1,0 +1,17 @@
+<!-- Barra de subfiltros (sticky)
+top = alto REAL del header vía var(--gp-header-h), medido en runtime con un ResizeObserver sobre .header
+(ver el <script> al final de reference/home.html; en Next.js va en un useEffect de <SiteHeader>).
+Los valores por breakpoint de styles.css (152px / 136px ≥768 / 80px ≥1024) son solo el fallback antes de la hidratación.
+Nunca un valor fijo: el header cambia de alto al envolver contenido y la barra queda oculta detrás.
+Estado en la URL (?sub=). aria-pressed marca el activo.
+Depende de: tokens/tokens.css + reference/styles.css
+-->
+<div class="filters">
+  <div class="wrap">
+    <span class="label" style="margin-right:4px">Filtrar</span>
+    <button class="filter" type="button" aria-pressed="true">Todos</button>
+    <button class="filter" type="button" aria-pressed="false">Rígido de bolas</button>
+    <button class="filter" type="button" aria-pressed="false">Cónico</button>
+    <span class="code" style="margin-left:auto">10 de 10</span>
+  </div>
+</div>

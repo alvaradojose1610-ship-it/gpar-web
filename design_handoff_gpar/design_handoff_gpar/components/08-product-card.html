@@ -1,0 +1,43 @@
+<!-- Tarjeta de producto
+Estado normal y estado "en la cotización" (borde naranja + botón invertido). El precio se oculta por defecto.
+Depende de: tokens/tokens.css + reference/styles.css
+-->
+<article class="card">
+  <div class="card__media">
+    <img src="/img/gp-6205rs.jpg" alt="Rodamiento rígido de bolas 6205-2RS" loading="lazy">
+    <span class="stock">Disponible</span>
+  </div>
+  <div class="card__body">
+    <span class="code">GP-6205RS</span>
+    <h3 class="prod__name">Rodamiento rígido de bolas 6205-2RS</h3>
+    <div class="specs">
+      <span><b>DI</b> 25mm</span><span><b>DE</b> 52mm</span><span><b>Ancho</b> 15mm</span>
+    </div>
+    <div class="pills">
+      <span class="pill pill--accent">Rígido de bolas</span>
+      <span class="pill">Marca por confirmar</span>
+    </div>
+    <div class="card__actions">
+      <button class="btn btn--secondary" type="button">+ Agregar</button>
+      <button class="btn btn--ghost" type="button">Cotizar</button>
+    </div>
+  </div>
+</article>
+
+<!-- Estado: ya está en la cotización -->
+<article class="card card--in-list">
+  <div class="card__media">
+    <img src="/img/gp-a45.jpg" alt="Correa trapezoidal A-45" loading="lazy">
+    <span class="stock">Disponible</span>
+  </div>
+  <div class="card__body">
+    <span class="code">GP-A45</span>
+    <h3 class="prod__name">Correa trapezoidal A-45</h3>
+    <div class="specs"><span><b>Perfil</b> A</span><span><b>Largo</b> 45 pulg</span></div>
+    <div class="pills"><span class="pill pill--accent">Trapezoidal</span></div>
+    <div class="card__actions">
+      <button class="btn btn--added" type="button">✓ En la cotización</button>
+      <button class="btn btn--ghost" type="button">Cotizar</button>
+    </div>
+  </div>
+</article>

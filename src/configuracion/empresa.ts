@@ -26,23 +26,23 @@ export type Empresa = {
 };
 
 /**
- * Datos temporales centralizados.
- * Sustituir por información confirmada cuando esté disponible.
+ * Datos de empresa centralizados.
+ * Correo, teléfono fijo y dirección textual: pendiente de confirmar.
  */
 export const empresa: Empresa = {
   nombre: "GPar",
   nombreLegal: "Distribuidora GPar",
   eslogan: "Soluciones industriales que mantienen tu operación en movimiento.",
   descripcion:
-    "Consulta categorías de repuestos, componentes y productos industriales y solicita cotizaciones a Distribuidora GPar.",
+    "Consulta categorías de repuestos industriales y automotrices, y solicita cotizaciones a Distribuidora GPar.",
   urlSitio: "https://gparsoluciones.com",
   desarrollador: "ITConectados",
   contacto: {
     whatsapp: {
       etiqueta: "WhatsApp",
-      valor: null,
-      href: null,
-      disponible: false,
+      valor: "+58 424-5140003",
+      href: "https://wa.me/584245140003",
+      disponible: true,
     },
     correo: {
       etiqueta: "Correo",
@@ -51,10 +51,10 @@ export const empresa: Empresa = {
       disponible: false,
     },
     direccion: {
-      etiqueta: "Dirección",
-      valor: null,
-      href: null,
-      disponible: false,
+      etiqueta: "Ubicación",
+      valor: "Ver en Google Maps",
+      href: "https://maps.app.goo.gl/gUUG6rsq42k1fafH6",
+      disponible: true,
     },
     telefono: {
       etiqueta: "Teléfono",
@@ -66,9 +66,9 @@ export const empresa: Empresa = {
   redes: {
     instagram: {
       etiqueta: "Instagram",
-      valor: null,
-      href: null,
-      disponible: false,
+      valor: "@distribuidoragpar",
+      href: "https://www.instagram.com/distribuidoragpar",
+      disponible: true,
     },
     facebook: {
       etiqueta: "Facebook",
@@ -78,9 +78,9 @@ export const empresa: Empresa = {
     },
     maps: {
       etiqueta: "Google Maps",
-      valor: null,
-      href: null,
-      disponible: false,
+      valor: "Ubicación",
+      href: "https://maps.app.goo.gl/gUUG6rsq42k1fafH6",
+      disponible: true,
     },
   },
 };

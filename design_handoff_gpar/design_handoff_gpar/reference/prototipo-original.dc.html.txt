@@ -1,0 +1,725 @@
+Este es el prototipo original tal como se construyó en la herramienta de diseño.
+Se incluye SOLO como referencia de comportamiento (navegación, filtros, lista de cotización,
+mensaje de WhatsApp). NO es código para portar: usa un runtime propio y estilos en línea.
+La referencia para maquetar es reference/home.html + reference/categoria.html.
+
+----------------------------------------------------------------------
+
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script src="./image-slot.js"></script>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:#FFFFFF;color:#1D2430;font-family:'IBM Plex Sans',system-ui,sans-serif;line-height:1.5;-webkit-font-smoothing:antialiased}
+  img,svg{display:block;max-width:100%}
+  ul{list-style:none}
+  a{color:#D96A00;text-decoration:none}
+  a:hover{color:#A85200}
+  input,textarea,button,select{font-family:inherit;font-size:inherit;color:inherit}
+  @keyframes gpar-strip{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+  @media (prefers-reduced-motion:reduce){[data-strip]{animation:none!important}}
+</style>
+</helmet>
+
+<div style="min-height:100vh;display:flex;flex-direction:column;background:#FFFFFF">
+
+  <div style="background:#F57C00;color:#1D2430;font-size:12.5px">
+    <div style="max-width:1220px;margin:0 auto;padding:8px 24px;display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap">
+      <span>Soluciones para la industria</span>
+      <span>Pedidos y cotizaciones por WhatsApp</span>
+    </div>
+  </div>
+
+  <header style="position:sticky;top:0;z-index:60;background:#FFFFFF;border-bottom:1px solid #E4E7EC">
+    <div style="max-width:1220px;margin:0 auto;padding:12px 24px;display:flex;align-items:center;gap:20px;flex-wrap:wrap">
+      <div onClick="{{ goHome }}" style="display:flex;align-items:center;gap:11px;cursor:pointer;flex-shrink:0">
+        <img src="./logo-gpar.png" alt="Distribuidora GPar" style="width:46px;height:46px;border-radius:50%">
+        <div style="line-height:1">
+          <div style="font-family:'IBM Plex Sans',sans-serif;font-size:11px;letter-spacing:0.08em;text-transform:uppercase;color:#5C6675">Distribuidora</div>
+          <div style="font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:27px;letter-spacing:0.02em;color:#F57C00">GPAR</div>
+        </div>
+      </div>
+
+      <div style="flex:1;display:flex;align-items:center;gap:8px;border:1px solid #E4E7EC;background:#F7F8FA;padding:8px 12px;min-width:220px;max-width:430px">
+        <span style="font-family:'IBM Plex Mono',monospace;font-size:13px;color:#8A94A2">⌕</span>
+        <input value="{{ query }}" onChange="{{ onQuery }}" onKeyDown="{{ onQueryKey }}" placeholder="Busca por producto, código o marca" style="flex:1;border:none;background:transparent;outline:none;font-size:14px;min-width:0">
+        <button onClick="{{ runSearch }}" style="border:none;background:#F57C00;color:#1D2430;font-size:12.5px;font-weight:600;padding:7px 13px;cursor:pointer">Buscar</button>
+      </div>
+
+      <nav style="display:flex;gap:18px;align-items:center;font-size:14px;font-weight:500;color:#5C6675">
+        <span onClick="{{ goHome }}" style="cursor:pointer">Inicio</span>
+        <span onClick="{{ goCategorias }}" style="cursor:pointer">Categorías</span>
+        <span onClick="{{ goMarcas }}" style="cursor:pointer">Marcas</span>
+        <span onClick="{{ goContacto }}" style="cursor:pointer">Contacto</span>
+      </nav>
+
+      <button onClick="{{ openCart }}" style="display:flex;align-items:center;gap:9px;border:1px solid #1D2430;background:#FFFFFF;padding:9px 15px;font-size:13.5px;font-weight:600;cursor:pointer;flex-shrink:0">
+        Mi pedido
+        <span style="min-width:22px;height:22px;background:#F57C00;color:#1D2430;font-family:'IBM Plex Mono',monospace;font-size:12px;display:flex;align-items:center;justify-content:center;padding:0 5px">{{ cartCount }}</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- ===================== INICIO ===================== -->
+  <sc-if value="{{ isHome }}" hint-placeholder-val="{{ true }}">
+  <main style="flex:1">
+
+    <section style="position:relative;background:#F7F8FA;border-bottom:1px solid #E4E7EC">
+      <div style="position:absolute;inset:0">
+        <image-slot id="gpar-hero" shape="rect" fit="cover" src="{{ heroImg }}" credit="{{ heroCredit }}" credit-href="{{ heroHref }}" placeholder="Foto de fondo del hero — almacén / productos GPar"></image-slot>
+      </div>
+      <div style="position:absolute;top:0;left:0;right:0;bottom:46px;pointer-events:none;background:linear-gradient(100deg,rgba(255,255,255,0.97) 0%,rgba(255,255,255,0.93) 46%,rgba(255,255,255,0.62) 72%,rgba(255,255,255,0.3) 100%)"></div>
+      <div style="position:absolute;left:0;right:0;bottom:0;height:46px;pointer-events:none;background:linear-gradient(180deg,rgba(255,255,255,0.9) 0%,rgba(255,255,255,0.35) 55%,rgba(255,255,255,0) 100%)"></div>
+      <div style="position:relative;pointer-events:none;max-width:1220px;margin:0 auto;padding:76px 24px 68px">
+        <div style="max-width:640px">
+          <span style="display:inline-block;font-family:'IBM Plex Mono',monospace;font-size:11.5px;letter-spacing:0.14em;text-transform:uppercase;color:#D96A00;background:#FFF3E6;border:1px solid #FBD3A8;padding:6px 11px;margin-bottom:20px">Soluciones para la industria</span>
+          <h1 style="font-family:'Barlow Condensed',sans-serif;font-weight:800;text-transform:uppercase;font-size:clamp(38px,5.4vw,62px);line-height:0.97;color:#1D2430">Todo para tu<br>planta y tu taller,<br><span style="color:#F57C00">en un solo lugar</span></h1>
+          <p style="margin-top:18px;font-size:17px;color:#5C6675;max-width:50ch">Explora el catálogo completo de Distribuidora GPar: rodamientos, correas, chumaceras, motores, mangueras y mucho más. Arma tu carrito y envíalo por WhatsApp, o solicita una cotización formal.</p>
+          <div style="display:flex;gap:12px;margin-top:30px;flex-wrap:wrap;pointer-events:auto">
+            <button onClick="{{ goCategorias }}" style="border:none;background:#F57C00;color:#1D2430;font-weight:700;font-size:14px;padding:14px 24px;cursor:pointer">Ver el catálogo</button>
+            <button onClick="{{ goContacto }}" style="border:1px solid #1D2430;background:#FFFFFF;color:#1D2430;font-weight:600;font-size:14px;padding:14px 24px;cursor:pointer">Solicitar cotización</button>
+          </div>
+          <div style="display:flex;gap:8px;margin-top:26px;flex-wrap:wrap;pointer-events:auto">
+            <sc-for list="{{ quickChips }}" as="chip" hint-placeholder-count="5">
+              <span onClick="{{ chip.go }}" style="cursor:pointer;font-size:12.5px;font-weight:600;color:#1D2430;background:#FFFFFF;border:1px solid #E4E7EC;padding:7px 13px">{{ chip.name }}</span>
+            </sc-for>
+          </div>
+        </div>
+      </div>
+      <div style="position:relative;border-top:1px solid #E4E7EC;background:#FFFFFF;overflow:hidden;white-space:nowrap;padding:11px 0">
+        <div data-strip style="display:inline-flex;gap:24px;animation:gpar-strip 42s linear infinite;font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:700;letter-spacing:0.05em;text-transform:uppercase;color:#8A94A2">
+          <sc-for list="{{ strip }}" as="s" hint-placeholder-count="15">
+            <span>{{ s.label }}</span><span style="color:#F57C00">/</span>
+          </sc-for>
+        </div>
+      </div>
+    </section>
+
+    <section style="background:#FFFFFF;border-bottom:1px solid #E4E7EC">
+      <div style="max-width:1220px;margin:0 auto;padding:40px 24px">
+        <h2 style="font-family:'Barlow Condensed',sans-serif;font-weight:800;text-transform:uppercase;font-size:26px;margin-bottom:18px">¿Cómo podemos ayudarte?</h2>
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(215px,1fr));gap:14px">
+          <sc-for list="{{ helpCards }}" as="h" hint-placeholder-count="4">
+            <div onClick="{{ h.go }}" style="cursor:pointer;background:#F7F8FA;border:1px solid #E4E7EC;border-top:3px solid #F57C00;padding:20px" style-hover="border-color:#F57C00">
+              <div style="font-weight:700;font-size:15.5px;margin-bottom:6px">{{ h.title }}</div>
+              <div style="font-size:14px;color:#5C6675">{{ h.desc }}</div>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+    </section>
+
+    <section id="categorias" style="max-width:1220px;margin:0 auto;padding:60px 24px">
+      <div style="display:flex;justify-content:space-between;align-items:flex-end;gap:20px;flex-wrap:wrap;margin-bottom:24px">
+        <div>
+          <h2 style="font-family:'Barlow Condensed',sans-serif;font-weight:800;text-transform:uppercase;font-size:clamp(30px,3.6vw,42px);line-height:1">Nuestras categorías</h2>
+          <p style="color:#5C6675;font-size:16px;margin-top:8px">Escoge una línea de producto: se abre su propia página con todo el detalle.</p>
+        </div>
+        <span style="font-family:'IBM Plex Mono',monospace;font-size:12px;color:#8A94A2">{{ totalRefs }} referencias · {{ catCount }} categorías</span>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(228px,1fr));gap:16px">
+        <sc-for list="{{ categories }}" as="c" hint-placeholder-count="15">
+          <div onClick="{{ c.go }}" style="cursor:pointer;border:1px solid #E4E7EC;background:#FFFFFF;display:flex;flex-direction:column" style-hover="border-color:#F57C00">
+            <div style="height:150px;background:#F7F8FA;border-bottom:1px solid #EEF0F3">
+              <image-slot id="{{ c.slotId }}" shape="rect" fit="cover" src="{{ c.img }}" credit="{{ c.credit }}" credit-href="{{ c.href }}" placeholder="{{ c.slotHint }}"></image-slot>
+            </div>
+            <div style="padding:16px 18px 18px;display:flex;flex-direction:column;gap:8px;flex:1">
+              <h3 style="font-family:'Barlow Condensed',sans-serif;font-weight:700;text-transform:uppercase;font-size:21px;line-height:1.05">{{ c.name }}</h3>
+              <p style="font-size:13.5px;color:#5C6675;flex:1">{{ c.desc }}</p>
+              <div style="display:flex;justify-content:space-between;align-items:center;border-top:1px solid #EEF0F3;padding-top:11px;margin-top:4px">
+                <span style="font-family:'IBM Plex Mono',monospace;font-size:11.5px;color:#8A94A2">{{ c.count }} ítems</span>
+                <span style="font-size:13px;font-weight:700;color:#D96A00">Ver productos →</span>
+              </div>
+            </div>
+          </div>
+        </sc-for>
+      </div>
+    </section>
+
+    <section style="background:#F57C00">
+      <div style="max-width:1220px;margin:0 auto;padding:44px 24px;display:flex;align-items:center;justify-content:space-between;gap:24px;flex-wrap:wrap">
+        <div>
+          <h2 style="font-family:'Barlow Condensed',sans-serif;font-weight:800;text-transform:uppercase;font-size:clamp(24px,3.2vw,34px);color:#1D2430;line-height:1.05;max-width:26ch">¿No sabes el código del repuesto?</h2>
+          <p style="color:#1D2430;font-size:15.5px;margin-top:8px;max-width:54ch">Cuéntanos qué equipo tienes o qué pieza necesitas y la identificamos contigo.</p>
+        </div>
+        <button onClick="{{ goContacto }}" style="border:none;background:#FFFFFF;color:#1D2430;font-weight:700;font-size:14px;padding:14px 24px;cursor:pointer">Pedir asesoría</button>
+      </div>
+    </section>
+
+    <section style="max-width:1220px;margin:0 auto;padding:60px 24px">
+      <h2 style="font-family:'Barlow Condensed',sans-serif;font-weight:800;text-transform:uppercase;font-size:clamp(28px,3.4vw,38px);line-height:1">Productos destacados</h2>
+      <p style="color:#5C6675;font-size:15.5px;margin:8px 0 24px">Los más pedidos en mostrador. Agrégalos a tu pedido o solicita cotización.</p>
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:16px">
+        <sc-for list="{{ featured }}" as="p" hint-placeholder-count="8">
+          <div style="border:1px solid #E4E7EC;background:#FFFFFF;display:flex;flex-direction:column">
+            <div style="height:130px;background:#F7F8FA;border-bottom:1px solid #EEF0F3">
+              <image-slot id="{{ p.slotId }}" shape="rect" fit="cover" src="{{ p.img }}" credit="{{ p.credit }}" credit-href="{{ p.href }}" placeholder="{{ p.code }}"></image-slot>
+            </div>
+            <div style="padding:15px;display:flex;flex-direction:column;gap:8px;flex:1">
+              <span style="font-family:'IBM Plex Mono',monospace;font-size:11.5px;color:#8A94A2">{{ p.code }}</span>
+              <h3 style="font-size:15px;font-weight:700;line-height:1.25">{{ p.name }}</h3>
+              <span style="font-size:12.5px;color:#5C6675;flex:1">{{ p.specLine }}</span>
+              <button onClick="{{ p.toggle }}" style="border:1px solid #1D2430;background:{{ p.btnBg }};color:{{ p.btnFg }};font-weight:600;font-size:13px;padding:10px 14px;cursor:pointer;width:100%">{{ p.btnLabel }}</button>
+            </div>
+          </div>
+        </sc-for>
+      </div>
+    </section>
+
+    <section id="marcas" style="background:#F7F8FA;border-top:1px solid #E4E7EC;border-bottom:1px solid #E4E7EC">
+      <div style="max-width:1220px;margin:0 auto;padding:44px 24px;text-align:center">
+        <p style="font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:0.1em;text-transform:uppercase;color:#8A94A2;margin-bottom:22px">Distribuimos marcas líderes del mercado</p>
+        <div style="display:flex;justify-content:center;align-items:center;gap:40px;flex-wrap:wrap">
+          <sc-for list="{{ brands }}" as="b" hint-placeholder-count="7">
+            <span style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:26px;letter-spacing:0.03em;color:#98A2B0" style-hover="color:#1D2430">{{ b.name }}</span>
+          </sc-for>
+        </div>
+      </div>
+    </section>
+
+    <section style="max-width:1220px;margin:0 auto;padding:60px 24px">
+      <h2 style="font-family:'Barlow Condensed',sans-serif;font-weight:800;text-transform:uppercase;font-size:clamp(28px,3.4vw,38px);line-height:1;margin-bottom:8px">¿Por qué comprar en GPar?</h2>
+      <p style="color:#5C6675;font-size:15.5px;margin-bottom:30px">Lo mismo que le decimos a cada cliente en el mostrador, escrito aquí.</p>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(215px,1fr));gap:26px">
+        <sc-for list="{{ reasons }}" as="r" hint-placeholder-count="4">
+          <div>
+            <div style="width:34px;height:3px;background:#F57C00;margin-bottom:14px"></div>
+            <h3 style="font-size:16.5px;font-weight:700;margin-bottom:8px">{{ r.title }}</h3>
+            <p style="font-size:14.5px;color:#5C6675">{{ r.desc }}</p>
+          </div>
+        </sc-for>
+      </div>
+    </section>
+
+    <section id="contacto" style="background:#F7F8FA;border-top:1px solid #E4E7EC">
+      <div style="max-width:1220px;margin:0 auto;padding:58px 24px;display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:44px">
+        <div>
+          <h2 style="font-family:'Barlow Condensed',sans-serif;font-weight:800;text-transform:uppercase;font-size:clamp(28px,3.4vw,38px);line-height:1">Solicita tu cotización</h2>
+          <p style="color:#5C6675;font-size:16px;margin-top:12px;max-width:48ch">Cuéntanos qué equipo tienes parado y te decimos qué necesitas, aunque no tengas el código exacto.</p>
+          <ul style="margin-top:26px;display:flex;flex-direction:column;gap:14px">
+            <sc-for list="{{ contactRows }}" as="c" hint-placeholder-count="4">
+              <li style="display:flex;flex-direction:column;gap:2px;border-bottom:1px solid #E4E7EC;padding-bottom:12px">
+                <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:#8A94A2">{{ c.label }}</span>
+                <span style="font-size:15.5px;color:#1D2430">{{ c.value }}</span>
+              </li>
+            </sc-for>
+          </ul>
+        </div>
+        <div style="background:#FFFFFF;border:1px solid #E4E7EC;padding:26px;display:flex;flex-direction:column;gap:13px">
+          <div style="font-family:'Barlow Condensed',sans-serif;font-weight:800;text-transform:uppercase;font-size:23px">Formulario de cotización</div>
+          <input placeholder="Nombre y apellido" style="border:1px solid #E4E7EC;background:#F7F8FA;padding:11px 12px;outline:none;font-size:14px">
+          <input placeholder="Teléfono o correo" style="border:1px solid #E4E7EC;background:#F7F8FA;padding:11px 12px;outline:none;font-size:14px">
+          <input placeholder="Empresa (opcional)" style="border:1px solid #E4E7EC;background:#F7F8FA;padding:11px 12px;outline:none;font-size:14px">
+          <textarea placeholder="Indica los productos que necesitas o el equipo donde se instalan" rows="4" style="border:1px solid #E4E7EC;background:#F7F8FA;padding:11px 12px;outline:none;font-size:14px;resize:vertical"></textarea>
+          <div style="font-size:12.5px;color:#5C6675">Tu pedido actual ({{ cartCount }} ítems) se adjunta automáticamente a la solicitud.</div>
+          <button onClick="{{ sendQuote }}" style="border:none;background:#F57C00;color:#1D2430;font-weight:700;font-size:14px;padding:13px 18px;cursor:pointer">Enviar solicitud por WhatsApp</button>
+        </div>
+      </div>
+    </section>
+
+  </main>
+  </sc-if>
+
+  <!-- ===================== CATEGORÍA / RESULTADOS ===================== -->
+  <sc-if value="{{ isList }}" hint-placeholder-val="{{ false }}">
+  <main style="flex:1;display:flex;flex-direction:column">
+
+    <div style="border-bottom:1px solid #E4E7EC;background:#F7F8FA">
+      <div style="max-width:1220px;margin:0 auto;padding:11px 24px;display:flex;align-items:center;gap:10px;font-size:13px;color:#5C6675;flex-wrap:wrap">
+        <span onClick="{{ goHome }}" style="cursor:pointer;color:#D96A00;font-weight:600">Inicio</span>
+        <span style="color:#98A2B0">/</span>
+        <span onClick="{{ goCategorias }}" style="cursor:pointer">Categorías</span>
+        <span style="color:#98A2B0">/</span>
+        <span style="font-weight:600;color:#1D2430">{{ listTitle }}</span>
+      </div>
+    </div>
+
+    <div style="background:#FFFFFF;border-bottom:1px solid #E4E7EC">
+      <div style="max-width:1220px;margin:0 auto;padding:32px 24px;display:flex;justify-content:space-between;align-items:flex-end;gap:24px;flex-wrap:wrap">
+        <div>
+          <span style="font-family:'IBM Plex Mono',monospace;font-size:11.5px;letter-spacing:0.12em;text-transform:uppercase;color:#D96A00">{{ listKicker }}</span>
+          <h1 style="font-family:'Barlow Condensed',sans-serif;font-weight:800;text-transform:uppercase;font-size:clamp(32px,4.4vw,46px);line-height:1;margin-top:6px">{{ listTitle }}</h1>
+          <p style="color:#5C6675;font-size:15.5px;margin-top:10px;max-width:62ch">{{ listDesc }}</p>
+        </div>
+        <button onClick="{{ goHome }}" style="border:1px solid #1D2430;background:#FFFFFF;color:#1D2430;font-weight:600;font-size:13.5px;padding:11px 18px;cursor:pointer">← Volver al inicio</button>
+      </div>
+    </div>
+
+    <div style="border-bottom:1px solid #E4E7EC;background:#F7F8FA;position:sticky;top:{{ stickyTop }};z-index:40">
+      <div style="max-width:1220px;margin:0 auto;padding:11px 24px;display:flex;align-items:center;gap:9px;flex-wrap:wrap">
+        <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:0.08em;text-transform:uppercase;color:#8A94A2;margin-right:4px">Filtrar</span>
+        <sc-for list="{{ subFilters }}" as="f" hint-placeholder-count="4">
+          <span onClick="{{ f.go }}" style="cursor:pointer;font-size:13px;font-weight:600;padding:7px 13px;border:1px solid {{ f.border }};background:{{ f.bg }};color:{{ f.fg }}">{{ f.label }}</span>
+        </sc-for>
+        <span style="margin-left:auto;font-family:'IBM Plex Mono',monospace;font-size:12px;color:#8A94A2">{{ shownCount }} de {{ listCount }}</span>
+      </div>
+    </div>
+
+    <div style="max-width:1220px;margin:0 auto;padding:26px 24px 120px;width:100%">
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:16px">
+        <sc-for list="{{ listProducts }}" as="p" hint-placeholder-count="8">
+          <div style="border:1px solid {{ p.cardBorder }};background:#FFFFFF;display:flex;flex-direction:column">
+            <div style="position:relative;height:150px;background:#F7F8FA;border-bottom:1px solid #EEF0F3">
+              <image-slot id="{{ p.slotId }}" shape="rect" fit="cover" src="{{ p.img }}" credit="{{ p.credit }}" credit-href="{{ p.href }}" placeholder="{{ p.code }}"></image-slot>
+              <span style="position:absolute;top:8px;right:8px;pointer-events:none;background:#FFFFFF;border:1px solid #E4E7EC;color:#1D2430;font-family:'IBM Plex Mono',monospace;font-size:10px;padding:3px 6px">{{ p.stock }}</span>
+            </div>
+            <div style="padding:15px;display:flex;flex-direction:column;gap:9px;flex:1">
+              <span style="font-family:'IBM Plex Mono',monospace;font-size:11.5px;color:#8A94A2">{{ p.code }}</span>
+              <h3 style="font-size:15px;font-weight:700;line-height:1.25">{{ p.name }}</h3>
+              <div style="display:flex;gap:12px;flex-wrap:wrap;font-size:12.5px;color:#5C6675;border-top:1px dashed #E4E7EC;padding-top:10px">
+                <sc-for list="{{ p.specs }}" as="s" hint-placeholder-count="3">
+                  <span><b style="color:#1D2430;font-weight:600">{{ s.k }}</b> {{ s.v }}</span>
+                </sc-for>
+              </div>
+              <div style="display:flex;gap:6px;flex-wrap:wrap">
+                <span style="font-size:10.5px;text-transform:uppercase;letter-spacing:0.05em;color:#D96A00;background:#FFF3E6;border:1px solid #FBD3A8;padding:3px 7px">{{ p.sub }}</span>
+                <span style="font-size:10.5px;text-transform:uppercase;letter-spacing:0.05em;color:#5C6675;border:1px solid #E4E7EC;padding:3px 7px">{{ p.brand }}</span>
+              </div>
+              <sc-if value="{{ showPrices }}" hint-placeholder-val="{{ false }}">
+                <span style="font-family:'IBM Plex Mono',monospace;font-size:14px;color:#1D2430">{{ p.price }}</span>
+              </sc-if>
+              <div style="display:flex;gap:8px;margin-top:auto;padding-top:6px">
+                <button onClick="{{ p.toggle }}" style="flex:1;border:1px solid #1D2430;background:{{ p.btnBg }};color:{{ p.btnFg }};font-weight:600;font-size:13px;padding:10px 8px;cursor:pointer">{{ p.btnLabel }}</button>
+                <button onClick="{{ p.quote }}" style="border:1px solid #E4E7EC;background:#F7F8FA;color:#1D2430;font-weight:600;font-size:13px;padding:10px 12px;cursor:pointer">Cotizar</button>
+              </div>
+            </div>
+          </div>
+        </sc-for>
+      </div>
+
+      <sc-if value="{{ listEmpty }}" hint-placeholder-val="{{ false }}">
+        <div style="border:1px dashed #E4E7EC;background:#F7F8FA;padding:48px 24px;text-align:center">
+          <div style="font-family:'Barlow Condensed',sans-serif;font-weight:800;text-transform:uppercase;font-size:24px">Sin resultados</div>
+          <p style="color:#5C6675;font-size:15px;margin:8px 0 18px">No encontramos esa referencia. Pídela y te la conseguimos.</p>
+          <button onClick="{{ goContacto }}" style="border:none;background:#F57C00;color:#1D2430;font-weight:700;font-size:14px;padding:12px 20px;cursor:pointer">Solicitar el producto</button>
+        </div>
+      </sc-if>
+    </div>
+
+    <sc-if value="{{ hasCart }}" hint-placeholder-val="{{ false }}">
+      <div style="position:fixed;bottom:0;left:0;right:0;z-index:55;background:#FFFFFF;border-top:3px solid #F57C00;box-shadow:0 -6px 24px rgba(29,36,48,0.08)">
+        <div style="max-width:1220px;margin:0 auto;padding:13px 24px;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap">
+          <span style="font-size:14.5px;color:#1D2430"><b style="font-family:'IBM Plex Mono',monospace;color:#D96A00">{{ cartCount }}</b> ítems seleccionados en tu pedido</span>
+          <div style="display:flex;gap:10px;flex-wrap:wrap">
+            <button onClick="{{ openCart }}" style="border:1px solid #1D2430;background:#FFFFFF;color:#1D2430;font-weight:600;font-size:13.5px;padding:11px 18px;cursor:pointer">Ver pedido</button>
+            <button onClick="{{ sendCart }}" style="border:none;background:#F57C00;color:#1D2430;font-weight:700;font-size:13.5px;padding:11px 18px;cursor:pointer">Enviar por WhatsApp</button>
+          </div>
+        </div>
+      </div>
+    </sc-if>
+
+  </main>
+  </sc-if>
+
+  <!-- ===================== CARRITO ===================== -->
+  <sc-if value="{{ cartOpen }}" hint-placeholder-val="{{ false }}">
+    <div onClick="{{ closeCart }}" style="position:fixed;inset:0;background:rgba(29,36,48,0.45);z-index:80"></div>
+    <aside style="position:fixed;top:0;right:0;bottom:0;width:min(420px,100%);background:#FFFFFF;z-index:90;display:flex;flex-direction:column;box-shadow:-12px 0 40px rgba(29,36,48,0.18)">
+      <div style="padding:18px 22px;border-bottom:1px solid #E4E7EC;display:flex;justify-content:space-between;align-items:center">
+        <div style="font-family:'Barlow Condensed',sans-serif;font-weight:800;text-transform:uppercase;font-size:24px">Mi pedido</div>
+        <button onClick="{{ closeCart }}" style="border:none;background:transparent;font-size:22px;cursor:pointer;color:#5C6675">×</button>
+      </div>
+      <div style="flex:1;overflow-y:auto;padding:8px 22px">
+        <sc-for list="{{ cartItems }}" as="i" hint-placeholder-count="2">
+          <div style="display:flex;gap:12px;padding:15px 0;border-bottom:1px solid #EEF0F3;align-items:flex-start">
+            <div style="width:54px;height:54px;flex-shrink:0;background:#F7F8FA;border:1px solid #EEF0F3;font-family:'IBM Plex Mono',monospace;font-size:9px;color:#98A2B0;display:flex;align-items:center;justify-content:center;text-align:center;padding:3px">FOTO</div>
+            <div style="flex:1;min-width:0">
+              <div style="font-size:14px;font-weight:700;line-height:1.3">{{ i.name }}</div>
+              <div style="font-family:'IBM Plex Mono',monospace;font-size:11.5px;color:#8A94A2;margin-top:2px">{{ i.code }} · {{ i.cat }}</div>
+              <div style="display:flex;align-items:center;gap:8px;margin-top:10px">
+                <button onClick="{{ i.dec }}" style="width:28px;height:28px;border:1px solid #E4E7EC;background:#F7F8FA;cursor:pointer;font-weight:600">−</button>
+                <span style="font-family:'IBM Plex Mono',monospace;font-size:13px;min-width:22px;text-align:center">{{ i.qty }}</span>
+                <button onClick="{{ i.inc }}" style="width:28px;height:28px;border:1px solid #E4E7EC;background:#F7F8FA;cursor:pointer;font-weight:600">+</button>
+                <button onClick="{{ i.remove }}" style="margin-left:auto;border:none;background:transparent;font-size:12.5px;color:#8A94A2;cursor:pointer;text-decoration:underline">Quitar</button>
+              </div>
+            </div>
+          </div>
+        </sc-for>
+        <sc-if value="{{ cartEmpty }}" hint-placeholder-val="{{ true }}">
+          <div style="padding:56px 0;text-align:center;color:#5C6675;font-size:15px">Tu pedido está vacío.<br>Escoge una categoría y agrega productos.</div>
+        </sc-if>
+      </div>
+      <div style="border-top:1px solid #E4E7EC;padding:18px 22px;display:flex;flex-direction:column;gap:10px">
+        <div style="font-size:12.5px;color:#5C6675">Sin pago en línea: envías la lista y GPar te responde con precio, disponibilidad y tiempo de entrega.</div>
+        <button onClick="{{ sendCart }}" style="border:none;background:#F57C00;color:#1D2430;font-weight:700;font-size:14px;padding:13px 18px;cursor:pointer">Enviar pedido por WhatsApp</button>
+        <button onClick="{{ sendQuote }}" style="border:1px solid #1D2430;background:#FFFFFF;color:#1D2430;font-weight:600;font-size:14px;padding:12px 18px;cursor:pointer">Pedir cotización formal</button>
+      </div>
+    </aside>
+  </sc-if>
+
+  <footer style="background:#1D2430;color:#98A2B0;padding:42px 0 20px">
+    <div style="max-width:1220px;margin:0 auto;padding:0 24px">
+      <div style="display:flex;justify-content:space-between;gap:34px;flex-wrap:wrap;padding-bottom:26px;border-bottom:1px solid rgba(255,255,255,0.1)">
+        <div style="max-width:30ch">
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px">
+            <img src="./logo-gpar.png" alt="Distribuidora GPar" style="width:42px;height:42px;border-radius:50%;background:#FFFFFF">
+            <div style="font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:22px;text-transform:uppercase;color:#FFFFFF">GPAR</div>
+          </div>
+          <p style="font-size:13.5px">Distribuidora de rodamientos, componentes y suministros industriales. Catálogo en línea, pedidos por WhatsApp y cotizaciones.</p>
+        </div>
+        <div>
+          <h5 style="color:#FFFFFF;font-size:12px;letter-spacing:0.08em;text-transform:uppercase;margin-bottom:12px">Navegación</h5>
+          <ul style="display:flex;flex-direction:column;gap:8px;font-size:13.5px">
+            <li><span onClick="{{ goCategorias }}" style="cursor:pointer">Categorías</span></li>
+            <li><span onClick="{{ goMarcas }}" style="cursor:pointer">Marcas</span></li>
+            <li><span onClick="{{ goContacto }}" style="cursor:pointer">Contacto</span></li>
+          </ul>
+        </div>
+        <div>
+          <h5 style="color:#FFFFFF;font-size:12px;letter-spacing:0.08em;text-transform:uppercase;margin-bottom:12px">Categorías</h5>
+          <ul style="display:flex;flex-direction:column;gap:8px;font-size:13.5px">
+            <sc-for list="{{ footerCats }}" as="c" hint-placeholder-count="6">
+              <li><span onClick="{{ c.go }}" style="cursor:pointer">{{ c.name }}</span></li>
+            </sc-for>
+          </ul>
+        </div>
+        <div>
+          <h5 style="color:#FFFFFF;font-size:12px;letter-spacing:0.08em;text-transform:uppercase;margin-bottom:12px">Contacto</h5>
+          <ul style="display:flex;flex-direction:column;gap:8px;font-size:13.5px">
+            <sc-for list="{{ contactRows }}" as="c" hint-placeholder-count="4">
+              <li>{{ c.label }}: {{ c.value }}</li>
+            </sc-for>
+          </ul>
+        </div>
+      </div>
+      <div style="padding-top:16px;display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;font-size:12.5px">
+        <span>© 2026 Distribuidora GPar. Todos los derechos reservados.</span>
+        <span>gparsoluciones.com</span>
+      </div>
+    </div>
+  </footer>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;numeroWhatsapp&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;+58 414 000 0000&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Contacto&quot;},&quot;mostrarPrecios&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Catálogo&quot;},&quot;mensajeEnvio&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;Hola GPar, quiero hacer el siguiente *pedido*:&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;WhatsApp&quot;}}">
+const CATS = [
+  {id:"rodamientos",name:"Rodamientos",desc:"Rígidos de bolas, cónicos, de rodillos, de agujas y axiales.",subs:["Rígido de bolas","Cónico","De rodillos","De agujas","Axial"],
+   items:[
+    ["GP-6205RS","Rodamiento rígido de bolas 6205-2RS","Rígido de bolas","SKF",["DI 25mm","DE 52mm","Ancho 15mm"]],
+    ["GP-6204ZZ","Rodamiento rígido de bolas 6204-ZZ","Rígido de bolas","NSK",["DI 20mm","DE 47mm","Ancho 14mm"]],
+    ["GP-6308","Rodamiento rígido de bolas 6308","Rígido de bolas","FAG",["DI 40mm","DE 90mm","Ancho 23mm"]],
+    ["GP-32206","Rodamiento cónico 32206","Cónico","TIMKEN",["DI 30mm","DE 62mm","Ancho 21.2mm"]],
+    ["GP-30206","Rodamiento cónico 30206","Cónico","KOYO",["DI 30mm","DE 62mm","Ancho 17.2mm"]],
+    ["GP-NU2208","Rodamiento de rodillos NU 2208","De rodillos","FAG",["DI 40mm","DE 80mm","Ancho 23mm"]],
+    ["GP-NJ309","Rodamiento de rodillos NJ 309","De rodillos","SKF",["DI 45mm","DE 100mm","Ancho 25mm"]],
+    ["GP-HK2520","Rodamiento de agujas HK 2520","De agujas","INA",["DI 25mm","DE 32mm","Ancho 20mm"]],
+    ["GP-51108","Rodamiento axial de bolas 51108","Axial","NSK",["DI 40mm","DE 60mm","Ancho 13mm"]],
+    ["GP-22212","Rodamiento a rótula 22212","De rodillos","SKF",["DI 60mm","DE 110mm","Ancho 28mm"]]
+  ]},
+  {id:"chumaceras",name:"Chumaceras",desc:"Chumaceras de pared, puente y tensoras, de 2 y 4 huecos.",subs:["Puente","Pared","Tensora"],
+   items:[
+    ["GP-UCP205","Chumacera de puente UCP 205","Puente","ASAHI",["Eje 25mm","2 huecos","Fundición"]],
+    ["GP-UCP208","Chumacera de puente UCP 208","Puente","ASAHI",["Eje 40mm","2 huecos","Fundición"]],
+    ["GP-UCF206","Chumacera de pared UCF 206 cuadrada","Pared","FK",["Eje 30mm","4 huecos","Fundición"]],
+    ["GP-UCFL207","Chumacera de pared ovalada UCFL 207","Pared","FK",["Eje 35mm","2 huecos","Fundición"]],
+    ["GP-UCT206","Chumacera tensora UCT 206","Tensora","ASAHI",["Eje 30mm","Tensor","Fundición"]],
+    ["GP-SN511","Soporte partido SN 511","Puente","SKF",["Eje 50mm","Partido","Fundición"]]
+  ]},
+  {id:"correas",name:"Correas",desc:"Correas tipo A, B, C, D, 3V y 5V, dentadas y de velocidad variable.",subs:["Trapezoidal","Dentada","Multi-V"],
+   items:[
+    ["GP-A45","Correa trapezoidal A-45","Trapezoidal","GATES",["Perfil A","Largo 45 pulg","Ancho 13mm"]],
+    ["GP-B60","Correa trapezoidal B-60","Trapezoidal","OPTIBELT",["Perfil B","Largo 60 pulg","Ancho 17mm"]],
+    ["GP-C90","Correa trapezoidal C-90","Trapezoidal","GATES",["Perfil C","Largo 90 pulg","Ancho 22mm"]],
+    ["GP-3V500","Correa 3V-500","Trapezoidal","DAYCO",["Perfil 3V","Largo 50 pulg","Ancho 9.5mm"]],
+    ["GP-HTD800","Correa dentada HTD 800-8M","Dentada","GATES",["Paso 8M","Largo 800mm","Ancho 20mm"]],
+    ["GP-HTD1200","Correa dentada HTD 1200-8M","Dentada","CONTITECH",["Paso 8M","Largo 1200mm","Ancho 30mm"]],
+    ["GP-6PK1200","Correa multi-V 6PK1200","Multi-V","DAYCO",["6 canales","Largo 1200mm","Perfil PK"]],
+    ["GP-8PK1580","Correa multi-V 8PK1580","Multi-V","GATES",["8 canales","Largo 1580mm","Perfil PK"]]
+  ]},
+  {id:"poleas",name:"Poleas",desc:"Poleas en aluminio y hierro de uno o varios canales, fijas o con buje.",subs:["Trapezoidal","Dentada","Buje"],
+   items:[
+    ["GP-PA100","Polea 1 canal tipo A · Ø100mm","Trapezoidal","SIT",["Ø 100mm","1 canal","Buje 1108"]],
+    ["GP-PB200","Polea 2 canales tipo B · Ø200mm","Trapezoidal","SIT",["Ø 200mm","2 canales","Buje 1610"]],
+    ["GP-PA063","Polea 1 canal tipo A · Ø63mm eje fijo","Trapezoidal","SIT",["Ø 63mm","1 canal","Eje 19mm"]],
+    ["GP-PHTD30","Polea dentada HTD 30-8M-30","Dentada","SATI",["30 dientes","Paso 8M","Ancho 30mm"]],
+    ["GP-BUJ1610","Buje cónico 1610 · 25mm","Buje","SIT",["Serie 1610","Eje 25mm","Cuñero 8mm"]],
+    ["GP-BUJ2517","Buje cónico 2517 · 45mm","Buje","SIT",["Serie 2517","Eje 45mm","Cuñero 14mm"]]
+  ]},
+  {id:"cadenas",name:"Cadenas y piñones",desc:"Cadenas de transmisión sencillas, dobles y triples, con sus piñones.",subs:["Cadena","Piñón","Accesorio"],
+   items:[
+    ["GP-CAD40","Cadena de transmisión ASA 40 sencilla","Cadena","REXNORD",["Paso 1/2 pulg","Sencilla","Rollo 5m"]],
+    ["GP-CAD50","Cadena de transmisión ASA 50 sencilla","Cadena","REXNORD",["Paso 5/8 pulg","Sencilla","Rollo 5m"]],
+    ["GP-CAD60D","Cadena de transmisión ASA 60 doble","Cadena","SATI",["Paso 3/4 pulg","Doble","Rollo 5m"]],
+    ["GP-PIN40-17","Piñón 40B-17 dientes","Piñón","SATI",["ASA 40","17 dientes","Eje piloto"]],
+    ["GP-PIN50-21","Piñón 50B-21 dientes","Piñón","SATI",["ASA 50","21 dientes","Eje piloto"]],
+    ["GP-CANDADO40","Candado y media caña ASA 40","Accesorio","SATI",["ASA 40","Candado","Acero"]]
+  ]},
+  {id:"acoples",name:"Acoples",desc:"Acoples flexibles tipo AB, cadena, tipo L, plásticos y metálicos.",subs:["Flexible","De cadena","Tipo L"],
+   items:[
+    ["GP-ACAB2","Acople flexible tipo AB-2 con caucho","Flexible","MARTIN",["Eje 25mm","Tipo AB","Caucho"]],
+    ["GP-ACAB4","Acople flexible tipo AB-4 con caucho","Flexible","MARTIN",["Eje 40mm","Tipo AB","Caucho"]],
+    ["GP-ACCAD4012","Acople de cadena 4012","De cadena","MARTIN",["ASA 40","12 dientes","Con cubierta"]],
+    ["GP-ACL075","Acople tipo L-075 con araña","Tipo L","LOVEJOY",["Eje 19mm","L-075","Araña NBR"]],
+    ["GP-ACL100","Acople tipo L-100 con araña","Tipo L","LOVEJOY",["Eje 28mm","L-100","Araña NBR"]]
+  ]},
+  {id:"sellos",name:"Sellos mecánicos",desc:"Sellos mecánicos en pulgadas y milímetros para bombas y equipos.",subs:["Tipo 21","Tipo 6A","Tipo Gallup"],
+   items:[
+    ["GP-SM21-100","Sello mecánico tipo 21 · 1 pulg","Tipo 21","JOHN CRANE",["1 pulg","Carbón/cerámica","NBR"]],
+    ["GP-SM21-125","Sello mecánico tipo 21 · 1-1/4 pulg","Tipo 21","JOHN CRANE",["1-1/4 pulg","Carbón/cerámica","NBR"]],
+    ["GP-SM6A-35","Sello mecánico tipo 6A · 35mm","Tipo 6A","BURGMANN",["35mm","Carburo silicio","VITON"]],
+    ["GP-SMGAL-25","Sello mecánico tipo Gallup · 25mm","Tipo Gallup","GENÉRICO",["25mm","Carbón/cerámica","NBR"]]
+  ]},
+  {id:"estoperas",name:"Estoperas industriales",desc:"Estoperas y retenes en pulgadas y milímetros, NBR y VITON.",subs:["NBR","VITON","Doble labio"],
+   items:[
+    ["GP-EST255207","Estopera 25 × 52 × 7 NBR","NBR",["-"],["DI 25mm","DE 52mm","Ancho 7mm"]],
+    ["GP-EST357210","Estopera 35 × 72 × 10 NBR","NBR",["-"],["DI 35mm","DE 72mm","Ancho 10mm"]],
+    ["GP-EST5080V","Estopera 50 × 80 × 10 VITON","VITON",["-"],["DI 50mm","DE 80mm","Ancho 10mm"]],
+    ["GP-EST4062D","Estopera doble labio 40 × 62 × 10","Doble labio",["-"],["DI 40mm","DE 62mm","Ancho 10mm"]]
+  ]},
+  {id:"mangueras",name:"Mangueras industriales",desc:"Mangueras para aire, oxígeno, agua, gasolina, succión y descarga.",subs:["Hidráulica","Aire y agua","Succión"],
+   items:[
+    ["GP-MG1SN","Manguera hidráulica 1/2 pulg 1SN (a la medida)","Hidráulica","MANULI",["1/2 pulg","1SN","215 bar"]],
+    ["GP-MG2SN","Manguera hidráulica 3/4 pulg 2SN (a la medida)","Hidráulica","MANULI",["3/4 pulg","2SN","250 bar"]],
+    ["GP-MGAIRE38","Manguera de aire 3/8 pulg reforzada","Aire y agua","GOODYEAR",["3/8 pulg","20 bar","Rollo 50m"]],
+    ["GP-MGAGUA1","Manguera de agua 1 pulg lona","Aire y agua","GOODYEAR",["1 pulg","10 bar","Rollo 30m"]],
+    ["GP-MGSUC2","Manguera de succión 2 pulg espiralada","Succión","GENÉRICO",["2 pulg","Espiralada","Rollo 30m"]],
+    ["GP-AC12JIC","Acople JIC 1/2 pulg recto prensable","Hidráulica","GATES",["JIC 1/2 pulg","Recto","Prensable"]]
+  ]},
+  {id:"motores",name:"Motores y reductores",desc:"Motores monofásicos y trifásicos, reductores axiales y sin fin corona.",subs:["Trifásico","Monofásico","Reductor"],
+   items:[
+    ["GP-M15T","Motor trifásico 1.5 HP · 1800 rpm","Trifásico","WEG",["1.5 HP","1800 rpm","B3 patas"]],
+    ["GP-M30T","Motor trifásico 3 HP · 3600 rpm","Trifásico","WEG",["3 HP","3600 rpm","B3 patas"]],
+    ["GP-M75T","Motor trifásico 7.5 HP · 1800 rpm","Trifásico","SIEMENS",["7.5 HP","1800 rpm","B5 brida"]],
+    ["GP-M10M","Motor monofásico 1 HP · 1800 rpm","Monofásico","WEG",["1 HP","1800 rpm","220V"]],
+    ["GP-RD30","Reductor sin fin corona 1:30","Reductor","MOTOVARIO",["Relación 1:30","Eje 25mm","Brida B5"]],
+    ["GP-RD15","Reductor sin fin corona 1:15","Reductor","MOTOVARIO",["Relación 1:15","Eje 19mm","Brida B5"]]
+  ]},
+  {id:"ventiladores",name:"Ventiladores axiales",desc:"Ventiladores axiales industriales monofásicos y trifásicos.",subs:["Monofásico","Trifásico","Aspa"],
+   items:[
+    ["GP-VA300M","Ventilador axial 12 pulg monofásico","Monofásico","SOLER",["Ø 300mm","110V","1400 rpm"]],
+    ["GP-VA400M","Ventilador axial 16 pulg monofásico","Monofásico","SOLER",["Ø 400mm","220V","1400 rpm"]],
+    ["GP-VA500T","Ventilador axial 20 pulg trifásico","Trifásico","SOLER",["Ø 500mm","220/440V","1400 rpm"]],
+    ["GP-ASPA400","Aspa plástica de repuesto 16 pulg","Aspa","GENÉRICO",["Ø 400mm","5 aspas","Eje 12mm"]]
+  ]},
+  {id:"bandas",name:"Bandas transportadoras",desc:"Bandas de lona y PVC, empates, raspadores y accesorios.",subs:["Lona","PVC","Accesorio"],
+   items:[
+    ["GP-BT2L","Banda transportadora 2 lonas · 600mm","Lona","CONTITECH",["600mm","2 lonas","Cubierta 3+1"]],
+    ["GP-BT3L","Banda transportadora 3 lonas · 800mm","Lona","CONTITECH",["800mm","3 lonas","Cubierta 4+2"]],
+    ["GP-BTPVC","Banda de PVC blanca alimenticia · 400mm","PVC","AMMERAAL",["400mm","2mm","Grado alimenticio"]],
+    ["GP-BTGRAPA","Grapas de empate metálicas","Accesorio","FLEXCO",["Caja 25 u.","Metálicas","Para 2-3 lonas"]]
+  ]},
+  {id:"guayas",name:"Guayas y cadenas de carga",desc:"Guayas de acero, tensores, grilletes, ganchos y poleas de izaje.",subs:["Guaya","Cadena de carga","Herraje"],
+   items:[
+    ["GP-GY38","Guaya de acero 3/8 pulg 6×19 (por metro)","Guaya","GENÉRICO",["3/8 pulg","6×19","Alma de acero"]],
+    ["GP-GY12","Guaya de acero 1/2 pulg 6×37 (por metro)","Guaya","GENÉRICO",["1/2 pulg","6×37","Alma de acero"]],
+    ["GP-CC516","Cadena de carga grado 80 · 5/16 pulg","Cadena de carga","GENÉRICO",["5/16 pulg","Grado 80","Por metro"]],
+    ["GP-GRILL12","Grillete de seguridad 1/2 pulg","Herraje","CROSBY",["1/2 pulg","2 ton","Galvanizado"]],
+    ["GP-TENSOR12","Tensor ojo-ojo 1/2 pulg","Herraje","CROSBY",["1/2 pulg","Ojo-ojo","Galvanizado"]]
+  ]},
+  {id:"plasticos",name:"Plásticos industriales",desc:"Nylon, teflón, UHMW y acrílico en barras y láminas.",subs:["Barra","Lámina","Tubo"],
+   items:[
+    ["GP-NYB50","Barra de nylon Ø50mm (por metro)","Barra","GENÉRICO",["Ø 50mm","Nylon 6","Natural"]],
+    ["GP-NYB100","Barra de nylon Ø100mm (por metro)","Barra","GENÉRICO",["Ø 100mm","Nylon 6","Natural"]],
+    ["GP-UHMW20","Lámina UHMW 20mm","Lámina","GENÉRICO",["20mm","1000×2000mm","Verde"]],
+    ["GP-TEF25","Barra de teflón Ø25mm (por metro)","Barra","GENÉRICO",["Ø 25mm","PTFE","Blanco"]],
+    ["GP-TUBNY","Tubo de nylon Ø60 × Ø40mm","Tubo","GENÉRICO",["DE 60mm","DI 40mm","Por metro"]]
+  ]},
+  {id:"loctite",name:"Productos LOCTITE",desc:"Adhesivos, retenedores, fijadores de rosca, limpiadores y lubricantes.",subs:["Fijador de rosca","Retenedor","Sellante"],
+   items:[
+    ["GP-LT243","Loctite 243 fijador de rosca medio · 50 ml","Fijador de rosca","LOCTITE",["50 ml","Resistencia media","Azul"]],
+    ["GP-LT271","Loctite 271 fijador de rosca alto · 50 ml","Fijador de rosca","LOCTITE",["50 ml","Alta resistencia","Rojo"]],
+    ["GP-LT641","Loctite 641 retenedor de rodamientos · 50 ml","Retenedor","LOCTITE",["50 ml","Desmontable","Ámbar"]],
+    ["GP-LT518","Loctite 518 sellante de bridas · 50 ml","Sellante","LOCTITE",["50 ml","Anaeróbico","Rojo"]],
+    ["GP-LT7063","Loctite SF 7063 limpiador · 400 ml","Sellante","LOCTITE",["400 ml","Limpiador","Aerosol"]]
+  ]}
+];
+
+
+const U = "https://images.unsplash.com/photo-";
+const Q = "?fm=jpg&q=70&w=1200&auto=format&fit=crop";
+const IMGS = {
+  rodamientos:[["1580327947782-55ff50b37f01","Frank R","frank041985"],["1643933871541-090062935680","Farkas Mario","photosbyfrk"],["1645408057621-a6771fda7621","shin1","shin1_de"]],
+  chumaceras:[["1537462715879-360eeb61a0ad","Sam Loyd","samloyd"],["1581093803931-46e730e7622e","ThisisEngineering","thisisengineering"]],
+  correas:[["1519752594763-2633d8d4ea29","lee attwood","lee2d2"],["1615906655593-ad0386982a0f","Sten Rademaker","stenrademaker"]],
+  poleas:[["1589391097913-5e505b1230de","Glen Carrie","glencarrie"],["1583198432859-635beb4e8600","Laura Ockel","viazavier"]],
+  cadenas:[["1606337321936-02d1b1a4d5ef","Pavel Neznanov","npi"],["1711199694531-e982a79ea381","Kirill Prikhodko","kirillq"]],
+  acoples:[["1711199694531-e982a79ea381","Kirill Prikhodko","kirillq"],["1537462715879-360eeb61a0ad","Sam Loyd","samloyd"]],
+  sellos:[["1676487030430-6cad55c86e8c","Shubham Dhage","theshubhamdhage"],["1589391349202-900abe66462a","Glen Carrie","glencarrie"]],
+  estoperas:[["1589391349202-900abe66462a","Glen Carrie","glencarrie"],["1611820798564-3f3ec0134613","AYUSH","singhhayushh"]],
+  mangueras:[["1586528116022-aeda1613c63d","Adrian Sulyok","sulyok_imaging"],["1689942010216-dc412bb1e7a9","AFINIS Group","afinisgroup"]],
+  motores:[["1581093803931-46e730e7622e","ThisisEngineering","thisisengineering"],["1647427060118-4911c9821b82","Simon Kadula","simonkadula"]],
+  ventiladores:[["1647427060118-4911c9821b82","Simon Kadula","simonkadula"],["1553413077-190dd305871c","Ruchindra Gunasekara","ruchindra"]],
+  bandas:[["1689942010216-dc412bb1e7a9","AFINIS Group","afinisgroup"],["1740914994657-f1cdffdc418e","Kseniia Ilinykh","sizzzikova"]],
+  guayas:[["1474674556023-efef886fa147","Ant Rozetsky","rozetsky"],["1684695749267-233af13276d0","Alberto Rodríguez","albertorodriguez"]],
+  plasticos:[["1586528116311-ad8dd3c8310d","Adrian Sulyok","sulyok_imaging"],["1587293852726-70cdb56c2866","CHUTTERSNAP","chuttersnap"]],
+  loctite:[["1587293852726-70cdb56c2866","CHUTTERSNAP","chuttersnap"],["1586528116311-ad8dd3c8310d","Adrian Sulyok","sulyok_imaging"]]
+};
+const shot = (id, i) => {
+  const set = IMGS[id] || IMGS.rodamientos;
+  const p = set[(i || 0) % set.length];
+  return {src:U + p[0] + Q, credit:"Photo by " + p[1] + " on Unsplash", href:"https://unsplash.com/@" + p[2]};
+};
+const HERO = {src:U + "1592085198739-ffcad7f36b54" + Q, credit:"Photo by Arno Senoner on Unsplash", href:"https://unsplash.com/@arnosenoner"};
+
+class Component extends DCLogic {
+  state = {view:"home", cat:null, sub:"Todos", query:"", search:"", cart:{}, cartOpen:false, headerH:72};
+
+  state2 = null;
+  componentDidMount(){
+    this.measure = () => {
+      const h = document.querySelector("header");
+      if(h){ const px = Math.round(h.getBoundingClientRect().height); if(px !== this.state.headerH) this.setState({headerH:px}); }
+    };
+    this.measure();
+    window.addEventListener("resize", this.measure);
+    this.mt = setInterval(this.measure, 500);
+  }
+  componentWillUnmount(){ window.removeEventListener("resize", this.measure); clearInterval(this.mt); }
+  top(){ try{ window.scrollTo(0,0); }catch(e){} }
+  nav(view, cat){ this.setState({view, cat, sub:"Todos", cartOpen:false}); this.top(); }
+  anchor(id){
+    const go = () => { const el = document.getElementById(id); if(el) window.scrollTo(0, el.getBoundingClientRect().top + window.scrollY - ((this.state.headerH || 72) + 8)); };
+    if(this.state.view !== "home"){ this.setState({view:"home", cat:null, cartOpen:false}); setTimeout(go, 80); }
+    else go();
+  }
+  find(code){ for(const c of CATS){ const it = c.items.find(i => i[0] === code); if(it) return {it, cat:c}; } return null; }
+  add(code){ this.setState(s => ({cart:{...s.cart, [code]:(s.cart[code]||0)+1}})); }
+  toggle(code){ this.setState(s => { const c = {...s.cart}; if(c[code]) delete c[code]; else c[code] = 1; return {cart:c}; }); }
+  qty(code, d){ this.setState(s => { const c = {...s.cart}; const n = (c[code]||0)+d; if(n <= 0) delete c[code]; else c[code] = n; return {cart:c}; }); }
+  waNumber(){ return (this.props.numeroWhatsapp || "584140000000").replace(/[^0-9]/g,""); }
+  cartLines(){
+    return Object.keys(this.state.cart).map(code => {
+      const f = this.find(code); if(!f) return null;
+      return "• " + f.it[1] + " (" + code + ") x" + this.state.cart[code];
+    }).filter(Boolean);
+  }
+  send(kind){
+    const lines = this.cartLines();
+    const head = kind === "quote"
+      ? "Hola GPar, quisiera solicitar una *cotización* de los siguientes productos:"
+      : (this.props.mensajeEnvio || "Hola GPar, quiero hacer el siguiente *pedido*:");
+    const body = lines.length ? lines.join("\n") : "(Todavía no seleccioné productos, necesito asesoría para identificar la pieza)";
+    const url = "https://wa.me/" + this.waNumber() + "?text=" + encodeURIComponent(head + "\n\n" + body + "\n\nGracias.");
+    try{ window.open(url, "_blank"); }catch(e){}
+  }
+
+  vm(it, cat, i){
+    const inCart = !!this.state.cart[it[0]];
+    const ph = shot(cat.id, i);
+    const brand = Array.isArray(it[3]) ? "GPar" : (it[3] === "GENÉRICO" ? "GPar" : it[3]);
+    return {
+      code:it[0], name:it[1], sub:it[2], brand,
+      slotId:"slot-" + it[0].toLowerCase(), img:ph.src, credit:ph.credit, href:ph.href,
+      specs:it[4].map(s => { const p = s.split(" "); return {k:p[0], v:p.slice(1).join(" ")}; }),
+      specLine:it[4].join(" · "), cat:cat.name, stock:"Disponible",
+      price:"Precio a consultar",
+      inCart, btnLabel: inCart ? "✓ En el pedido" : "+ Agregar al pedido",
+      btnBg: inCart ? "#1D2430" : "#FFFFFF", btnFg: inCart ? "#FFFFFF" : "#1D2430",
+      cardBorder: inCart ? "#F57C00" : "#E4E7EC",
+      toggle: () => this.toggle(it[0]),
+      quote: () => { this.add(it[0]); this.send("quote"); }
+    };
+  }
+
+  renderVals(){
+    const s = this.state;
+    const cat = s.cat ? CATS.find(c => c.id === s.cat) : null;
+    const isSearch = s.view === "search";
+
+    let pool = [];
+    if(isSearch){
+      const q = s.search.toLowerCase().trim();
+      CATS.forEach(c => c.items.forEach((it, i) => {
+        const hay = (it[0] + " " + it[1] + " " + it[2] + " " + (Array.isArray(it[3]) ? "" : it[3]) + " " + c.name).toLowerCase();
+        if(!q || hay.includes(q)) pool.push(this.vm(it, c, i));
+      }));
+    } else if(cat){
+      cat.items.forEach((it, i) => { if(s.sub === "Todos" || it[2] === s.sub) pool.push(this.vm(it, cat, i)); });
+    }
+
+    const subs = ["Todos"].concat(cat ? cat.subs : []);
+    const cartItems = Object.keys(s.cart).map(code => {
+      const f = this.find(code); if(!f) return null;
+      return {code, name:f.it[1], cat:f.cat.name, qty:s.cart[code],
+        inc:() => this.qty(code, 1), dec:() => this.qty(code, -1), remove:() => this.toggle(code)};
+    }).filter(Boolean);
+    const cartCount = Object.values(s.cart).reduce((a, b) => a + b, 0);
+
+    const featuredCodes = ["GP-6205RS","GP-UCP205","GP-A45","GP-PA100","GP-CAD40","GP-M15T","GP-MG1SN","GP-LT243"];
+    const featured = featuredCodes.map((c, i) => { const f = this.find(c); return f ? this.vm(f.it, f.cat, i) : null; }).filter(Boolean);
+
+    return {
+      isHome: s.view === "home",
+      isList: s.view === "cat" || isSearch,
+      listTitle: isSearch ? "Resultados de búsqueda" : (cat ? cat.name : ""),
+      listKicker: isSearch ? "Búsqueda en el catálogo" : "Línea de producto",
+      listDesc: isSearch
+        ? ("Coincidencias para “" + s.search + "”. Selecciona lo que necesitas y arma tu pedido.")
+        : (cat ? cat.desc : ""),
+      listCount: isSearch ? pool.length : (cat ? cat.items.length : 0),
+      shownCount: pool.length,
+      listProducts: pool,
+      listEmpty: pool.length === 0,
+      subFilters: subs.map(x => ({
+        label:x, go:() => this.setState({sub:x}),
+        bg: s.sub === x ? "#1D2430" : "#FFFFFF",
+        fg: s.sub === x ? "#FFFFFF" : "#5C6675",
+        border: s.sub === x ? "#1D2430" : "#E4E7EC"
+      })),
+      categories: CATS.map(c => ({
+        name:c.name, desc:c.desc, count:c.items.length,
+        slotId:"slot-cat-" + c.id, slotHint:"Foto · " + c.name,
+        img:shot(c.id, 0).src, credit:shot(c.id, 0).credit, href:shot(c.id, 0).href,
+        go:() => this.nav("cat", c.id)
+      })),
+      catCount: CATS.length,
+      footerCats: CATS.slice(0, 6).map(c => ({name:c.name, go:() => this.nav("cat", c.id)})),
+      quickChips: ["rodamientos","chumaceras","correas","motores","mangueras"].map(id => {
+        const c = CATS.find(x => x.id === id);
+        return {name:c.name, go:() => this.nav("cat", id)};
+      }),
+      strip: CATS.concat(CATS).map(c => ({label:c.name})),
+      totalRefs: CATS.reduce((a, c) => a + c.items.length, 0) + "+",
+      featured,
+      helpCards:[
+        {title:"Buscar por código", desc:"Ubica una referencia específica al instante.", go:() => { this.setState({view:"search", search:"", cartOpen:false}); this.top(); }},
+        {title:"Explorar categorías", desc:"Navega por línea de producto.", go:() => this.anchor("categorias")},
+        {title:"Armar tu pedido", desc:"Selecciona y envíalo por WhatsApp.", go:() => this.setState({cartOpen:true})},
+        {title:"Pedir cotización", desc:"Precio, disponibilidad y entrega.", go:() => this.anchor("contacto")}
+      ],
+      brands:["SKF","TIMKEN","NSK","FAG","GATES","WEG","LOCTITE"].map(n => ({name:n})),
+      reasons:[
+        {title:"Todo en un solo proveedor", desc:"Quince líneas de producto para el mantenimiento y la operación de tu planta."},
+        {title:"Inventario real", desc:"Lo que ves en el catálogo es lo que tenemos en almacén, no una promesa."},
+        {title:"Pedidos por WhatsApp", desc:"Armas la lista aquí y sigues la conversación con un asesor, sin formularios eternos."},
+        {title:"Asesoría técnica", desc:"Te ayudamos a identificar la pieza exacta aunque no tengas el código."}
+      ],
+      contactRows:[
+        {label:"WhatsApp", value:this.props.numeroWhatsapp || "+58 414 000 0000"},
+        {label:"Correo", value:"ventas@gparsoluciones.com"},
+        {label:"Horario", value:"Lunes a sábado, 8:00 a.m. – 5:00 p.m."},
+        {label:"Dirección", value:"Por confirmar"}
+      ],
+      stickyTop: (s.headerH || 72) + "px",
+      heroImg:HERO.src, heroCredit:HERO.credit, heroHref:HERO.href,
+      showPrices: this.props.mostrarPrecios === true,
+      query: s.query,
+      onQuery: e => this.setState({query:e.target.value}),
+      onQueryKey: e => { if(e.key === "Enter"){ this.setState({view:"search", search:e.target.value, cartOpen:false}); this.top(); } },
+      runSearch: () => { this.setState({view:"search", search:s.query, cartOpen:false}); this.top(); },
+      goHome: () => this.nav("home", null),
+      goCategorias: () => this.anchor("categorias"),
+      goMarcas: () => this.anchor("marcas"),
+      goContacto: () => this.anchor("contacto"),
+      cartOpen: s.cartOpen,
+      openCart: () => this.setState({cartOpen:true}),
+      closeCart: () => this.setState({cartOpen:false}),
+      cartItems, cartCount, cartEmpty: cartItems.length === 0, hasCart: cartItems.length > 0,
+      sendCart: () => this.send("cart"),
+      sendQuote: () => this.send("quote")
+    };
+  }
+}
+</script>
+</body>
+</html>

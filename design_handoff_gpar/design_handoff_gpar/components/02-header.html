@@ -1,0 +1,37 @@
+<!-- Header sticky
+Props: cantidadCotizacion:number, rutaActiva:string. El buscador baja a fila propia bajo 1024px. Todo lo navegable es <a>/<button>.
+Depende de: tokens/tokens.css + reference/styles.css
+-->
+<header class="header">
+  <div class="wrap">
+    <a class="brand" href="/">
+      <img src="/logo-gpar.png" alt="Distribuidora GPar">
+      <span>
+        <span class="brand__eyebrow">Distribuidora</span>
+        <span class="brand__name">GPAR</span>
+      </span>
+    </a>
+
+    <form class="search" role="search" action="/buscar">
+      <img src="/icons/buscar.svg" alt="" width="18" height="18">
+      <input type="search" name="q" placeholder="Busca por producto, código o marca" aria-label="Buscar en el catálogo">
+      <button class="search__btn" type="submit">Buscar</button>
+    </form>
+
+    <nav class="nav" aria-label="Principal">
+      <a href="/" aria-current="page">Inicio</a>
+      <a href="/industrial">Industrial</a>
+      <a href="/automotriz">Automotriz</a>
+      <a href="/cotizar">Contacto</a>
+    </nav>
+
+    <div style="display:flex;gap:8px;align-items:center">
+      <button class="header__cta" type="button" aria-haspopup="dialog">
+        Mi cotización <span class="count">2</span>
+      </button>
+      <button class="menu-btn" type="button" aria-label="Abrir menú">
+        <img src="/icons/menu.svg" alt="" width="22" height="22">
+      </button>
+    </div>
+  </div>
+</header>

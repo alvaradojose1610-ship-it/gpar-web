@@ -1,27 +1,29 @@
 import { Contenedor } from "@/componentes/interfaz/Contenedor";
-import { EncabezadoSeccion } from "@/componentes/interfaz/EncabezadoSeccion";
 import { marcasTemporales } from "@/datos/marcas";
 
 export function SeccionMarcas() {
   return (
-    <section id="marcas" className="seccion scroll-mt-24 bg-fondo">
-      <Contenedor>
-        <EncabezadoSeccion
-          titulo="Marcas"
-          descripcion="Las marcas se confirmarán durante la carga del catálogo."
-        />
-        <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6">
-          {marcasTemporales.map((marca) => (
-            <div
+    <section
+      id="marcas"
+      className="seccion scroll-mt-28 border-y border-gpar-line bg-gpar-surface"
+    >
+      <Contenedor className="text-center">
+        <p className="mb-[22px] font-mono text-[11px] uppercase tracking-[0.1em] text-gpar-ink-3">
+          Trabajamos con marcas reconocidas del mercado
+        </p>
+        <div className="flex flex-wrap items-center justify-center gap-8">
+          {marcasTemporales.slice(0, 5).map((marca, i) => (
+            <span
               key={marca.id}
-              className="flex h-16 items-center justify-center rounded-md border border-borde bg-blanco px-3"
+              className="font-display text-[26px] font-bold tracking-[0.03em] text-gpar-ink-4"
             >
-              <span className="text-[11px] font-medium text-acero/40">
-                {marca.nombre}
-              </span>
-            </div>
+              Marca {i + 1}
+            </span>
           ))}
         </div>
+        <p className="mt-[18px] text-[15.5px] text-gpar-ink-2">
+          PLACEHOLDER — GPar debe confirmar qué marcas se pueden exhibir.
+        </p>
       </Contenedor>
     </section>
   );

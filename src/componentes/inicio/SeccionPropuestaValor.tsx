@@ -1,45 +1,43 @@
-import { Layers3, Headphones, MessageSquareQuote, Rocket } from "lucide-react";
 import { Contenedor } from "@/componentes/interfaz/Contenedor";
-import { EncabezadoSeccion } from "@/componentes/interfaz/EncabezadoSeccion";
 
-const puntos = [
+const razones = [
   {
-    icono: Layers3,
-    titulo: "Variedad de categorías",
-    descripcion: "Líneas para mantenimiento y operación industrial.",
+    titulo: "Dos líneas, un proveedor",
+    desc: "Repuestos industriales y automotrices en el mismo catálogo.",
   },
   {
-    icono: Headphones,
-    titulo: "Atención cercana",
-    descripcion: "Canal comercial para acompañar tu solicitud.",
+    titulo: "Inventario real",
+    desc: "Lo que ves en el catálogo es lo que tenemos en almacén.",
   },
   {
-    icono: MessageSquareQuote,
-    titulo: "Solicitudes de cotización",
-    descripcion: "Espacio preparado para pedidos de información.",
+    titulo: "Cotización rápida",
+    desc: "Armas la lista aquí y te respondemos con precio y entrega.",
   },
   {
-    icono: Rocket,
-    titulo: "Portal preparado para crecer",
-    descripcion: "Base lista para catálogo y operación futura.",
+    titulo: "Asesoría técnica",
+    desc: "Te ayudamos a identificar la pieza aunque no tengas el código.",
   },
 ] as const;
 
 export function SeccionPropuestaValor() {
   return (
-    <section className="seccion bg-blanco">
+    <section className="seccion">
       <Contenedor>
-        <EncabezadoSeccion titulo="Atención comercial orientada a tu operación" />
-        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-          {puntos.map(({ icono: Icono, titulo, descripcion }) => (
-            <article
-              key={titulo}
-              className="rounded-md border border-borde bg-fondo p-4"
-            >
-              <Icono className="mb-3 size-5 text-naranja" strokeWidth={1.75} aria-hidden />
-              <h3 className="mb-1 text-sm font-semibold text-acero">{titulo}</h3>
-              <p className="text-xs leading-relaxed text-acero/60">{descripcion}</p>
-            </article>
+        <h2 className="font-display text-[clamp(28px,3.4vw,38px)] font-extrabold uppercase leading-[1.05] text-gpar-ink">
+          ¿Por qué comprar en GPar?
+        </h2>
+        <p className="mb-[30px] mt-2 text-[15.5px] text-gpar-ink-2">
+          Lo mismo que le decimos a cada cliente en el mostrador.
+        </p>
+        <div className="grid grid-cols-1 gap-[26px] sm:grid-cols-2 lg:grid-cols-4">
+          {razones.map((razon) => (
+            <div key={razon.titulo}>
+              <div className="mb-3.5 h-[3px] w-[34px] bg-gpar-orange" />
+              <h3 className="mb-2 text-[16.5px] font-semibold text-gpar-ink">
+                {razon.titulo}
+              </h3>
+              <p className="text-[14.5px] text-gpar-ink-2">{razon.desc}</p>
+            </div>
           ))}
         </div>
       </Contenedor>

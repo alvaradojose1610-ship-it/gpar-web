@@ -1,0 +1,85 @@
+---
+description: Sistema integrado GPar — web pública + panel interno (reutilizar Óptica/Repuestos)
+alwaysApply: true
+---
+
+# Sistema integrado Distribuidora GPar
+
+Un solo producto Next.js (`gpar-web`): **catálogo/cotizaciones públicos** + **panel interno** (inventario, ventas, QR, compras, usuarios).
+
+## Stack
+
+- Next.js App Router, React, TypeScript, Tailwind 4
+- Prisma + PostgreSQL (Neon), como Óptica / Repuestos Motos
+- Auth **custom**: `bcryptjs` + JWT `jose` (cookie httpOnly). No NextAuth.
+- Dominio y UI en **español** (tablas, atributos, mensajes, rutas funcionales)
+
+## Rutas
+
+| Ámbito | Prefijo | Auth |
+|---|---|---|
+| Web pública | `/`, `/industrial`, `/automotriz`, `/buscar`, `/cotizar`, `/p/[token]` | No |
+| Login | `/login` | Público |
+| Panel interno | `/panel/*` | Cookie `gpar_sesion` + permisos en servidor |
+
+Middleware solo protege `/panel`. Permisos finales siempre con `requerirSesion` / `requerirPermiso` (DB), no en Edge.
+
+## Diseño público
+
+Handoff: `design_handoff_gpar/`. Tokens `--gp-*`, tipografía Barlow Condensed + IBM Plex Sans/Mono (`next/font`). Esquinas rectas. CTA: **Solicitar cotización** (no carrito/checkout).
+
+Sin fotos reales: placeholders / CSS. No Unsplash como producto oficial. Marcas solo si están autorizadas.
+
+## Líneas de catálogo
+
+- `industrial` | `automotriz`
+- Industrial: codigo, modelo, descripcion, aplicacion (+ specs)
+- Automotriz: nombre, tipo, marca, descripcion, tamano, codigo, aplicacion, posicion, vehiculo, años
+
+## Reutilización (solo lectura)
+
+1. **repuestos-motos** — Producto+QR, POS, compras/proveedores, inventario por movimientos, caja, CxC/CxP, roles
+2. **Óptica** — presupuestos→venta (`Quote` → modelar `Cotizacion`), auth, multi-sede, Blob, tickets, WhatsApp
+3. Extraer genérico; adaptar a GPar. **No modificar** esos repos desde tareas GPar. **No copiar** CSS/identidad.
+
+## Inventario y venta
+
+- Stock solo por `MovimientoInventario`
+- QR estante → `/p/[tokenPublico]` → venta / ficha
+- Sin stock: historial de `DetalleCompra` (proveedor + costo)
+- Contabilidad formal: fase posterior (sí CxC/CxP/caja)
+
+## Contacto confirmado
+
+WhatsApp +58 424-5140003 · Instagram @distribuidoragpar · Maps goo.gl/gUUG6rsq42k1fafH6  
+Correo / teléfono fijo / dirección textual: pendientes
+
+### Seed local (cambiar en producción)
+
+Usuario `admin` / clave `123` (seed). Roles: ADMINISTRADOR, VENDEDOR, ALMACEN, CONSULTA.
+
+## Imágenes de producto
+
+Campo `Producto.imagenUrl` (Vercel Blob, como Óptica/Repuestos). Hoy la web usa placeholders CSS: **no** hay fotos del catálogo escaneado. Flujo: subir foto en panel → Blob → `imagenUrl` → `next/image` en tarjetas.
+
+## Stock, cotización y apartados
+
+- **Lista de cotización web** = interés del cliente, **no reserva stock**.
+- **Venta POS / tienda** = baja stock al confirmar.
+- **Apartado** (pendiente de módulo): reserva temporal con vencimiento; si solo hay 1 unidad, el primero en confirmar venta o apartado válido se queda con ella; cotizaciones posteriores avisan “sin disponible / bajo pedido”.
+- Sin stock: mostrar historial de proveedores y último costo (`DetalleCompra`).
+
+## Fases de implementación
+
+1. Fundación: schema, auth, panel shell, catálogo público handoff ✅
+2. Cotizaciones web → bandeja panel + persistencia BD ✅
+3. Productos/QR/compras/proveedores (CRUD + historial costos) ✅
+4. POS + caja ✅
+5. Inventario por movimientos + etiquetas QR ✅
+6. Módulo **Apartado** (reserva con vencimiento)
+7. Contabilidad (después)
+8. Pulido UX, fotos reales (Blob), surtido automotriz completo
+
+## Calidad
+
+Mobile-first, ligero, sin JS innecesario. Antes de cerrar: `typecheck`, `lint`, `build`.

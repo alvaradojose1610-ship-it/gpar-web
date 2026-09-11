@@ -1,0 +1,27 @@
+<!-- Tarjeta de categoría
+Toda la tarjeta es un enlace. Hover: border-color #F57C00. Imagen 150px, object-fit cover.
+Depende de: tokens/tokens.css + reference/styles.css
+-->
+<a class="card" href="/industrial/rodamientos">
+  <div class="card__media"><img src="/img/cat-rodamientos.jpg" alt="Rodamientos" loading="lazy"></div>
+  <div class="card__body">
+    <h3 class="card__title">Rodamientos</h3>
+    <p class="card__desc">Rígidos de bolas, cónicos, de rodillos, de agujas y axiales.</p>
+    <div class="card__foot">
+      <span class="code">10 ítems</span>
+      <span class="card__link">Ver productos →</span>
+    </div>
+  </div>
+</a>
+
+<!-- Variante "próximamente" (línea automotriz sin surtido cargado) -->
+<a class="card soon" href="#" aria-disabled="true">
+  <div class="card__media" style="display:flex;align-items:center;justify-content:center">
+    <span class="label">Foto pendiente</span>
+  </div>
+  <div class="card__body">
+    <h3 class="card__title">Kits de embrague</h3>
+    <p class="card__desc">Surtido por confirmar con GPar.</p>
+    <div class="card__foot"><span class="code">Próximamente</span></div>
+  </div>
+</a>

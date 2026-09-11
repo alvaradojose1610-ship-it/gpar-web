@@ -1,0 +1,96 @@
+/* Distribuidora GPar — design tokens
+   Fuente de verdad de la identidad visual. Copiar a app/globals.css (Next.js)
+   y mapear en tailwind.config.ts (ver DESIGN_HANDOFF.md § Tailwind). */
+
+:root {
+  /* ---------- Marca ---------- */
+  --gp-orange:        #F57C00; /* naranja industrial GPar — fondos, botón primario */
+  --gp-orange-ink:    #D96A00; /* naranja oscuro — texto/enlaces sobre blanco (AA) */
+  --gp-orange-soft:   #FFF3E6; /* fondo de badge/píldora */
+  --gp-orange-border: #FBD3A8; /* borde de badge/píldora */
+
+  /* ---------- Tinta / neutros ---------- */
+  --gp-ink:        #1D2430; /* texto principal, footer, botón secundario */
+  --gp-ink-2:      #5C6675; /* texto secundario, párrafos */
+  --gp-ink-3:      #8A94A2; /* metadatos, códigos, labels */
+  --gp-ink-4:      #98A2B0; /* texto deshabilitado, logos de marca */
+  --gp-line:       #E4E7EC; /* borde por defecto */
+  --gp-line-soft:  #EEF0F3; /* borde interno de tarjeta */
+  --gp-surface:    #F7F8FA; /* fondo de sección alterna, inputs */
+  --gp-bg:         #FFFFFF; /* fondo base */
+
+  /* ---------- Estado ---------- */
+  --gp-in-list:    #1D2430; /* producto agregado a la lista de cotización */
+  --gp-focus:      #D96A00;
+
+  /* ---------- Tipografía ---------- */
+  --gp-font-display: 'Barlow Condensed', 'Arial Narrow', sans-serif;
+  --gp-font-body:    'IBM Plex Sans', system-ui, -apple-system, sans-serif;
+  --gp-font-mono:    'IBM Plex Mono', ui-monospace, monospace;
+
+  --gp-text-xs:   11px;   /* labels mono en mayúsculas */
+  --gp-text-sm:   12.5px; /* badges, meta */
+  --gp-text-base: 14px;   /* UI, botones */
+  --gp-text-md:   15.5px; /* párrafos de tarjeta */
+  --gp-text-lg:   17px;   /* bajada del hero */
+  --gp-h3:        21px;   /* título de tarjeta de categoría (display) */
+  --gp-h2:        clamp(28px, 3.4vw, 38px);
+  --gp-h1-list:   clamp(32px, 4.4vw, 46px);
+  --gp-h1-hero:   clamp(34px, 5.4vw, 62px);
+
+  --gp-lh-tight: 1;
+  --gp-lh-head:  1.05;
+  --gp-lh-body:  1.5;
+  --gp-track-display: 0.02em; /* mayúsculas display */
+  --gp-track-label:   0.10em; /* labels mono en mayúsculas */
+
+  /* ---------- Espaciado (escala 4) ---------- */
+  --gp-1: 4px;  --gp-2: 8px;  --gp-3: 12px; --gp-4: 16px;
+  --gp-5: 20px; --gp-6: 24px; --gp-8: 32px; --gp-10: 40px;
+  --gp-12: 48px; --gp-15: 60px; --gp-19: 76px;
+
+  --gp-gutter: 20px;         /* padding lateral móvil */
+  --gp-gutter-lg: 24px;      /* padding lateral desktop */
+  --gp-container: 1220px;    /* ancho máximo de contenido */
+  --gp-header-h: 152px;      /* FALLBACK del alto del header sticky. El valor real se mide en
+                                runtime (ResizeObserver sobre .header → :root). Es el `top` de
+                                la barra de subfiltros; nunca dejarlo fijo. */
+  --gp-section-y: 40px;      /* padding vertical de sección — móvil */
+  --gp-section-y-lg: 60px;   /* padding vertical de sección — desktop */
+
+  /* ---------- Forma ---------- */
+  --gp-radius: 0px;          /* el sistema es de esquinas rectas (industrial) */
+  --gp-radius-round: 50%;    /* solo el logo */
+  --gp-border: 1px solid var(--gp-line);
+  --gp-border-accent: 3px solid var(--gp-orange);
+  --gp-shadow-bar: 0 -6px 24px rgba(29, 36, 48, 0.08);
+  --gp-shadow-panel: -12px 0 40px rgba(29, 36, 48, 0.18);
+  --gp-scrim: rgba(29, 36, 48, 0.45);
+
+  /* ---------- Movimiento ---------- */
+  --gp-dur-fast: 120ms;
+  --gp-dur: 180ms;
+  --gp-ease: cubic-bezier(0.2, 0.6, 0.2, 1);
+  --gp-strip-dur: 42s; /* marquesina de categorías */
+
+  /* ---------- Capas ---------- */
+  --gp-z-filters: 40;
+  --gp-z-bar: 55;
+  --gp-z-header: 60;
+  --gp-z-scrim: 80;
+  --gp-z-panel: 90;
+}
+
+/* ---------- Breakpoints (referencia; mobile-first) ----------
+   sm  ≥ 480px   móvil grande — 2 columnas de categoría
+   md  ≥ 768px   tablet — nav visible, hero a 2/3
+   lg  ≥ 1024px  desktop — 3-4 columnas, buscador inline en el header
+   xl  ≥ 1280px  contenedor tope 1220px, sin cambios de estructura
+------------------------------------------------------------- */
+
+@keyframes gp-strip { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+
+@media (prefers-reduced-motion: reduce) {
+  [data-strip] { animation: none !important; }
+  * { transition-duration: 1ms !important; }
+}

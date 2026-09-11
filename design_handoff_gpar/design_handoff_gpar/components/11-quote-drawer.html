@@ -1,0 +1,33 @@
+<!-- Panel de cotización (drawer)
+role=dialog + aria-modal + trampa de foco + cierre con Esc. Persistir en localStorage "gpar:cotizacion".
+Depende de: tokens/tokens.css + reference/styles.css
+-->
+<div class="scrim" data-close></div>
+<aside class="drawer" role="dialog" aria-modal="true" aria-label="Mi cotización">
+  <div class="drawer__head">
+    <h2>Mi cotización</h2>
+    <button type="button" aria-label="Cerrar"><img src="/icons/cerrar.svg" alt="" width="20" height="20"></button>
+  </div>
+  <div class="drawer__body">
+    <div class="line-item">
+      <img class="line-item__thumb" src="/img/gp-6205rs.jpg" alt="">
+      <div style="flex:1;min-width:0">
+        <div class="prod__name">Rodamiento rígido de bolas 6205-2RS</div>
+        <div class="code" style="margin-top:2px">GP-6205RS · Rodamientos</div>
+        <div class="stepper">
+          <button type="button" aria-label="Quitar una unidad">−</button>
+          <span>2</span>
+          <button type="button" aria-label="Agregar una unidad">+</button>
+          <button class="remove" type="button">Quitar</button>
+        </div>
+      </div>
+    </div>
+    <!-- Estado vacío -->
+    <!-- <p style="padding:56px 0;text-align:center;color:var(--gp-ink-2)">Tu lista está vacía.<br>Escoge una categoría y agrega productos.</p> -->
+  </div>
+  <div class="drawer__foot">
+    <small style="color:var(--gp-ink-2);font-size:12.5px">Sin pago en línea: envías la lista y GPar te responde con precio, disponibilidad y tiempo de entrega.</small>
+    <a class="btn btn--primary btn--block" href="/cotizar">Solicitar cotización</a>
+    <button class="btn btn--secondary btn--block" type="button">Enviar por WhatsApp</button>
+  </div>
+</aside>

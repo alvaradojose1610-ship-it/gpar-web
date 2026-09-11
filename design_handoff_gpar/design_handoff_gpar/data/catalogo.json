@@ -1,0 +1,1368 @@
+{
+  "$meta": {
+    "fuente": "Prototipo HTML 'Catalogo GPar.dc.html'",
+    "nota": "Referencias de ejemplo construidas con el surtido real de GPar. Códigos GP-* son internos del prototipo: confirmar con GPar antes de publicar.",
+    "lineas": [
+      "industrial",
+      "automotriz"
+    ]
+  },
+  "industrial": [
+    {
+      "id": "rodamientos",
+      "nombre": "Rodamientos",
+      "descripcion": "Rígidos de bolas, cónicos, de rodillos, de agujas y axiales.",
+      "subcategorias": [
+        "Rígido de bolas",
+        "Cónico",
+        "De rodillos",
+        "De agujas",
+        "Axial"
+      ],
+      "items": [
+        {
+          "codigo": "GP-6205RS",
+          "nombre": "Rodamiento rígido de bolas 6205-2RS",
+          "subcategoria": "Rígido de bolas",
+          "marca": "SKF",
+          "specs": [
+            "DI 25mm",
+            "DE 52mm",
+            "Ancho 15mm"
+          ],
+          "stock": "Disponible",
+          "precio": null
+        },
+        {
+          "codigo": "GP-6204ZZ",
+          "nombre": "Rodamiento rígido de bolas 6204-ZZ",
+          "subcategoria": "Rígido de bolas",
+          "marca": "NSK",
+          "specs": [
+            "DI 20mm",
+            "DE 47mm",
+            "Ancho 14mm"
+          ],
+          "stock": "Disponible",
+          "precio": null
+        },
+        {
+          "codigo": "GP-6308",
+          "nombre": "Rodamiento rígido de bolas 6308",
+          "subcategoria": "Rígido de bolas",
+          "marca": "FAG",
+          "specs": [
+            "DI 40mm",
+            "DE 90mm",
+            "Ancho 23mm"
+          ],
+          "stock": "Disponible",
+          "precio": null
+        },
+        {
+          "codigo": "GP-32206",
+          "nombre": "Rodamiento cónico 32206",
+          "subcategoria": "Cónico",
+          "marca": "TIMKEN",
+          "specs": [
+            "DI 30mm",
+            "DE 62mm",
+            "Ancho 21.2mm"
+          ],
+          "stock": "Disponible",
+          "precio": null
+        },
+        {
+          "codigo": "GP-30206",
+          "nombre": "Rodamiento cónico 30206",
+          "subcategoria": "Cónico",
+          "marca": "KOYO",
+          "specs": [
+            "DI 30mm",
+            "DE 62mm",
+            "Ancho 17.2mm"
+          ],
+          "stock": "Disponible",
+          "precio": null
+        },
+        {
+          "codigo": "GP-NU2208",
+          "nombre": "Rodamiento de rodillos NU 2208",
+          "subcategoria": "De rodillos",
+          "marca": "FAG",
+          "specs": [
+            "DI 40mm",
+            "DE 80mm",
+            "Ancho 23mm"
+          ],
+          "stock": "Disponible",
+          "precio": null
+        },
+        {
+          "codigo": "GP-NJ309",
+          "nombre": "Rodamiento de rodillos NJ 309",
+          "subcategoria": "De rodillos",
+          "marca": "SKF",
+          "specs": [
+            "DI 45mm",
+            "DE 100mm",
+            "Ancho 25mm"
+          ],
+          "stock": "Disponible",
+          "precio": null
+        },
+        {
+          "codigo": "GP-HK2520",
+          "nombre": "Rodamiento de agujas HK 2520",
+          "subcategoria": "De agujas",
+          "marca": "INA",
+          "specs": [
+            "DI 25mm",
+            "DE 32mm",
+            "Ancho 20mm"
+          ],
+          "stock": "Disponible",
+          "precio": null
+        },
+        {
+          "codigo": "GP-51108",
+          "nombre": "Rodamiento axial de bolas 51108",
+          "subcategoria": "Axial",
+          "marca": "NSK",
+          "specs": [
+            "DI 40mm",
+            "DE 60mm",
+            "Ancho 13mm"
+          ],
+          "stock": "Disponible",
+          "precio": null
+        },
+        {
+          "codigo": "GP-22212",
+          "nombre": "Rodamiento a rótula 22212",
+          "subcategoria": "De rodillos",
+          "marca": "SKF",
+          "specs": [
+            "DI 60mm",
+            "DE 110mm",
+            "Ancho 28mm"
+          ],
+          "stock": "Disponible",
+          "precio": null
+        }
+      ]
+    },
+    {
+      "id": "chumaceras",
+      "nombre": "Chumaceras",
+      "descripcion": "Chumaceras de pared, puente y tensoras, de 2 y 4 huecos.",
+      "subcategorias": [
+        "Puente",
+        "Pared",
+        "Tensora"
+      ],
+      "items": [
+        {
+          "codigo": "GP-UCP205",
+          "nombre": "Chumacera de puente UCP 205",
+          "subcategoria": "Puente",
+          "marca": "ASAHI",
+          "specs": [
+            "Eje 25mm",
+            "2 huecos",
+            "Fundición"
+          ],
+          "stock": "Disponible",
+          "precio": null
+        },
+        {
+          "codigo": "GP-UCP208",
+          "nombre": "Chumacera de puente UCP 208",
+          "subcategoria": "Puente",
+          "marca": "ASAHI",
+          "specs": [
+            "Eje 40mm",
+            "2 huecos",
+            "Fundición"
+          ],
+          "stock": "Disponible",
+          "precio": null
+        },
+        {
+          "codigo": "GP-UCF206",
+          "nombre": "Chumacera de pared UCF 206 cuadrada",
+          "subcategoria": "Pared",
+          "marca": "FK",
+          "specs": [
+            "Eje 30mm",
+            "4 huecos",
+            "Fundición"
+          ],
+          "stock": "Disponible",
+          "precio": null
+        },
+        {
+          "codigo": "GP-UCFL207",
+          "nombre": "Chumacera de pared ovalada UCFL 207",
+          "subcategoria": "Pared",
+          "marca": "FK",
+          "specs": [
+            "Eje 35mm",
+            "2 huecos",
+            "Fundición"
+          ],
+          "stock": "Disponible",
+          "precio": null
+        },
+        {
+          "codigo": "GP-UCT206",
+          "nombre": "Chumacera tensora UCT 206",
+          "subcategoria": "Tensora",
+          "marca": "ASAHI",
+          "specs": [
+            "Eje 30mm",
+            "Tensor",
+            "Fundición"
+          ],
+          "stock": "Disponible",
+          "precio": null
+        },
+        {
+          "codigo": "GP-SN511",
+          "nombre": "Soporte partido SN 511",
+          "subcategoria": "Puente",
+          "marca": "SKF",
+          "specs": [
+            "Eje 50mm",
+            "Partido",
+            "Fundición"
+          ],
+          "stock": "Disponible",
+          "precio": null
+        }
+      ]
+    },
+    {
+      "id": "correas",
+      "nombre": "Correas",
+      "descripcion": "Correas tipo A, B, C, D, 3V y 5V, dentadas y de velocidad variable.",
+      "subcategorias": [
+        "Trapezoidal",
+        "Dentada",
+        "Multi-V"
+      ],
+      "items": [
+        {
+          "codigo": "GP-A45",
+          "nombre": "Correa trapezoidal A-45",
+          "subcategoria": "Trapezoidal",
+          "marca": "GATES",
+          "specs": [
+            "Perfil A",
+            "Largo 45 pulg",
+            "Ancho 13mm"
+          ],
+          "stock": "Disponible",
+          "precio": null
+        },
+        {
+          "codigo": "GP-B60",
+          "nombre": "Correa trapezoidal B-60",
+          "subcategoria": "Trapezoidal",
+          "marca": "OPTIBELT",
+          "specs": [
+            "Perfil B",
+            "Largo 60 pulg",
+            "Ancho 17mm"
+          ],
+          "stock": "Disponible",
+          "precio": null
+        },
+        {
+          "codigo": "GP-C90",
+          "nombre": "Correa trapezoidal C-90",
+          "subcategoria": "Trapezoidal",
+          "marca": "GATES",
+          "specs": [
+            "Perfil C",
+            "Largo 90 pulg",
+            "Ancho 22mm"
+          ],
+          "stock": "Disponible",
+          "precio": null
+        },
+        {
+          "codigo": "GP-3V500",
+          "nombre": "Correa 3V-500",
+          "subcategoria": "Trapezoidal",
+          "marca": "DAYCO",
+          "specs": [
+            "Perfil 3V",
+            "Largo 50 pulg",
+            "Ancho 9.5mm"
+          ],
+          "stock": "Disponible",
+          "precio": null
+        },
+        {
+          "codigo": "GP-HTD800",
+          "nombre": "Correa dentada HTD 800-8M",
+          "subcategoria": "Dentada",
+          "marca": "GATES",
+          "specs": [
+            "Paso 8M",
+            "Largo 800mm",
+            "Ancho 20mm"
+          ],
+          "stock": "Disponible",
+          "precio": null
+        },
+        {
+          "codigo": "GP-HTD1200",
+          "nombre": "Correa dentada HTD 1200-8M",
+          "subcategoria": "Dentada",
+          "marca": "CONTITECH",
+          "specs": [
+            "Paso 8M",
+            "Largo 1200mm",
+            "Ancho 30mm"
+          ],
+          "stock": "Disponible",
+          "precio": null
+        },
+        {
+          "codigo": "GP-6PK1200",
+          "nombre": "Correa multi-V 6PK1200",
+          "subcategoria": "Multi-V",
+          "marca": "DAYCO",
+          "specs": [
+            "6 canales",
+            "Largo 1200mm",
+            "Perfil PK"
+          ],
+          "stock": "Disponible",
+          "precio": null
+        },
+        {
+          "codigo": "GP-8PK1580",
+          "nombre": "Correa multi-V 8PK1580",
+          "subcategoria": "Multi-V",
+          "marca": "GATES",
+          "specs": [
+            "8 canales",
+            "Largo 1580mm",
+            "Perfil PK"
+          ],
+          "stock": "Disponible",
+          "precio": null
+        }
+      ]
+    },
+    {
+      "id": "poleas",
+      "nombre": "Poleas",
+      "descripcion": "Poleas en aluminio y hierro de uno o varios canales, fijas o con buje.",
+      "subcategorias": [
+        "Trapezoidal",
+        "Dentada",
+        "Buje"
+      ],
+      "items": [
+        {
+          "codigo": "GP-PA100",
+          "nombre": "Polea 1 canal tipo A · Ø100mm",
+          "subcategoria": "Trapezoidal",
+          "marca": "SIT",
+          "specs": [
+            "Ø 100mm",
+            "1 canal",
+            "Buje 1108"
+          ],
+          "stock": "Disponible",
+          "precio": null
+        },
+        {
+          "codigo": "GP-PB200",
+          "nombre": "Polea 2 canales tipo B · Ø200mm",
+          "subcategoria": "Trapezoidal",
+          "marca": "SIT",
+          "specs": [
+            "Ø 200mm",
+            "2 canales",
+            "Buje 1610"
+          ],
+          "stock": "Disponible",
+          "precio": null
+        },
+        {
+          "codigo": "GP-PA063",
+          "nombre": "Polea 1 canal tipo A · Ø63mm eje fijo",
+          "subcategoria": "Trapezoidal",
+          "marca": "SIT",
+          "specs": [
+            "Ø 63mm",
+            "1 canal",
+            "Eje 19mm"
+          ],
+          "stock": "Disponible",
+          "precio": null
+        },
+        {
+          "codigo": "GP-PHTD30",
+          "nombre": "Polea dentada HTD 30-8M-30",
+          "subcategoria": "Dentada",
+          "marca": "SATI",
+          "specs": [
+            "30 dientes",
+            "Paso 8M",
+            "Ancho 30mm"
+          ],
+          "stock": "Disponible",
+          "precio": null
+        },
+        {
+          "codigo": "GP-BUJ1610",
+          "nombre": "Buje cónico 1610 · 25mm",
+          "subcategoria": "Buje",
+          "marca": "SIT",
+          "specs": [
+            "Serie 1610",
+            "Eje 25mm",
+            "Cuñero 8mm"
+          ],
+          "stock": "Disponible",
+          "precio": null
+        },
+        {
+          "codigo": "GP-BUJ2517",
+          "nombre": "Buje cónico 2517 · 45mm",
+          "subcategoria": "Buje",
+          "marca": "SIT",
+          "specs": [
+            "Serie 2517",
+            "Eje 45mm",
+            "Cuñero 14mm"
+          ],
+          "stock": "Disponible",
+          "precio": null
+        }
+      ]
+    },
+    {
+      "id": "cadenas",
+      "nombre": "Cadenas y piñones",
+      "descripcion": "Cadenas de transmisión sencillas, dobles y triples, con sus piñones.",
+      "subcategorias": [
+        "Cadena",
+        "Piñón",
+        "Accesorio"
+      ],
+      "items": [
+        {
+          "codigo": "GP-CAD40",
+          "nombre": "Cadena de transmisión ASA 40 sencilla",
+          "subcategoria": "Cadena",
+          "marca": "REXNORD",
+          "specs": [
+            "Paso 1/2 pulg",
+            "Sencilla",
+            "Rollo 5m"
+          ],
+          "stock": "Disponible",
+          "precio": null
+        },
+        {
+          "codigo": "GP-CAD50",
+          "nombre": "Cadena de transmisión ASA 50 sencilla",
+          "subcategoria": "Cadena",
+          "marca": "REXNORD",
+          "specs": [
+            "Paso 5/8 pulg",
+            "Sencilla",
+            "Rollo 5m"
+          ],
+          "stock": "Disponible",
+          "precio": null
+        },
+        {
+          "codigo": "GP-CAD60D",
+          "nombre": "Cadena de transmisión ASA 60 doble",
+          "subcategoria": "Cadena",
+          "marca": "SATI",
+          "specs": [
+            "Paso 3/4 pulg",
+            "Doble",
+            "Rollo 5m"
+          ],
+          "stock": "Disponible",
+          "precio": null
+        },
+        {
+          "codigo": "GP-PIN40-17",
+          "nombre": "Piñón 40B-17 dientes",
+          "subcategoria": "Piñón",
+          "marca": "SATI",
+          "specs": [
+            "ASA 40",
+            "17 dientes",
+            "Eje piloto"
+          ],
+          "stock": "Disponible",
+          "precio": null
+        },
+        {
+          "codigo": "GP-PIN50-21",
+          "nombre": "Piñón 50B-21 dientes",
+          "subcategoria": "Piñón",
+          "marca": "SATI",
+          "specs": [
+            "ASA 50",
+            "21 dientes",
+            "Eje piloto"
+          ],
+          "stock": "Disponible",
+          "precio": null
+        },
+        {
+          "codigo": "GP-CANDADO40",
+          "nombre": "Candado y media caña ASA 40",
+          "subcategoria": "Accesorio",
+          "marca": "SATI",
+          "specs": [
+            "ASA 40",
+            "Candado",
+            "Acero"
+          ],
+          "stock": "Disponible",
+          "precio": null
+        }
+      ]
+    },
+    {
+      "id": "acoples",
+      "nombre": "Acoples",
+      "descripcion": "Acoples flexibles tipo AB, cadena, tipo L, plásticos y metálicos.",
+      "subcategorias": [
+        "Flexible",
+        "De cadena",
+        "Tipo L"
+      ],
+      "items": [
+        {
+          "codigo": "GP-ACAB2",
+          "nombre": "Acople flexible tipo AB-2 con caucho",
+          "subcategoria": "Flexible",
+          "marca": "MARTIN",
+          "specs": [
+            "Eje 25mm",
+            "Tipo AB",
+            "Caucho"
+          ],
+          "stock": "Disponible",
+          "precio": null
+        },
+        {
+          "codigo": "GP-ACAB4",
+          "nombre": "Acople flexible tipo AB-4 con caucho",
+          "subcategoria": "Flexible",
+          "marca": "MARTIN",
+          "specs": [
+            "Eje 40mm",
+            "Tipo AB",
+            "Caucho"
+          ],
+          "stock": "Disponible",
+          "precio": null
+        },
+        {
+          "codigo": "GP-ACCAD4012",
+          "nombre": "Acople de cadena 4012",
+          "subcategoria": "De cadena",
+          "marca": "MARTIN",
+          "specs": [
+            "ASA 40",
+            "12 dientes",
+            "Con cubierta"
+          ],
+          "stock": "Disponible",
+          "precio": null
+        },
+        {
+          "codigo": "GP-ACL075",
+          "nombre": "Acople tipo L-075 con araña",
+          "subcategoria": "Tipo L",
+          "marca": "LOVEJOY",
+          "specs": [
+            "Eje 19mm",
+            "L-075",
+            "Araña NBR"
+          ],
+          "stock": "Disponible",
+          "precio": null
+        },
+        {
+          "codigo": "GP-ACL100",
+          "nombre": "Acople tipo L-100 con araña",
+          "subcategoria": "Tipo L",
+          "marca": "LOVEJOY",
+          "specs": [
+            "Eje 28mm",
+            "L-100",
+            "Araña NBR"
+          ],
+          "stock": "Disponible",
+          "precio": null
+        }
+      ]
+    },
+    {
+      "id": "sellos",
+      "nombre": "Sellos mecánicos",
+      "descripcion": "Sellos mecánicos en pulgadas y milímetros para bombas y equipos.",
+      "subcategorias": [
+        "Tipo 21",
+        "Tipo 6A",
+        "Tipo Gallup"
+      ],
+      "items": [
+        {
+          "codigo": "GP-SM21-100",
+          "nombre": "Sello mecánico tipo 21 · 1 pulg",
+          "subcategoria": "Tipo 21",
+          "marca": "JOHN CRANE",
+          "specs": [
+            "1 pulg",
+            "Carbón/cerámica",
+            "NBR"
+          ],
+          "stock": "Disponible",
+          "precio": null
+        },
+        {
+          "codigo": "GP-SM21-125",
+          "nombre": "Sello mecánico tipo 21 · 1-1/4 pulg",
+          "subcategoria": "Tipo 21",
+          "marca": "JOHN CRANE",
+          "specs": [
+            "1-1/4 pulg",
+            "Carbón/cerámica",
+            "NBR"
+          ],
+          "stock": "Disponible",
+          "precio": null
+        },
+        {
+          "codigo": "GP-SM6A-35",
+          "nombre": "Sello mecánico tipo 6A · 35mm",
+          "subcategoria": "Tipo 6A",
+          "marca": "BURGMANN",
+          "specs": [
+            "35mm",
+            "Carburo silicio",
+            "VITON"
+          ],
+          "stock": "Disponible",
+          "precio": null
+        },
+        {
+          "codigo": "GP-SMGAL-25",
+          "nombre": "Sello mecánico tipo Gallup · 25mm",
+          "subcategoria": "Tipo Gallup",
+          "marca": null,
+          "specs": [
+            "25mm",
+            "Carbón/cerámica",
+            "NBR"
+          ],
+          "stock": "Disponible",
+          "precio": null
+        }
+      ]
+    },
+    {
+      "id": "estoperas",
+      "nombre": "Estoperas industriales",
+      "descripcion": "Estoperas y retenes en pulgadas y milímetros, NBR y VITON.",
+      "subcategorias": [
+        "NBR",
+        "VITON",
+        "Doble labio"
+      ],
+      "items": [
+        {
+          "codigo": "GP-EST255207",
+          "nombre": "Estopera 25 × 52 × 7 NBR",
+          "subcategoria": "NBR",
+          "marca": null,
+          "specs": [
+            "DI 25mm",
+            "DE 52mm",
+            "Ancho 7mm"
+          ],
+          "stock": "Disponible",
+          "precio": null
+        },
+        {
+          "codigo": "GP-EST357210",
+          "nombre": "Estopera 35 × 72 × 10 NBR",
+          "subcategoria": "NBR",
+          "marca": null,
+          "specs": [
+            "DI 35mm",
+            "DE 72mm",
+            "Ancho 10mm"
+          ],
+          "stock": "Disponible",
+          "precio": null
+        },
+        {
+          "codigo": "GP-EST5080V",
+          "nombre": "Estopera 50 × 80 × 10 VITON",
+          "subcategoria": "VITON",
+          "marca": null,
+          "specs": [
+            "DI 50mm",
+            "DE 80mm",
+            "Ancho 10mm"
+          ],
+          "stock": "Disponible",
+          "precio": null
+        },
+        {
+          "codigo": "GP-EST4062D",
+          "nombre": "Estopera doble labio 40 × 62 × 10",
+          "subcategoria": "Doble labio",
+          "marca": null,
+          "specs": [
+            "DI 40mm",
+            "DE 62mm",
+            "Ancho 10mm"
+          ],
+          "stock": "Disponible",
+          "precio": null
+        }
+      ]
+    },
+    {
+      "id": "mangueras",
+      "nombre": "Mangueras industriales",
+      "descripcion": "Mangueras para aire, oxígeno, agua, gasolina, succión y descarga.",
+      "subcategorias": [
+        "Hidráulica",
+        "Aire y agua",
+        "Succión"
+      ],
+      "items": [
+        {
+          "codigo": "GP-MG1SN",
+          "nombre": "Manguera hidráulica 1/2 pulg 1SN (a la medida)",
+          "subcategoria": "Hidráulica",
+          "marca": "MANULI",
+          "specs": [
+            "1/2 pulg",
+            "1SN",
+            "215 bar"
+          ],
+          "stock": "Disponible",
+          "precio": null
+        },
+        {
+          "codigo": "GP-MG2SN",
+          "nombre": "Manguera hidráulica 3/4 pulg 2SN (a la medida)",
+          "subcategoria": "Hidráulica",
+          "marca": "MANULI",
+          "specs": [
+            "3/4 pulg",
+            "2SN",
+            "250 bar"
+          ],
+          "stock": "Disponible",
+          "precio": null
+        },
+        {
+          "codigo": "GP-MGAIRE38",
+          "nombre": "Manguera de aire 3/8 pulg reforzada",
+          "subcategoria": "Aire y agua",
+          "marca": "GOODYEAR",
+          "specs": [
+            "3/8 pulg",
+            "20 bar",
+            "Rollo 50m"
+          ],
+          "stock": "Disponible",
+          "precio": null
+        },
+        {
+          "codigo": "GP-MGAGUA1",
+          "nombre": "Manguera de agua 1 pulg lona",
+          "subcategoria": "Aire y agua",
+          "marca": "GOODYEAR",
+          "specs": [
+            "1 pulg",
+            "10 bar",
+            "Rollo 30m"
+          ],
+          "stock": "Disponible",
+          "precio": null
+        },
+        {
+          "codigo": "GP-MGSUC2",
+          "nombre": "Manguera de succión 2 pulg espiralada",
+          "subcategoria": "Succión",
+          "marca": null,
+          "specs": [
+            "2 pulg",
+            "Espiralada",
+            "Rollo 30m"
+          ],
+          "stock": "Disponible",
+          "precio": null
+        },
+        {
+          "codigo": "GP-AC12JIC",
+          "nombre": "Acople JIC 1/2 pulg recto prensable",
+          "subcategoria": "Hidráulica",
+          "marca": "GATES",
+          "specs": [
+            "JIC 1/2 pulg",
+            "Recto",
+            "Prensable"
+          ],
+          "stock": "Disponible",
+          "precio": null
+        }
+      ]
+    },
+    {
+      "id": "motores",
+      "nombre": "Motores y reductores",
+      "descripcion": "Motores monofásicos y trifásicos, reductores axiales y sin fin corona.",
+      "subcategorias": [
+        "Trifásico",
+        "Monofásico",
+        "Reductor"
+      ],
+      "items": [
+        {
+          "codigo": "GP-M15T",
+          "nombre": "Motor trifásico 1.5 HP · 1800 rpm",
+          "subcategoria": "Trifásico",
+          "marca": "WEG",
+          "specs": [
+            "1.5 HP",
+            "1800 rpm",
+            "B3 patas"
+          ],
+          "stock": "Disponible",
+          "precio": null
+        },
+        {
+          "codigo": "GP-M30T",
+          "nombre": "Motor trifásico 3 HP · 3600 rpm",
+          "subcategoria": "Trifásico",
+          "marca": "WEG",
+          "specs": [
+            "3 HP",
+            "3600 rpm",
+            "B3 patas"
+          ],
+          "stock": "Disponible",
+          "precio": null
+        },
+        {
+          "codigo": "GP-M75T",
+          "nombre": "Motor trifásico 7.5 HP · 1800 rpm",
+          "subcategoria": "Trifásico",
+          "marca": "SIEMENS",
+          "specs": [
+            "7.5 HP",
+            "1800 rpm",
+            "B5 brida"
+          ],
+          "stock": "Disponible",
+          "precio": null
+        },
+        {
+          "codigo": "GP-M10M",
+          "nombre": "Motor monofásico 1 HP · 1800 rpm",
+          "subcategoria": "Monofásico",
+          "marca": "WEG",
+          "specs": [
+            "1 HP",
+            "1800 rpm",
+            "220V"
+          ],
+          "stock": "Disponible",
+          "precio": null
+        },
+        {
+          "codigo": "GP-RD30",
+          "nombre": "Reductor sin fin corona 1:30",
+          "subcategoria": "Reductor",
+          "marca": "MOTOVARIO",
+          "specs": [
+            "Relación 1:30",
+            "Eje 25mm",
+            "Brida B5"
+          ],
+          "stock": "Disponible",
+          "precio": null
+        },
+        {
+          "codigo": "GP-RD15",
+          "nombre": "Reductor sin fin corona 1:15",
+          "subcategoria": "Reductor",
+          "marca": "MOTOVARIO",
+          "specs": [
+            "Relación 1:15",
+            "Eje 19mm",
+            "Brida B5"
+          ],
+          "stock": "Disponible",
+          "precio": null
+        }
+      ]
+    },
+    {
+      "id": "ventiladores",
+      "nombre": "Ventiladores axiales",
+      "descripcion": "Ventiladores axiales industriales monofásicos y trifásicos.",
+      "subcategorias": [
+        "Monofásico",
+        "Trifásico",
+        "Aspa"
+      ],
+      "items": [
+        {
+          "codigo": "GP-VA300M",
+          "nombre": "Ventilador axial 12 pulg monofásico",
+          "subcategoria": "Monofásico",
+          "marca": "SOLER",
+          "specs": [
+            "Ø 300mm",
+            "110V",
+            "1400 rpm"
+          ],
+          "stock": "Disponible",
+          "precio": null
+        },
+        {
+          "codigo": "GP-VA400M",
+          "nombre": "Ventilador axial 16 pulg monofásico",
+          "subcategoria": "Monofásico",
+          "marca": "SOLER",
+          "specs": [
+            "Ø 400mm",
+            "220V",
+            "1400 rpm"
+          ],
+          "stock": "Disponible",
+          "precio": null
+        },
+        {
+          "codigo": "GP-VA500T",
+          "nombre": "Ventilador axial 20 pulg trifásico",
+          "subcategoria": "Trifásico",
+          "marca": "SOLER",
+          "specs": [
+            "Ø 500mm",
+            "220/440V",
+            "1400 rpm"
+          ],
+          "stock": "Disponible",
+          "precio": null
+        },
+        {
+          "codigo": "GP-ASPA400",
+          "nombre": "Aspa plástica de repuesto 16 pulg",
+          "subcategoria": "Aspa",
+          "marca": null,
+          "specs": [
+            "Ø 400mm",
+            "5 aspas",
+            "Eje 12mm"
+          ],
+          "stock": "Disponible",
+          "precio": null
+        }
+      ]
+    },
+    {
+      "id": "bandas",
+      "nombre": "Bandas transportadoras",
+      "descripcion": "Bandas de lona y PVC, empates, raspadores y accesorios.",
+      "subcategorias": [
+        "Lona",
+        "PVC",
+        "Accesorio"
+      ],
+      "items": [
+        {
+          "codigo": "GP-BT2L",
+          "nombre": "Banda transportadora 2 lonas · 600mm",
+          "subcategoria": "Lona",
+          "marca": "CONTITECH",
+          "specs": [
+            "600mm",
+            "2 lonas",
+            "Cubierta 3+1"
+          ],
+          "stock": "Disponible",
+          "precio": null
+        },
+        {
+          "codigo": "GP-BT3L",
+          "nombre": "Banda transportadora 3 lonas · 800mm",
+          "subcategoria": "Lona",
+          "marca": "CONTITECH",
+          "specs": [
+            "800mm",
+            "3 lonas",
+            "Cubierta 4+2"
+          ],
+          "stock": "Disponible",
+          "precio": null
+        },
+        {
+          "codigo": "GP-BTPVC",
+          "nombre": "Banda de PVC blanca alimenticia · 400mm",
+          "subcategoria": "PVC",
+          "marca": "AMMERAAL",
+          "specs": [
+            "400mm",
+            "2mm",
+            "Grado alimenticio"
+          ],
+          "stock": "Disponible",
+          "precio": null
+        },
+        {
+          "codigo": "GP-BTGRAPA",
+          "nombre": "Grapas de empate metálicas",
+          "subcategoria": "Accesorio",
+          "marca": "FLEXCO",
+          "specs": [
+            "Caja 25 u.",
+            "Metálicas",
+            "Para 2-3 lonas"
+          ],
+          "stock": "Disponible",
+          "precio": null
+        }
+      ]
+    },
+    {
+      "id": "guayas",
+      "nombre": "Guayas y cadenas de carga",
+      "descripcion": "Guayas de acero, tensores, grilletes, ganchos y poleas de izaje.",
+      "subcategorias": [
+        "Guaya",
+        "Cadena de carga",
+        "Herraje"
+      ],
+      "items": [
+        {
+          "codigo": "GP-GY38",
+          "nombre": "Guaya de acero 3/8 pulg 6×19 (por metro)",
+          "subcategoria": "Guaya",
+          "marca": null,
+          "specs": [
+            "3/8 pulg",
+            "6×19",
+            "Alma de acero"
+          ],
+          "stock": "Disponible",
+          "precio": null
+        },
+        {
+          "codigo": "GP-GY12",
+          "nombre": "Guaya de acero 1/2 pulg 6×37 (por metro)",
+          "subcategoria": "Guaya",
+          "marca": null,
+          "specs": [
+            "1/2 pulg",
+            "6×37",
+            "Alma de acero"
+          ],
+          "stock": "Disponible",
+          "precio": null
+        },
+        {
+          "codigo": "GP-CC516",
+          "nombre": "Cadena de carga grado 80 · 5/16 pulg",
+          "subcategoria": "Cadena de carga",
+          "marca": null,
+          "specs": [
+            "5/16 pulg",
+            "Grado 80",
+            "Por metro"
+          ],
+          "stock": "Disponible",
+          "precio": null
+        },
+        {
+          "codigo": "GP-GRILL12",
+          "nombre": "Grillete de seguridad 1/2 pulg",
+          "subcategoria": "Herraje",
+          "marca": "CROSBY",
+          "specs": [
+            "1/2 pulg",
+            "2 ton",
+            "Galvanizado"
+          ],
+          "stock": "Disponible",
+          "precio": null
+        },
+        {
+          "codigo": "GP-TENSOR12",
+          "nombre": "Tensor ojo-ojo 1/2 pulg",
+          "subcategoria": "Herraje",
+          "marca": "CROSBY",
+          "specs": [
+            "1/2 pulg",
+            "Ojo-ojo",
+            "Galvanizado"
+          ],
+          "stock": "Disponible",
+          "precio": null
+        }
+      ]
+    },
+    {
+      "id": "plasticos",
+      "nombre": "Plásticos industriales",
+      "descripcion": "Nylon, teflón, UHMW y acrílico en barras y láminas.",
+      "subcategorias": [
+        "Barra",
+        "Lámina",
+        "Tubo"
+      ],
+      "items": [
+        {
+          "codigo": "GP-NYB50",
+          "nombre": "Barra de nylon Ø50mm (por metro)",
+          "subcategoria": "Barra",
+          "marca": null,
+          "specs": [
+            "Ø 50mm",
+            "Nylon 6",
+            "Natural"
+          ],
+          "stock": "Disponible",
+          "precio": null
+        },
+        {
+          "codigo": "GP-NYB100",
+          "nombre": "Barra de nylon Ø100mm (por metro)",
+          "subcategoria": "Barra",
+          "marca": null,
+          "specs": [
+            "Ø 100mm",
+            "Nylon 6",
+            "Natural"
+          ],
+          "stock": "Disponible",
+          "precio": null
+        },
+        {
+          "codigo": "GP-UHMW20",
+          "nombre": "Lámina UHMW 20mm",
+          "subcategoria": "Lámina",
+          "marca": null,
+          "specs": [
+            "20mm",
+            "1000×2000mm",
+            "Verde"
+          ],
+          "stock": "Disponible",
+          "precio": null
+        },
+        {
+          "codigo": "GP-TEF25",
+          "nombre": "Barra de teflón Ø25mm (por metro)",
+          "subcategoria": "Barra",
+          "marca": null,
+          "specs": [
+            "Ø 25mm",
+            "PTFE",
+            "Blanco"
+          ],
+          "stock": "Disponible",
+          "precio": null
+        },
+        {
+          "codigo": "GP-TUBNY",
+          "nombre": "Tubo de nylon Ø60 × Ø40mm",
+          "subcategoria": "Tubo",
+          "marca": null,
+          "specs": [
+            "DE 60mm",
+            "DI 40mm",
+            "Por metro"
+          ],
+          "stock": "Disponible",
+          "precio": null
+        }
+      ]
+    },
+    {
+      "id": "loctite",
+      "nombre": "Productos LOCTITE",
+      "descripcion": "Adhesivos, retenedores, fijadores de rosca, limpiadores y lubricantes.",
+      "subcategorias": [
+        "Fijador de rosca",
+        "Retenedor",
+        "Sellante"
+      ],
+      "items": [
+        {
+          "codigo": "GP-LT243",
+          "nombre": "Loctite 243 fijador de rosca medio · 50 ml",
+          "subcategoria": "Fijador de rosca",
+          "marca": "LOCTITE",
+          "specs": [
+            "50 ml",
+            "Resistencia media",
+            "Azul"
+          ],
+          "stock": "Disponible",
+          "precio": null
+        },
+        {
+          "codigo": "GP-LT271",
+          "nombre": "Loctite 271 fijador de rosca alto · 50 ml",
+          "subcategoria": "Fijador de rosca",
+          "marca": "LOCTITE",
+          "specs": [
+            "50 ml",
+            "Alta resistencia",
+            "Rojo"
+          ],
+          "stock": "Disponible",
+          "precio": null
+        },
+        {
+          "codigo": "GP-LT641",
+          "nombre": "Loctite 641 retenedor de rodamientos · 50 ml",
+          "subcategoria": "Retenedor",
+          "marca": "LOCTITE",
+          "specs": [
+            "50 ml",
+            "Desmontable",
+            "Ámbar"
+          ],
+          "stock": "Disponible",
+          "precio": null
+        },
+        {
+          "codigo": "GP-LT518",
+          "nombre": "Loctite 518 sellante de bridas · 50 ml",
+          "subcategoria": "Sellante",
+          "marca": "LOCTITE",
+          "specs": [
+            "50 ml",
+            "Anaeróbico",
+            "Rojo"
+          ],
+          "stock": "Disponible",
+          "precio": null
+        },
+        {
+          "codigo": "GP-LT7063",
+          "nombre": "Loctite SF 7063 limpiador · 400 ml",
+          "subcategoria": "Sellante",
+          "marca": "LOCTITE",
+          "specs": [
+            "400 ml",
+            "Limpiador",
+            "Aerosol"
+          ],
+          "stock": "Disponible",
+          "precio": null
+        }
+      ]
+    }
+  ],
+  "automotriz": [
+    {
+      "id": "rodamientos-rueda",
+      "nombre": "Rodamientos de rueda y masas",
+      "descripcion": "PLACEHOLDER — pendiente de confirmar con GPar.",
+      "subcategorias": [],
+      "items": [],
+      "estado": "proximamente"
+    },
+    {
+      "id": "distribucion",
+      "nombre": "Correas y kits de distribución",
+      "descripcion": "PLACEHOLDER — pendiente de confirmar con GPar.",
+      "subcategorias": [],
+      "items": [],
+      "estado": "proximamente"
+    },
+    {
+      "id": "bandas-accesorios",
+      "nombre": "Bandas de accesorios",
+      "descripcion": "PLACEHOLDER — pendiente de confirmar con GPar.",
+      "subcategorias": [],
+      "items": [],
+      "estado": "proximamente"
+    },
+    {
+      "id": "retenes",
+      "nombre": "Retenes y estoperas",
+      "descripcion": "PLACEHOLDER — pendiente de confirmar con GPar.",
+      "subcategorias": [],
+      "items": [],
+      "estado": "proximamente"
+    },
+    {
+      "id": "bombas-agua",
+      "nombre": "Bombas de agua",
+      "descripcion": "PLACEHOLDER — pendiente de confirmar con GPar.",
+      "subcategorias": [],
+      "items": [],
+      "estado": "proximamente"
+    },
+    {
+      "id": "mangueras-auto",
+      "nombre": "Mangueras y abrazaderas",
+      "descripcion": "PLACEHOLDER — pendiente de confirmar con GPar.",
+      "subcategorias": [],
+      "items": [],
+      "estado": "proximamente"
+    },
+    {
+      "id": "embragues",
+      "nombre": "Kits de embrague",
+      "descripcion": "PLACEHOLDER — pendiente de confirmar con GPar.",
+      "subcategorias": [],
+      "items": [],
+      "estado": "proximamente"
+    },
+    {
+      "id": "suspension",
+      "nombre": "Amortiguadores y suspensión",
+      "descripcion": "PLACEHOLDER — pendiente de confirmar con GPar.",
+      "subcategorias": [],
+      "items": [],
+      "estado": "proximamente"
+    },
+    {
+      "id": "frenos",
+      "nombre": "Frenos",
+      "descripcion": "PLACEHOLDER — pendiente de confirmar con GPar.",
+      "subcategorias": [],
+      "items": [],
+      "estado": "proximamente"
+    },
+    {
+      "id": "filtros",
+      "nombre": "Filtros",
+      "descripcion": "PLACEHOLDER — pendiente de confirmar con GPar.",
+      "subcategorias": [],
+      "items": [],
+      "estado": "proximamente"
+    }
+  ]
+}

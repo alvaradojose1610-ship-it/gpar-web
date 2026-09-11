@@ -6,26 +6,38 @@ import { cn } from "@/utilidades/cn";
 type LogoProps = {
   className?: string;
   prioridad?: boolean;
+  conTexto?: boolean;
 };
 
-export function Logo({ className, prioridad = false }: LogoProps) {
+export function Logo({
+  className,
+  prioridad = false,
+  conTexto = false,
+}: LogoProps) {
   return (
     <Link
       href="/"
-      className={cn(
-        "inline-flex items-center rounded-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-naranja focus-visible:ring-offset-2",
-        className,
-      )}
+      className={cn("inline-flex items-center gap-[11px]", className)}
       aria-label={empresa.nombreLegal}
     >
       <Image
         src="/assets/identidad/logo-gpar.png"
         alt={empresa.nombreLegal}
-        width={112}
-        height={112}
+        width={46}
+        height={46}
         priority={prioridad}
-        className="h-12 w-12 object-contain sm:h-14 sm:w-14"
+        className="size-11 rounded-full object-contain sm:size-[46px]"
       />
+      {conTexto ? (
+        <span className="leading-none">
+          <span className="block text-[11px] uppercase tracking-[0.08em] text-gpar-ink-2">
+            Distribuidora
+          </span>
+          <span className="font-display text-[26px] font-extrabold tracking-[0.02em] text-gpar-orange">
+            GPAR
+          </span>
+        </span>
+      ) : null}
     </Link>
   );
 }

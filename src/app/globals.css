@@ -1,22 +1,58 @@
 @import "tailwindcss";
+@import "../estilos/tokens-gpar.css";
 
 @theme inline {
-  --color-naranja: #f57c00;
-  --color-naranja-hover: #e46f00;
-  --color-oscuro: #2a2a2a;
-  --color-industrial: #3a3a3a;
-  --color-acero: #4a4a4a;
-  --color-borde: #e5e7eb;
-  --color-fondo: #f7f7f7;
-  --color-blanco: #ffffff;
-  --color-gris: #4a4a4a;
-  --color-claro: #e5e7eb;
-  --font-sans: var(--font-montserrat), ui-sans-serif, system-ui, sans-serif;
+  /* Colores GPar */
+  --color-gpar-orange: var(--gp-orange);
+  --color-gpar-orange-ink: var(--gp-orange-ink);
+  --color-gpar-orange-soft: var(--gp-orange-soft);
+  --color-gpar-orange-border: var(--gp-orange-border);
+  --color-gpar-ink: var(--gp-ink);
+  --color-gpar-ink-2: var(--gp-ink-2);
+  --color-gpar-ink-3: var(--gp-ink-3);
+  --color-gpar-ink-4: var(--gp-ink-4);
+  --color-gpar-line: var(--gp-line);
+  --color-gpar-line-soft: var(--gp-line-soft);
+  --color-gpar-surface: var(--gp-surface);
+  --color-gpar-bg: var(--gp-bg);
+
+  /* Alias cortos usados en componentes */
+  --color-naranja: var(--gp-orange);
+  --color-naranja-hover: var(--gp-orange-ink);
+  --color-oscuro: var(--gp-ink);
+  --color-industrial: var(--gp-ink);
+  --color-acero: var(--gp-ink-2);
+  --color-borde: var(--gp-line);
+  --color-fondo: var(--gp-surface);
+  --color-blanco: var(--gp-bg);
+  --color-gris: var(--gp-ink-2);
+  --color-claro: var(--gp-line);
+
+  /* Tipografía */
+  --font-display: var(--gp-font-display);
+  --font-sans: var(--gp-font-body);
+  --font-mono: var(--gp-font-mono);
+
+  /* Layout */
+  --breakpoint-sm: 480px;
+  --breakpoint-md: 768px;
+  --breakpoint-lg: 1024px;
+  --breakpoint-xl: 1280px;
+  --radius-DEFAULT: 0px;
+  --radius-sm: 0px;
+  --radius-md: 0px;
+  --radius-lg: 0px;
+  --radius-xl: 0px;
+  --radius-2xl: 0px;
+  --radius-3xl: 0px;
+  --radius-full: 9999px;
+  --container-gpar: 1220px;
 }
 
 @layer base {
   html {
     scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
   }
 
   @media (prefers-reduced-motion: reduce) {
@@ -27,34 +63,95 @@
     *,
     *::before,
     *::after {
-      animation-duration: 0.01ms !important;
+      animation-duration: 1ms !important;
       animation-iteration-count: 1 !important;
-      transition-duration: 0.01ms !important;
+      transition-duration: 1ms !important;
+    }
+
+    [data-strip] {
+      animation: none !important;
     }
   }
 
   body {
-    @apply bg-blanco font-sans text-acero antialiased;
+    background: var(--gp-bg);
+    color: var(--gp-ink);
+    font-family: var(--gp-font-body);
+    font-size: var(--gp-text-base);
+    line-height: var(--gp-lh-body);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  p {
+    text-wrap: pretty;
+  }
+
+  h1,
+  h2,
+  h3 {
+    text-wrap: balance;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--gp-ink);
+    outline-offset: 2px;
+  }
+
+  button,
+  input,
+  textarea,
+  select {
+    border-radius: 0;
   }
 
   ::selection {
-    background: color-mix(in srgb, var(--color-naranja) 28%, white);
+    background: color-mix(in srgb, var(--gp-orange) 28%, white);
   }
 }
 
 @layer utilities {
   .contenedor {
-    @apply mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8;
+    margin-inline: auto;
+    width: 100%;
+    max-width: var(--gp-container);
+    padding-inline: var(--gp-gutter);
+  }
+
+  @media (min-width: 768px) {
+    .contenedor {
+      padding-inline: var(--gp-gutter-lg);
+    }
   }
 
   .seccion {
-    @apply py-12 sm:py-14 lg:py-16;
+    padding-block: var(--gp-section-y);
   }
 
-  .rejilla-industrial {
+  @media (min-width: 768px) {
+    .seccion {
+      padding-block: var(--gp-section-y-lg);
+    }
+  }
+
+  .font-display {
+    font-family: var(--gp-font-display);
+  }
+
+  .placeholder-media {
+    background-color: var(--gp-surface);
     background-image:
-      linear-gradient(to right, rgba(74, 74, 74, 0.08) 1px, transparent 1px),
-      linear-gradient(to bottom, rgba(74, 74, 74, 0.08) 1px, transparent 1px);
-    background-size: 32px 32px;
+      linear-gradient(135deg, transparent 46%, rgba(29, 36, 48, 0.04) 46%, rgba(29, 36, 48, 0.04) 54%, transparent 54%),
+      linear-gradient(to right, rgba(29, 36, 48, 0.03) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(29, 36, 48, 0.03) 1px, transparent 1px);
+    background-size: auto, 16px 16px, 16px 16px;
+  }
+}
+
+@keyframes gp-strip {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
   }
 }

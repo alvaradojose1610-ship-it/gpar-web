@@ -1,186 +1,51 @@
 ---
-description: Reglas obligatorias para el Portal Comercial de Distribuidora GPar
+description: Reglas del producto GPar (portal + panel integrado)
 alwaysApply: true
 ---
 
-# Proyecto GPar Web
+# Proyecto GPar
+
+Portal comercial y sistema interno de Distribuidora GPar en un solo repo.
 
 ## Objetivo
 
-Construir el Portal Comercial de Distribuidora GPar.
+Experiencia **bonita, ligera y excelente en móvil y escritorio**:
 
-La primera versión será una web pública estática, pero su arquitectura debe permitir incorporar posteriormente:
+- Público: catálogo industrial/automotriz + cotización
+- Interno (`/panel`): login, productos, cotizaciones, inventario, ventas, proveedores
 
-- catálogo completo
-- registro de clientes
-- inicio de sesión
-- solicitudes de cotización
-- pedidos
-- apartados
-- cuentas por cobrar
-- integración con inventario
-- plataforma administrativa
-
-No construir esos módulos en esta tarea.
+Audiencia: industrias (prioridad) y público general.
 
 ## Idioma
 
-Todo el dominio del negocio debe escribirse en español.
+Dominio en español: componentes de negocio, tipos, mensajes, rutas funcionales, **tablas y atributos Prisma**.
 
-Esto incluye:
+Convenciones Next/React/TS de framework en inglés (`page.tsx`, etc.).
 
-- componentes
-- variables del negocio
-- tipos
-- datos simulados
-- mensajes
-- rutas funcionales
-- documentación
+## Auth y seguridad
 
-Las convenciones obligatorias de Next.js, React, TypeScript y archivos de configuración pueden mantenerse en inglés.
-
-## Experiencia de usuario
-
-La aplicación debe sentirse:
-
-- moderna
-- profesional
-- industrial
-- rápida
-- sencilla
-- confiable
-
-Mobile-first obligatorio.
-
-Cada sección debe tener una acción principal claramente visible.
-
-Evitar:
-
-- pantallas saturadas
-- textos demasiado largos
-- animaciones exageradas
-- formularios extensos
-- efectos visuales innecesarios
-- componentes gigantes
+- Cookie `gpar_sesion` (JWT jose + bcryptjs), patrón Repuestos/Óptica
+- Secretos solo en env (`DATABASE_URL`, `SESSION_SECRET`)
+- Nunca confiar solo en ocultar UI; validar en Server Actions
+- No borrar historial de ventas/compras/movimientos; anular o reversar
 
 ## Diseño
 
-Usar como identidad principal:
+Tokens handoff (`--gp-orange` #F57C00, ink #1D2430, surface #F7F8FA).  
+Display: Barlow Condensed. Cuerpo: IBM Plex Sans. Códigos: IBM Plex Mono.  
+Sin radios (excepto logo). Mobile-first. Un CTA claro por sección.
 
-- Naranja principal: #F57C00
-- Naranja de interacción: #E46F00
-- Gris oscuro: #4A4A4A
-- Gris muy oscuro para fondos: #1D1D1D
-- Gris claro: #E8E8E8
-- Fondo claro: #F7F7F7
-- Blanco: #FFFFFF
+## Datos
 
-Tipografía:
-
-- Montserrat para encabezados y elementos destacados
-- Usar next/font
-- No cargar fuentes desde recursos externos manuales
-
-## Imágenes
-
-Las imágenes adjuntas son referencias visuales.
-
-No asumir que el catálogo visual contiene archivos separados.
-
-Crear la estructura de assets, pero no inventar archivos inexistentes.
-
-Usar temporalmente:
-
-- el logo original suministrado
-- el catálogo visual suministrado únicamente como referencia
-- fondos, gradientes y composiciones CSS cuando falten fotografías
-
-No descargar imágenes sin autorización.
-
-No extraer logos de marcas desde páginas externas.
-
-No presentar como oficiales marcas, productos, años de experiencia, direcciones o datos no confirmados.
+No inventar correo, teléfono fijo, dirección textual, años, cantidades ni marcas oficiales.  
+Contacto confirmado vive en `src/configuracion/empresa.ts`.
 
 ## Arquitectura
 
-Separar:
+Separar: UI pública, UI panel, módulos de dominio, repositorios Prisma, lib, validaciones, configuración.
 
-- componentes de estructura
-- componentes de secciones
-- datos simulados
-- configuración de la empresa
-- utilidades
+Inventario por movimientos. Cotización ≠ venta hasta conversión explícita.
 
-No colocar toda la página en un solo componente.
+## Criterio de terminado (por tarea)
 
-No agregar base de datos.
-
-No agregar Prisma.
-
-No agregar Neon.
-
-No agregar autenticación.
-
-No agregar carrito.
-
-No agregar panel administrativo.
-
-## Rendimiento
-
-Usar:
-
-- next/image
-- tamaños responsivos
-- carga prioritaria solamente para el hero
-- lazy loading en contenido inferior
-- componentes de servidor cuando sea posible
-
-Evitar:
-
-- JavaScript innecesario
-- carruseles pesados
-- imágenes enormes
-- dependencias sin justificación
-
-## Preparación para crecimiento
-
-La información temporal debe estar centralizada para poder reemplazarse posteriormente por datos reales.
-
-Crear configuraciones separadas para:
-
-- empresa
-- navegación
-- categorías
-- marcas
-- productos destacados
-- medios de contacto
-- redes sociales
-
-## Datos desconocidos
-
-No inventar:
-
-- teléfono
-- correo definitivo
-- dirección
-- redes sociales
-- años de experiencia
-- cantidad de productos
-- marcas distribuidas oficialmente
-- testimonios
-
-Cuando falte un dato, utilizar un valor claramente temporal y centralizado.
-
-## Criterio de terminado
-
-La tarea se considera terminada cuando:
-
-- funciona en móvil y escritorio
-- no tiene scroll horizontal
-- tiene estados hover y focus
-- cumple accesibilidad básica
-- typecheck correcto
-- lint correcto
-- build correcto
-- no contiene datos empresariales inventados
-- queda preparada para sustituir los datos temporales
+Móvil/desktop, sin scroll horizontal, focus visible, typecheck/lint/build, español, sin datos inventados.

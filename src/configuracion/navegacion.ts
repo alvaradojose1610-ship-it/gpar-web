@@ -4,14 +4,13 @@ export type EnlaceNavegacion = {
 };
 
 export const navegacionPrincipal: EnlaceNavegacion[] = [
-  { etiqueta: "Productos", href: "/#productos" },
-  { etiqueta: "Categorías", href: "/#categorias" },
-  { etiqueta: "Marcas", href: "/#marcas" },
-  { etiqueta: "Empresa", href: "/#empresa" },
-  { etiqueta: "Contacto", href: "/#contacto" },
+  { etiqueta: "Inicio", href: "/" },
+  { etiqueta: "Industrial", href: "/industrial" },
+  { etiqueta: "Automotriz", href: "/automotriz" },
+  { etiqueta: "Contacto", href: "/cotizar" },
 ];
 
 export const navegacionAccion = {
   etiqueta: "Solicitar cotización",
-  href: "/#cotizacion",
+  href: "/cotizar",
 } as const;

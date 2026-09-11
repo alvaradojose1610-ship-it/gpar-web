@@ -1,102 +1,144 @@
+import Image from "next/image";
 import Link from "next/link";
-import { Logo } from "@/componentes/estructura/Logo";
 import { Contenedor } from "@/componentes/interfaz/Contenedor";
 import { empresa } from "@/configuracion/empresa";
-import { navegacionPrincipal } from "@/configuracion/navegacion";
-import { categorias } from "@/datos/categorias";
+import { categoriasPorLinea } from "@/datos/catalogo";
 
 export function PieDePagina() {
-  const categoriasPrincipales = categorias.slice(0, 6);
   const anio = new Date().getFullYear();
   const dominio = empresa.urlSitio.replace(/^https?:\/\//, "");
-
-  const datosConfirmados = [
-    empresa.contacto.whatsapp,
-    empresa.contacto.correo,
-    empresa.contacto.telefono,
-    empresa.contacto.direccion,
-  ].filter((dato) => dato.disponible && dato.valor);
+  const categorias = categoriasPorLinea("industrial").slice(0, 6);
 
   return (
-    <footer className="border-t border-industrial bg-oscuro text-blanco">
-      <Contenedor className="grid gap-8 py-12 sm:grid-cols-2 lg:grid-cols-4">
-        <div className="space-y-3">
-          <Logo />
-          <p className="max-w-xs text-sm leading-relaxed text-blanco/65">
-            {empresa.eslogan}
-          </p>
-          <p className="text-xs text-blanco/45">{dominio}</p>
-        </div>
+    <footer className="bg-gpar-ink pb-5 pt-10 text-gpar-ink-4">
+      <Contenedor>
+        <div className="flex flex-wrap justify-between gap-[34px] border-b border-white/10 pb-6">
+          <div className="max-w-[30ch]">
+            <div className="mb-3 flex items-center gap-2.5">
+              <Image
+                src="/assets/identidad/logo-gpar.png"
+                alt=""
+                width={40}
+                height={40}
+                className="size-10 rounded-full bg-white object-contain"
+              />
+              <b className="font-display text-[22px] font-extrabold uppercase text-white">
+                GPAR
+              </b>
+            </div>
+            <p className="text-[13.5px]">
+              Repuestos industriales y automotrices. Catálogo en línea, asesoría
+              técnica y cotización por WhatsApp.
+            </p>
+          </div>
 
-        <div>
-          <h3 className="mb-3 text-xs font-semibold uppercase tracking-[0.16em] text-naranja">
-            Navegación
-          </h3>
-          <ul className="space-y-2.5 text-sm text-blanco/70">
-            {navegacionPrincipal.map((enlace) => (
-              <li key={enlace.href}>
-                <Link
-                  href={enlace.href}
-                  className="transition-colors hover:text-blanco focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-naranja"
-                >
-                  {enlace.etiqueta}
+          <div>
+            <h5 className="mb-3 text-xs uppercase tracking-[0.08em] text-white">
+              Navegación
+            </h5>
+            <ul className="flex flex-col gap-2 text-[13.5px]">
+              <li>
+                <Link href="/industrial" className="hover:text-white">
+                  Industrial
                 </Link>
               </li>
-            ))}
-          </ul>
-        </div>
-
-        <div>
-          <h3 className="mb-3 text-xs font-semibold uppercase tracking-[0.16em] text-naranja">
-            Categorías
-          </h3>
-          <ul className="space-y-2.5 text-sm text-blanco/70">
-            {categoriasPrincipales.map((categoria) => (
-              <li key={categoria.id}>
-                <Link
-                  href={categoria.href}
-                  className="transition-colors hover:text-blanco focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-naranja"
-                >
-                  {categoria.nombre}
+              <li>
+                <Link href="/automotriz" className="hover:text-white">
+                  Automotriz
                 </Link>
               </li>
-            ))}
-          </ul>
-        </div>
+              <li>
+                <Link href="/#marcas" className="hover:text-white">
+                  Marcas
+                </Link>
+              </li>
+              <li>
+                <Link href="/cotizar" className="hover:text-white">
+                  Cotizar
+                </Link>
+              </li>
+            </ul>
+          </div>
 
-        <div>
-          <h3 className="mb-3 text-xs font-semibold uppercase tracking-[0.16em] text-naranja">
-            Contacto
-          </h3>
-          {datosConfirmados.length > 0 ? (
-            <ul className="space-y-2.5 text-sm text-blanco/70">
-              {datosConfirmados.map((dato) => (
-                <li key={dato.etiqueta}>
-                  <span className="text-blanco/90">{dato.etiqueta}: </span>
-                  {dato.href ? (
-                    <a href={dato.href} className="hover:text-naranja">
-                      {dato.valor}
-                    </a>
-                  ) : (
-                    dato.valor
-                  )}
+          <div>
+            <h5 className="mb-3 text-xs uppercase tracking-[0.08em] text-white">
+              Categorías
+            </h5>
+            <ul className="flex flex-col gap-2 text-[13.5px]">
+              {categorias.map((categoria) => (
+                <li key={categoria.id}>
+                  <Link
+                    href={`/industrial/${categoria.id}`}
+                    className="hover:text-white"
+                  >
+                    {categoria.nombre}
+                  </Link>
                 </li>
               ))}
             </ul>
-          ) : (
-            <p className="text-sm text-blanco/50">Datos de contacto próximamente.</p>
-          )}
+          </div>
+
+          <div>
+            <h5 className="mb-3 text-xs uppercase tracking-[0.08em] text-white">
+              Contacto
+            </h5>
+            <ul className="flex flex-col gap-2 text-[13.5px]">
+              {empresa.contacto.whatsapp.disponible ? (
+                <li>
+                  WhatsApp:{" "}
+                  <a
+                    href={empresa.contacto.whatsapp.href ?? undefined}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="hover:text-white"
+                  >
+                    {empresa.contacto.whatsapp.valor}
+                  </a>
+                </li>
+              ) : null}
+              {empresa.redes.instagram.disponible ? (
+                <li>
+                  Instagram:{" "}
+                  <a
+                    href={empresa.redes.instagram.href ?? undefined}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="hover:text-white"
+                  >
+                    {empresa.redes.instagram.valor}
+                  </a>
+                </li>
+              ) : null}
+              {empresa.contacto.direccion.disponible ? (
+                <li>
+                  Ubicación:{" "}
+                  <a
+                    href={empresa.contacto.direccion.href ?? undefined}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="hover:text-white"
+                  >
+                    {empresa.contacto.direccion.valor}
+                  </a>
+                </li>
+              ) : null}
+              {!empresa.contacto.correo.disponible ? (
+                <li>Correo: por confirmar</li>
+              ) : null}
+              {!empresa.contacto.telefono.disponible ? (
+                <li>Teléfono: por confirmar</li>
+              ) : null}
+            </ul>
+          </div>
+        </div>
+
+        <div className="flex flex-wrap justify-between gap-3 pt-4 text-[12.5px]">
+          <span>
+            © {anio} {empresa.nombreLegal}. Todos los derechos reservados.
+          </span>
+          <span>{dominio}</span>
         </div>
       </Contenedor>
-
-      <div className="border-t border-blanco/10">
-        <Contenedor className="flex flex-col gap-2 py-4 text-xs text-blanco/45 sm:flex-row sm:items-center sm:justify-between">
-          <p>
-            © {anio} {empresa.nombreLegal}. Todos los derechos reservados.
-          </p>
-          <p>Sitio desarrollado por {empresa.desarrollador}</p>
-        </Contenedor>
-      </div>
     </footer>
   );
 }
