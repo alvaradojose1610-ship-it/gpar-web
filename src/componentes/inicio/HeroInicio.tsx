@@ -31,19 +31,19 @@ export function HeroInicio() {
         aria-hidden
       />
 
-      <Contenedor className="relative py-11 md:pb-[68px] md:pt-[76px]">
+      <Contenedor className="relative py-8 sm:py-11 md:pb-[68px] md:pt-[76px]">
         <div className="max-w-[640px]">
-          <span className="mb-5 inline-block border border-gpar-orange-border bg-gpar-orange-soft px-[11px] py-1.5 font-mono text-[11.5px] uppercase tracking-[0.14em] text-gpar-orange-ink">
+          <span className="mb-4 inline-block border border-gpar-orange-border bg-gpar-orange-soft px-[11px] py-1.5 font-mono text-[11.5px] uppercase tracking-[0.14em] text-gpar-orange-ink sm:mb-5">
             Industrial y automotriz
           </span>
-          <h1 className="font-display text-[clamp(34px,5.4vw,62px)] font-extrabold uppercase leading-[0.97] tracking-[0.02em] text-gpar-ink">
+          <h1 className="font-display text-[clamp(30px,5.4vw,62px)] font-extrabold uppercase leading-[0.97] tracking-[0.02em] text-gpar-ink">
             Todo para tu
             <br />
             planta y tu taller,
             <br />
             <em className="not-italic text-gpar-orange">en un solo lugar</em>
           </h1>
-          <p className="mt-4 max-w-[50ch] text-[17px] text-gpar-ink-2">
+          <p className="mt-3 max-w-[50ch] text-[15.5px] text-gpar-ink-2 sm:mt-4 sm:text-[17px]">
             Rodamientos, correas, chumaceras, motores, mangueras y repuestos
             automotrices. Arma tu lista y te cotizamos con precio, disponibilidad
             y tiempo de entrega.

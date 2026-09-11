@@ -88,21 +88,21 @@ export function Encabezado() {
             role="search"
             action="/buscar"
             onSubmit={manejarBusqueda}
-            className="col-span-full order-3 flex items-center gap-2 border border-gpar-line bg-gpar-surface px-3 py-2 lg:col-auto lg:order-none"
+            className="col-span-full order-3 flex items-center gap-1.5 border border-gpar-line bg-gpar-surface px-2.5 py-1.5 sm:gap-2 sm:px-3 sm:py-2 lg:col-auto lg:order-none"
           >
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img src="/assets/iconos/buscar.svg" alt="" width={18} height={18} />
             <input
               type="search"
               name="q"
-              placeholder="Busca por producto, código o marca"
+              placeholder="Código, producto o marca"
               aria-label="Buscar en el catálogo"
               className="min-w-0 flex-1 border-0 bg-transparent text-sm outline-none"
               autoComplete="off"
             />
             <button
               type="submit"
-              className="min-h-9 bg-gpar-orange px-3.5 text-[12.5px] font-semibold text-gpar-ink hover:bg-gpar-orange-ink"
+              className="min-h-9 shrink-0 bg-gpar-orange px-3 text-[12.5px] font-semibold text-gpar-ink hover:bg-gpar-orange-ink sm:px-3.5"
             >
               Buscar
             </button>
@@ -138,10 +138,12 @@ export function Encabezado() {
             <button
               type="button"
               aria-haspopup="dialog"
-              className="flex min-h-11 items-center gap-2 border border-gpar-ink bg-gpar-bg px-3.5 text-[13.5px] font-semibold text-gpar-ink hover:bg-gpar-ink hover:text-white"
+              aria-label={`Mi cotización, ${totalUnidades} ítems`}
+              className="flex min-h-11 items-center gap-1.5 border border-gpar-ink bg-gpar-bg px-2.5 text-[13px] font-semibold text-gpar-ink hover:bg-gpar-ink hover:text-white sm:gap-2 sm:px-3.5 sm:text-[13.5px]"
               onClick={abrirDrawer}
             >
-              Mi cotización{" "}
+              <span className="hidden sm:inline">Mi cotización</span>
+              <span className="sm:hidden">Cotizar</span>{" "}
               <span className="inline-flex h-[22px] min-w-[22px] items-center justify-center bg-gpar-orange px-1 font-mono text-xs text-gpar-ink">
                 {totalUnidades}
               </span>
@@ -167,12 +169,12 @@ export function Encabezado() {
             menuAbierto ? "block" : "hidden",
           )}
         >
-          <Contenedor className="flex flex-col gap-1 py-3">
+          <Contenedor className="flex flex-col gap-0.5 py-2">
             {nav.map((enlace) => (
               <Link
                 key={enlace.href}
                 href={enlace.href}
-                className="px-1 py-3 text-base font-semibold text-gpar-ink"
+                className="px-1 py-2.5 text-[15px] font-semibold text-gpar-ink"
                 onClick={() => setMenuAbierto(false)}
               >
                 {enlace.etiqueta}

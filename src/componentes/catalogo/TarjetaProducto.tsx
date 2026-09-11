@@ -49,7 +49,7 @@ export function TarjetaProducto({
       <div
         className={cn(
           "relative overflow-hidden border-b border-gpar-line-soft bg-gpar-surface",
-          compacta ? "h-[130px]" : "h-[150px]",
+          compacta ? "h-[110px] sm:h-[130px]" : "h-[120px] sm:h-[150px]",
         )}
       >
         {producto.imagen ? (
@@ -73,7 +73,7 @@ export function TarjetaProducto({
         </span>
       </div>
 
-      <div className="flex flex-1 flex-col gap-2 p-[15px]">
+      <div className="flex flex-1 flex-col gap-2 p-3 sm:p-[15px]">
         <span className="font-mono text-[11.5px] text-gpar-ink-3">
           {producto.codigo}
         </span>
@@ -107,7 +107,7 @@ export function TarjetaProducto({
           ) : null}
         </div>
 
-        <div className="mt-auto flex gap-2 pt-1.5">
+        <div className="mt-auto flex flex-col gap-2 pt-1.5 sm:flex-row">
           <button
             type="button"
             className={cn(
@@ -120,7 +120,14 @@ export function TarjetaProducto({
               if (!enLista) agregar(producto.codigo, 1, producto.nombre);
             }}
           >
-            {enLista ? "✓ En la cotización" : "+ Agregar a la cotización"}
+            {enLista ? (
+              "✓ En la cotización"
+            ) : (
+              <>
+                <span className="sm:hidden">+ Agregar</span>
+                <span className="hidden sm:inline">+ Agregar a la cotización</span>
+              </>
+            )}
           </button>
           <button
             type="button"

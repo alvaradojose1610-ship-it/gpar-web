@@ -53,25 +53,25 @@ export function VistaCatalogoCategoria({
       </div>
 
       <div className="border-b border-gpar-line">
-        <Contenedor className="flex flex-wrap items-end justify-between gap-6 py-8">
-          <div>
+        <Contenedor className="flex flex-wrap items-end justify-between gap-3 py-5 sm:gap-6 sm:py-8">
+          <div className="min-w-0 flex-1">
             <p className="mb-2 font-mono text-[11.5px] uppercase tracking-[0.12em] text-gpar-orange-ink">
               {linea === "industrial"
                 ? "Repuestos industriales"
                 : "Repuestos automotrices"}
             </p>
-            <h1 className="font-display text-[clamp(32px,4.4vw,46px)] font-extrabold uppercase leading-none text-gpar-ink">
+            <h1 className="font-display text-[clamp(28px,4.4vw,46px)] font-extrabold uppercase leading-none text-gpar-ink">
               {categoriaNombre}
             </h1>
-            <p className="mt-3 max-w-[54ch] text-[15.5px] text-gpar-ink-2">
+            <p className="mt-2 max-w-[54ch] text-[14.5px] text-gpar-ink-2 sm:mt-3 sm:text-[15.5px]">
               {categoriaDescripcion}
             </p>
           </div>
           <Link
             href="/"
-            className="inline-flex min-h-11 items-center border border-gpar-ink bg-gpar-bg px-5 text-sm font-semibold text-gpar-ink hover:bg-gpar-ink hover:text-white"
+            className="inline-flex min-h-10 items-center text-sm font-semibold text-gpar-ink underline-offset-2 hover:underline sm:min-h-11 sm:border sm:border-gpar-ink sm:bg-gpar-bg sm:px-5 sm:no-underline sm:hover:bg-gpar-ink sm:hover:text-white sm:hover:no-underline"
           >
-            ← Volver al inicio
+            ← Volver
           </Link>
         </Contenedor>
       </div>
