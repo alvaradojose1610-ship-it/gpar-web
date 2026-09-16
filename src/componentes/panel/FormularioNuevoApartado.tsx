@@ -172,28 +172,35 @@ export function FormularioNuevoApartado() {
         )}
       />
 
-      <div className="overflow-x-auto border border-[#E4E7EC] bg-white">
+      <div className="border border-[#E4E7EC] bg-white">
         {lineas.length === 0 ? (
           <p className="px-4 py-6 text-center text-sm text-[#5C6675]">
             Sin líneas.
           </p>
         ) : (
-          <table className="min-w-full text-left text-sm">
+          <table className="w-full text-left text-sm">
             <thead className="border-b bg-[#F7F8FA] text-xs uppercase text-[#5C6675]">
               <tr>
-                <th className="px-3 py-2">Código</th>
-                <th className="px-3 py-2">Producto</th>
-                <th className="px-3 py-2">Cant.</th>
-                <th className="px-3 py-2"> </th>
+                <th className="hidden px-2 py-2 sm:table-cell sm:px-3">Código</th>
+                <th className="px-2 py-2 sm:px-3">Producto</th>
+                <th className="px-2 py-2 sm:px-3">Cant.</th>
+                <th className="px-2 py-2 sm:px-3"> </th>
               </tr>
             </thead>
             <tbody>
               {lineas.map((l) => (
                 <tr key={l.productoId} className="border-b">
-                  <td className="px-3 py-2 font-mono text-xs">{l.codigo}</td>
-                  <td className="px-3 py-2">{l.nombre}</td>
-                  <td className="px-3 py-2">{l.cantidad}</td>
-                  <td className="px-3 py-2">
+                  <td className="hidden px-2 py-2 font-mono text-xs sm:table-cell sm:px-3">
+                    {l.codigo}
+                  </td>
+                  <td className="px-2 py-2 sm:px-3">
+                    <div className="line-clamp-2">{l.nombre}</div>
+                    <div className="mt-0.5 font-mono text-[11px] text-[#5C6675] sm:hidden">
+                      {l.codigo}
+                    </div>
+                  </td>
+                  <td className="px-2 py-2 sm:px-3">{l.cantidad}</td>
+                  <td className="px-2 py-2 sm:px-3">
                     <button
                       type="button"
                       className="text-sm text-red-700"

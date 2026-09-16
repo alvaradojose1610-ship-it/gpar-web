@@ -4,6 +4,7 @@ import { PaginaPlaceholderPanel } from "@/componentes/panel/PaginaPlaceholderPan
 import { CODIGOS_PERMISO } from "@/configuracion/permisos";
 import { prisma } from "@/lib/prisma";
 import { requerirPermiso } from "@/modulos/autenticacion/servicio-sesion";
+import { COL_MD } from "@/utilidades/tabla-panel";
 
 export const dynamic = "force-dynamic";
 
@@ -42,15 +43,19 @@ export default async function PaginaPanelRoles({ searchParams }: Props) {
         </p>
       ) : null}
 
-      <div className="overflow-x-auto border border-[#E4E7EC] bg-white">
-        <table className="min-w-full text-left text-sm">
+      <div className="border border-[#E4E7EC] bg-white">
+        <table className="w-full text-left text-sm">
           <thead className="border-b border-[#E4E7EC] bg-[#F7F8FA] text-xs uppercase tracking-[0.08em] text-[#5C6675]">
             <tr>
-              <th className="px-3 py-2 font-semibold">Rol</th>
-              <th className="px-3 py-2 font-semibold">Código</th>
-              <th className="px-3 py-2 font-semibold">Permisos</th>
-              <th className="px-3 py-2 font-semibold">Usuarios</th>
-              <th className="px-3 py-2 font-semibold"> </th>
+              <th className="px-2 py-2 font-semibold sm:px-3">Rol</th>
+              <th className={`${COL_MD} px-2 py-2 font-semibold sm:px-3`}>
+                Código
+              </th>
+              <th className="px-2 py-2 font-semibold sm:px-3">Permisos</th>
+              <th className={`${COL_MD} px-2 py-2 font-semibold sm:px-3`}>
+                Usuarios
+              </th>
+              <th className="px-2 py-2 font-semibold sm:px-3"> </th>
             </tr>
           </thead>
           <tbody>
@@ -59,7 +64,7 @@ export default async function PaginaPanelRoles({ searchParams }: Props) {
                 key={rol.id}
                 className="border-b border-[#EEF0F3] last:border-0"
               >
-                <td className="px-3 py-2 font-medium text-[#1D2430]">
+                <td className="px-2 py-2 font-medium text-[#1D2430] sm:px-3">
                   {rol.nombre}
                   {rol.esSistema ? (
                     <span className="ml-2 font-mono text-[11px] text-[#5C6675]">
@@ -67,16 +72,18 @@ export default async function PaginaPanelRoles({ searchParams }: Props) {
                     </span>
                   ) : null}
                 </td>
-                <td className="px-3 py-2 font-mono text-[13px] text-[#5C6675]">
+                <td
+                  className={`${COL_MD} px-2 py-2 font-mono text-[13px] text-[#5C6675] sm:px-3`}
+                >
                   {rol.codigo}
                 </td>
-                <td className="px-3 py-2 text-[#5C6675]">
+                <td className="px-2 py-2 text-[#5C6675] sm:px-3">
                   {rol._count.permisos}
                 </td>
-                <td className="px-3 py-2 text-[#5C6675]">
+                <td className={`${COL_MD} px-2 py-2 text-[#5C6675] sm:px-3`}>
                   {rol._count.usuarios}
                 </td>
-                <td className="px-3 py-2 text-right">
+                <td className="px-2 py-2 text-right sm:px-3">
                   <Link
                     href={`/panel/roles/${rol.id}`}
                     className="text-sm font-semibold text-[#D96A00] hover:underline"

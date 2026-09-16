@@ -12,6 +12,8 @@ import {
   type FormEvent,
 } from "react";
 
+import { COL_LG, COL_MD } from "@/utilidades/tabla-panel";
+
 type FilaProducto = {
   id: string;
   codigo: string;
@@ -172,6 +174,7 @@ function CabeceraConLapiz({
   onAplicar,
   onCerrar,
   opciones,
+  className,
 }: {
   etiqueta: string;
   columna: ColumnaFiltro;
@@ -182,9 +185,10 @@ function CabeceraConLapiz({
   onAplicar: (valor: string) => void;
   onCerrar: () => void;
   opciones?: { valor: string; etiqueta: string }[];
+  className?: string;
 }) {
   return (
-    <th className="relative px-3 py-2 font-semibold">
+    <th className={`relative px-2 py-2 font-semibold sm:px-3 ${className ?? ""}`}>
       <div className="flex items-center gap-1">
         <span>{etiqueta}</span>
         <button
@@ -282,11 +286,67 @@ export function TablaProductosFiltrable({
         ) : null}
       </div>
 
-      <div className="overflow-x-auto border border-[#E4E7EC] bg-white">
-        <table className="min-w-full text-left text-sm">
+      {/* Filtros extra en móvil (columnas ocultas en la tabla). */}
+      <div className="grid gap-2 border border-[#E4E7EC] bg-white p-3 md:hidden">
+        <p className="text-[11px] font-semibold uppercase tracking-[0.08em] text-[#5C6675]">
+          Filtros
+        </p>
+        <div className="grid grid-cols-1 gap-2 sm:grid-cols-3">
+          <label className="grid gap-1 text-xs">
+            <span className="font-semibold text-[#1D2430]">Línea</span>
+            <select
+              value={filtros.linea}
+              onChange={(e) =>
+                guardarFiltros({ ...filtros, linea: e.target.value })
+              }
+              className="min-h-10 border border-[#E4E7EC] bg-[#F7F8FA] px-2 text-sm"
+            >
+              <option value="">Todas</option>
+              <option value="INDUSTRIAL">Industrial</option>
+              <option value="CARGA_PESADA">Carga Pesada</option>
+            </select>
+          </label>
+          <label className="grid gap-1 text-xs">
+            <span className="font-semibold text-[#1D2430]">Categoría</span>
+            <select
+              value={filtros.categoria}
+              onChange={(e) =>
+                guardarFiltros({ ...filtros, categoria: e.target.value })
+              }
+              className="min-h-10 border border-[#E4E7EC] bg-[#F7F8FA] px-2 text-sm"
+            >
+              <option value="">Todas</option>
+              {categorias.map((c) => (
+                <option key={c} value={c}>
+                  {c}
+                </option>
+              ))}
+            </select>
+          </label>
+          <label className="grid gap-1 text-xs">
+            <span className="font-semibold text-[#1D2430]">Web</span>
+            <select
+              value={filtros.web}
+              onChange={(e) =>
+                guardarFiltros({ ...filtros, web: e.target.value })
+              }
+              className="min-h-10 border border-[#E4E7EC] bg-[#F7F8FA] px-2 text-sm"
+            >
+              <option value="">Todas</option>
+              <option value="si">Visible</option>
+              <option value="no">Oculto</option>
+            </select>
+          </label>
+        </div>
+      </div>
+
+      <div className="border border-[#E4E7EC] bg-white">
+        <table className="w-full table-fixed text-left text-sm md:table-auto">
           <thead className="border-b border-[#E4E7EC] bg-[#F7F8FA] text-xs uppercase tracking-[0.08em] text-[#5C6675]">
             <tr>
-              <th className="px-3 py-2 font-semibold">Foto</th>
+              <th className={`${COL_MD} px-2 py-2 font-semibold sm:px-3`}>
+                Foto
+              </th>
               <CabeceraConLapiz
                 etiqueta="Código"
                 columna="codigo"
@@ -298,6 +358,7 @@ export function TablaProductosFiltrable({
                 }
                 onAplicar={(v) => guardarFiltros({ ...filtros, codigo: v })}
                 onCerrar={() => setAbierto(null)}
+                className="w-[30%] md:w-auto"
               />
               <CabeceraConLapiz
                 etiqueta="Nombre"
@@ -310,6 +371,7 @@ export function TablaProductosFiltrable({
                 }
                 onAplicar={(v) => guardarFiltros({ ...filtros, nombre: v })}
                 onCerrar={() => setAbierto(null)}
+                className="w-[50%] md:w-auto"
               />
               <CabeceraConLapiz
                 etiqueta="Línea"
@@ -322,6 +384,7 @@ export function TablaProductosFiltrable({
                 }
                 onAplicar={(v) => guardarFiltros({ ...filtros, linea: v })}
                 onCerrar={() => setAbierto(null)}
+                className={COL_MD}
                 opciones={[
                   { valor: "INDUSTRIAL", etiqueta: "Industrial" },
                   { valor: "CARGA_PESADA", etiqueta: "Carga Pesada" },
@@ -338,6 +401,7 @@ export function TablaProductosFiltrable({
                 }
                 onAplicar={(v) => guardarFiltros({ ...filtros, categoria: v })}
                 onCerrar={() => setAbierto(null)}
+                className={COL_MD}
                 opciones={categorias.map((c) => ({ valor: c, etiqueta: c }))}
               />
               <CabeceraConLapiz
@@ -349,13 +413,18 @@ export function TablaProductosFiltrable({
                 onToggle={() => setAbierto((a) => (a === "web" ? null : "web"))}
                 onAplicar={(v) => guardarFiltros({ ...filtros, web: v })}
                 onCerrar={() => setAbierto(null)}
+                className={COL_LG}
                 opciones={[
                   { valor: "si", etiqueta: "Visible" },
                   { valor: "no", etiqueta: "Oculto" },
                 ]}
               />
-              <th className="px-3 py-2 font-semibold">QR</th>
-              <th className="px-3 py-2 font-semibold">Acciones</th>
+              <th className={`${COL_LG} px-2 py-2 font-semibold sm:px-3`}>
+                QR
+              </th>
+              <th className="w-[20%] px-2 py-2 font-semibold sm:px-3 md:w-auto">
+                Acciones
+              </th>
             </tr>
           </thead>
           <tbody>
@@ -364,7 +433,7 @@ export function TablaProductosFiltrable({
                 key={producto.id}
                 className="border-b border-[#EEF0F3] last:border-0"
               >
-                <td className="px-3 py-2">
+                <td className={`${COL_MD} px-2 py-2 sm:px-3`}>
                   <div className="relative size-10 overflow-hidden border border-[#E4E7EC] bg-[#F7F8FA]">
                     {producto.imagenUrl ? (
                       <Image
@@ -382,20 +451,28 @@ export function TablaProductosFiltrable({
                     )}
                   </div>
                 </td>
-                <td className="px-3 py-2 font-mono text-xs text-[#1D2430]">
+                <td className="px-2 py-2 font-mono text-[11px] text-[#1D2430] sm:px-3 sm:text-xs">
                   {producto.codigo}
                 </td>
-                <td className="px-3 py-2 text-[#1D2430]">{producto.nombre}</td>
-                <td className="px-3 py-2 capitalize text-[#5C6675]">
-                  {producto.linea.toLowerCase()}
+                <td className="px-2 py-2 text-[#1D2430] sm:px-3">
+                  <div className="line-clamp-2 font-medium leading-snug">
+                    {producto.nombre}
+                  </div>
+                  <div className="mt-0.5 text-[11px] capitalize text-[#5C6675] md:hidden">
+                    {producto.linea.toLowerCase().replace("_", " ")} ·{" "}
+                    {producto.categoriaNombre}
+                  </div>
                 </td>
-                <td className="px-3 py-2 text-[#5C6675]">
+                <td className={`${COL_MD} px-2 py-2 capitalize text-[#5C6675] sm:px-3`}>
+                  {producto.linea.toLowerCase().replace("_", " ")}
+                </td>
+                <td className={`${COL_MD} px-2 py-2 text-[#5C6675] sm:px-3`}>
                   {producto.categoriaNombre}
                 </td>
-                <td className="px-3 py-2 text-[#5C6675]">
+                <td className={`${COL_LG} px-2 py-2 text-[#5C6675] sm:px-3`}>
                   {producto.visibleWeb ? "Sí" : "No"}
                 </td>
-                <td className="px-3 py-2">
+                <td className={`${COL_LG} px-2 py-2 sm:px-3`}>
                   <Link
                     href={`/p/${producto.tokenPublico}`}
                     className="font-mono text-xs text-[#D96A00] hover:underline"
@@ -404,19 +481,21 @@ export function TablaProductosFiltrable({
                     Abrir ficha
                   </Link>
                 </td>
-                <td className="px-3 py-2">
-                  <Link
-                    href={`/panel/productos/${producto.id}/editar`}
-                    className="mr-3 text-xs font-semibold text-[#D96A00] hover:underline"
-                  >
-                    Editar
-                  </Link>
-                  <Link
-                    href={`/panel/productos/${producto.id}/etiqueta`}
-                    className="text-xs font-semibold text-[#1D2430] hover:underline"
-                  >
-                    Imprimir QR
-                  </Link>
+                <td className="px-2 py-2 sm:px-3">
+                  <div className="flex flex-col items-start gap-1 sm:flex-row sm:items-center sm:gap-3">
+                    <Link
+                      href={`/panel/productos/${producto.id}/editar`}
+                      className="text-xs font-semibold text-[#D96A00] hover:underline"
+                    >
+                      Editar
+                    </Link>
+                    <Link
+                      href={`/panel/productos/${producto.id}/etiqueta`}
+                      className="hidden text-xs font-semibold text-[#1D2430] hover:underline md:inline"
+                    >
+                      Imprimir QR
+                    </Link>
+                  </div>
                 </td>
               </tr>
             ))}

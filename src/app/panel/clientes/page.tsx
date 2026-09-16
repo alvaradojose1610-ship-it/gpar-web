@@ -4,6 +4,7 @@ import { PaginaPlaceholderPanel } from "@/componentes/panel/PaginaPlaceholderPan
 import { prisma } from "@/lib/prisma";
 import { CODIGOS_PERMISO } from "@/configuracion/permisos";
 import { requerirPermiso } from "@/modulos/autenticacion/servicio-sesion";
+import { COL_LG, COL_MD } from "@/utilidades/tabla-panel";
 
 export const dynamic = "force-dynamic";
 
@@ -34,16 +35,22 @@ export default async function PaginaPanelClientes() {
           Aún no hay clientes. Crea uno o se crearán al vender en el POS.
         </p>
       ) : (
-        <div className="overflow-x-auto border border-[#E4E7EC] bg-white">
-          <table className="min-w-full text-left text-sm">
+        <div className="border border-[#E4E7EC] bg-white">
+          <table className="w-full text-left text-sm">
             <thead className="border-b border-[#E4E7EC] bg-[#F7F8FA] text-xs uppercase tracking-[0.08em] text-[#5C6675]">
               <tr>
-                <th className="px-3 py-2 font-semibold">Nombre</th>
-                <th className="px-3 py-2 font-semibold">Empresa</th>
-                <th className="px-3 py-2 font-semibold">Teléfono</th>
-                <th className="px-3 py-2 font-semibold">Correo</th>
-                <th className="px-3 py-2 font-semibold">Estado</th>
-                <th className="px-3 py-2 font-semibold"> </th>
+                <th className="px-2 py-2 font-semibold sm:px-3">Nombre</th>
+                <th className={`${COL_MD} px-2 py-2 font-semibold sm:px-3`}>
+                  Empresa
+                </th>
+                <th className="px-2 py-2 font-semibold sm:px-3">Teléfono</th>
+                <th className={`${COL_LG} px-2 py-2 font-semibold sm:px-3`}>
+                  Correo
+                </th>
+                <th className={`${COL_MD} px-2 py-2 font-semibold sm:px-3`}>
+                  Estado
+                </th>
+                <th className="px-2 py-2 font-semibold sm:px-3"> </th>
               </tr>
             </thead>
             <tbody>
@@ -52,20 +59,27 @@ export default async function PaginaPanelClientes() {
                   key={c.id}
                   className="border-b border-[#EEF0F3] last:border-0"
                 >
-                  <td className="px-3 py-2 font-medium text-[#1D2430]">
-                    {c.nombre}
+                  <td className="px-2 py-2 font-medium text-[#1D2430] sm:px-3">
+                    <div>{c.nombre}</div>
+                    {c.empresa ? (
+                      <div className="mt-0.5 text-[11px] text-[#5C6675] md:hidden">
+                        {c.empresa}
+                      </div>
+                    ) : null}
                   </td>
-                  <td className="px-3 py-2 text-[#5C6675]">
+                  <td className={`${COL_MD} px-2 py-2 text-[#5C6675] sm:px-3`}>
                     {c.empresa || "—"}
                   </td>
-                  <td className="px-3 py-2 text-[#5C6675]">
+                  <td className="px-2 py-2 text-[#5C6675] sm:px-3">
                     {c.telefono || "—"}
                   </td>
-                  <td className="px-3 py-2 text-[#5C6675]">
+                  <td className={`${COL_LG} px-2 py-2 text-[#5C6675] sm:px-3`}>
                     {c.correo || "—"}
                   </td>
-                  <td className="px-3 py-2 text-[#5C6675]">{c.estado}</td>
-                  <td className="px-3 py-2 text-right">
+                  <td className={`${COL_MD} px-2 py-2 text-[#5C6675] sm:px-3`}>
+                    {c.estado}
+                  </td>
+                  <td className="px-2 py-2 text-right sm:px-3">
                     <Link
                       href={`/panel/clientes/${c.id}/editar`}
                       className="text-sm font-semibold text-[#D96A00] hover:underline"

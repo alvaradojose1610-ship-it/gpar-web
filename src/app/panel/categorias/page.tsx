@@ -4,6 +4,7 @@ import { PaginaPlaceholderPanel } from "@/componentes/panel/PaginaPlaceholderPan
 import { CODIGOS_PERMISO } from "@/configuracion/permisos";
 import { prisma } from "@/lib/prisma";
 import { requerirPermiso } from "@/modulos/autenticacion/servicio-sesion";
+import { COL_MD } from "@/utilidades/tabla-panel";
 
 export const dynamic = "force-dynamic";
 
@@ -50,17 +51,25 @@ export default async function PaginaPanelCategorias({ searchParams }: Props) {
         </p>
       ) : null}
 
-      <div className="overflow-x-auto border border-[#E4E7EC] bg-white">
-        <table className="min-w-full text-left text-sm">
+      <div className="border border-[#E4E7EC] bg-white">
+        <table className="w-full text-left text-sm">
           <thead className="border-b border-[#E4E7EC] bg-[#F7F8FA] text-xs uppercase tracking-[0.08em] text-[#5C6675]">
             <tr>
-              <th className="px-3 py-2 font-semibold">Línea</th>
-              <th className="px-3 py-2 font-semibold">Nombre</th>
-              <th className="px-3 py-2 font-semibold">Código</th>
-              <th className="px-3 py-2 font-semibold">Web</th>
-              <th className="px-3 py-2 font-semibold">Orden</th>
-              <th className="px-3 py-2 font-semibold">Productos</th>
-              <th className="px-3 py-2 font-semibold"> </th>
+              <th className="px-2 py-2 font-semibold sm:px-3">Nombre</th>
+              <th className={`${COL_MD} px-2 py-2 font-semibold sm:px-3`}>
+                Línea
+              </th>
+              <th className={`${COL_MD} px-2 py-2 font-semibold sm:px-3`}>
+                Código
+              </th>
+              <th className="px-2 py-2 font-semibold sm:px-3">Web</th>
+              <th className={`${COL_MD} px-2 py-2 font-semibold sm:px-3`}>
+                Orden
+              </th>
+              <th className={`${COL_MD} px-2 py-2 font-semibold sm:px-3`}>
+                Productos
+              </th>
+              <th className="px-2 py-2 font-semibold sm:px-3"> </th>
             </tr>
           </thead>
           <tbody>
@@ -69,16 +78,23 @@ export default async function PaginaPanelCategorias({ searchParams }: Props) {
                 key={c.id}
                 className="border-b border-[#EEF0F3] last:border-0"
               >
-                <td className="px-3 py-2 capitalize text-[#5C6675]">
-                  {c.linea.toLowerCase()}
+                <td className="px-2 py-2 font-medium text-[#1D2430] sm:px-3">
+                  <div>{c.nombre}</div>
+                  <div className="mt-0.5 text-[11px] capitalize text-[#5C6675] md:hidden">
+                    {c.linea.toLowerCase().replace("_", " ")} · {c.codigo}
+                  </div>
                 </td>
-                <td className="px-3 py-2 font-medium text-[#1D2430]">
-                  {c.nombre}
+                <td
+                  className={`${COL_MD} px-2 py-2 capitalize text-[#5C6675] sm:px-3`}
+                >
+                  {c.linea.toLowerCase().replace("_", " ")}
                 </td>
-                <td className="px-3 py-2 font-mono text-[12px] text-[#5C6675]">
+                <td
+                  className={`${COL_MD} px-2 py-2 font-mono text-[12px] text-[#5C6675] sm:px-3`}
+                >
                   {c.codigo}
                 </td>
-                <td className="px-3 py-2">
+                <td className="px-2 py-2 sm:px-3">
                   {c.estado !== "ACTIVO" ? (
                     <span className="text-[#5C6675]">Inactiva</span>
                   ) : c.publicada ? (
@@ -91,11 +107,15 @@ export default async function PaginaPanelCategorias({ searchParams }: Props) {
                     </span>
                   )}
                 </td>
-                <td className="px-3 py-2 font-mono text-[13px]">{c.orden}</td>
-                <td className="px-3 py-2 text-[#5C6675]">
+                <td
+                  className={`${COL_MD} px-2 py-2 font-mono text-[13px] sm:px-3`}
+                >
+                  {c.orden}
+                </td>
+                <td className={`${COL_MD} px-2 py-2 text-[#5C6675] sm:px-3`}>
                   {c._count.productos}
                 </td>
-                <td className="px-3 py-2 text-right">
+                <td className="px-2 py-2 text-right sm:px-3">
                   <Link
                     href={`/panel/categorias/${c.id}/editar`}
                     className="text-sm font-semibold text-[#D96A00] hover:underline"

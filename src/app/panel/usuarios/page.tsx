@@ -4,6 +4,7 @@ import { PaginaPlaceholderPanel } from "@/componentes/panel/PaginaPlaceholderPan
 import { CODIGOS_PERMISO } from "@/configuracion/permisos";
 import { prisma } from "@/lib/prisma";
 import { requerirPermiso } from "@/modulos/autenticacion/servicio-sesion";
+import { COL_MD } from "@/utilidades/tabla-panel";
 
 export const dynamic = "force-dynamic";
 
@@ -59,15 +60,17 @@ export default async function PaginaPanelUsuarios({ searchParams }: Props) {
         </p>
       ) : null}
 
-      <div className="overflow-x-auto border border-[#E4E7EC] bg-white">
-        <table className="min-w-full text-left text-sm">
+      <div className="border border-[#E4E7EC] bg-white">
+        <table className="w-full text-left text-sm">
           <thead className="border-b border-[#E4E7EC] bg-[#F7F8FA] text-xs uppercase tracking-[0.08em] text-[#5C6675]">
             <tr>
-              <th className="px-3 py-2 font-semibold">Usuario</th>
-              <th className="px-3 py-2 font-semibold">Nombre</th>
-              <th className="px-3 py-2 font-semibold">Roles</th>
-              <th className="px-3 py-2 font-semibold">Estado</th>
-              <th className="px-3 py-2 font-semibold"> </th>
+              <th className="px-2 py-2 font-semibold sm:px-3">Usuario</th>
+              <th className="px-2 py-2 font-semibold sm:px-3">Nombre</th>
+              <th className={`${COL_MD} px-2 py-2 font-semibold sm:px-3`}>
+                Roles
+              </th>
+              <th className="px-2 py-2 font-semibold sm:px-3">Estado</th>
+              <th className="px-2 py-2 font-semibold sm:px-3"> </th>
             </tr>
           </thead>
           <tbody>
@@ -76,16 +79,21 @@ export default async function PaginaPanelUsuarios({ searchParams }: Props) {
                 key={u.id}
                 className="border-b border-[#EEF0F3] last:border-0"
               >
-                <td className="px-3 py-2 font-mono text-[13px] text-[#1D2430]">
+                <td className="px-2 py-2 font-mono text-[13px] text-[#1D2430] sm:px-3">
                   {u.usuario}
                 </td>
-                <td className="px-3 py-2 text-[#1D2430]">
-                  {[u.nombre, u.apellido].filter(Boolean).join(" ")}
+                <td className="px-2 py-2 text-[#1D2430] sm:px-3">
+                  <div>
+                    {[u.nombre, u.apellido].filter(Boolean).join(" ")}
+                  </div>
+                  <div className="mt-0.5 text-[11px] text-[#5C6675] md:hidden">
+                    {u.roles.map((ur) => ur.rol.nombre).join(", ") || "—"}
+                  </div>
                 </td>
-                <td className="px-3 py-2 text-[#5C6675]">
+                <td className={`${COL_MD} px-2 py-2 text-[#5C6675] sm:px-3`}>
                   {u.roles.map((ur) => ur.rol.nombre).join(", ") || "—"}
                 </td>
-                <td className="px-3 py-2">
+                <td className="px-2 py-2 sm:px-3">
                   <span
                     className={
                       u.activo
@@ -96,7 +104,7 @@ export default async function PaginaPanelUsuarios({ searchParams }: Props) {
                     {u.activo ? "Activo" : "Inactivo"}
                   </span>
                 </td>
-                <td className="px-3 py-2 text-right">
+                <td className="px-2 py-2 text-right sm:px-3">
                   <Link
                     href={`/panel/usuarios/${u.id}/editar`}
                     className="text-sm font-semibold text-[#D96A00] hover:underline"

@@ -103,7 +103,7 @@ export function ShellPanel({ nombreUsuario, itemsNav, children }: Props) {
           <span className="text-sm font-semibold text-[#F57C00]">GPar</span>
         </header>
 
-        <main className="flex-1 overflow-x-hidden p-4 sm:p-6">{children}</main>
+        <main className="min-w-0 flex-1 overflow-x-hidden p-3 sm:p-6">{children}</main>
       </div>
     </div>
   );

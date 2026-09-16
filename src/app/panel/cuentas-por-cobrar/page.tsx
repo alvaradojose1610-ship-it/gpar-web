@@ -4,6 +4,7 @@ import { PaginaPlaceholderPanel } from "@/componentes/panel/PaginaPlaceholderPan
 import { CODIGOS_PERMISO } from "@/configuracion/permisos";
 import { prisma } from "@/lib/prisma";
 import { requerirPermiso } from "@/modulos/autenticacion/servicio-sesion";
+import { COL_MD } from "@/utilidades/tabla-panel";
 
 export const dynamic = "force-dynamic";
 
@@ -24,29 +25,38 @@ export default async function PaginaCuentasPorCobrar() {
       titulo="Cuentas por cobrar"
       descripcion="Créditos de clientes ligados a ventas."
     >
-      <div className="overflow-x-auto border border-[#E4E7EC] bg-white">
-        <table className="min-w-full text-left text-sm">
+      <div className="border border-[#E4E7EC] bg-white">
+        <table className="w-full text-left text-sm">
           <thead className="border-b bg-[#F7F8FA] text-xs uppercase text-[#5C6675]">
             <tr>
-              <th className="px-3 py-2">Venta</th>
-              <th className="px-3 py-2">Cliente</th>
-              <th className="px-3 py-2">Total</th>
-              <th className="px-3 py-2">Saldo</th>
-              <th className="px-3 py-2">Estado</th>
-              <th className="px-3 py-2"> </th>
+              <th className="px-2 py-2 sm:px-3">Venta</th>
+              <th className="px-2 py-2 sm:px-3">Cliente</th>
+              <th className={`${COL_MD} px-2 py-2 sm:px-3`}>Total</th>
+              <th className="px-2 py-2 sm:px-3">Saldo</th>
+              <th className={`${COL_MD} px-2 py-2 sm:px-3`}>Estado</th>
+              <th className="px-2 py-2 sm:px-3"> </th>
             </tr>
           </thead>
           <tbody>
             {cuentas.map((c) => (
               <tr key={c.id} className="border-b">
-                <td className="px-3 py-2 font-mono text-xs">{c.venta.numero}</td>
-                <td className="px-3 py-2">
-                  {c.cliente?.nombre ?? "—"}
+                <td className="px-2 py-2 font-mono text-xs sm:px-3">
+                  {c.venta.numero}
                 </td>
-                <td className="px-3 py-2">{Number(c.total).toFixed(2)}</td>
-                <td className="px-3 py-2">{Number(c.saldo).toFixed(2)}</td>
-                <td className="px-3 py-2">{c.estado}</td>
-                <td className="px-3 py-2 text-right">
+                <td className="px-2 py-2 sm:px-3">
+                  <div>{c.cliente?.nombre ?? "—"}</div>
+                  <div className="mt-0.5 text-[11px] text-[#5C6675] md:hidden">
+                    {c.estado}
+                  </div>
+                </td>
+                <td className={`${COL_MD} px-2 py-2 sm:px-3`}>
+                  {Number(c.total).toFixed(2)}
+                </td>
+                <td className="px-2 py-2 sm:px-3">
+                  {Number(c.saldo).toFixed(2)}
+                </td>
+                <td className={`${COL_MD} px-2 py-2 sm:px-3`}>{c.estado}</td>
+                <td className="px-2 py-2 text-right sm:px-3">
                   <Link
                     href={`/panel/cuentas-por-cobrar/${c.id}`}
                     className="font-semibold text-[#D96A00] hover:underline"
