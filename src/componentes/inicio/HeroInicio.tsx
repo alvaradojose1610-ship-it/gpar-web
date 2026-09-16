@@ -27,19 +27,21 @@ export function HeroInicio() {
         aria-hidden
       />
       <div
-        className="absolute inset-0 bg-[linear-gradient(180deg,rgba(255,255,255,0.95)_0%,rgba(255,255,255,0.88)_60%,rgba(255,255,255,0.72)_100%)] md:inset-[0_0_46px_0] md:bg-[linear-gradient(100deg,rgba(255,255,255,0.97)_0%,rgba(255,255,255,0.93)_46%,rgba(255,255,255,0.62)_72%,rgba(255,255,255,0.30)_100%)]"
+        className="pointer-events-none absolute inset-0 bg-[linear-gradient(180deg,rgba(255,255,255,0.95)_0%,rgba(255,255,255,0.88)_60%,rgba(255,255,255,0.72)_100%)] md:inset-[0_0_46px_0] md:bg-[linear-gradient(100deg,rgba(255,255,255,0.97)_0%,rgba(255,255,255,0.93)_46%,rgba(255,255,255,0.62)_72%,rgba(255,255,255,0.30)_100%)]"
         aria-hidden
       />
 
-      <Contenedor className="relative py-8 sm:py-11 md:pb-[68px] md:pt-[76px]">
-        <div className="max-w-[640px]">
-          <span className="mb-4 inline-block border border-gpar-orange-border bg-gpar-orange-soft px-[11px] py-1.5 font-mono text-[11.5px] uppercase tracking-[0.14em] text-gpar-orange-ink sm:mb-5">
-            Industrial y carga pesada
+      <Contenedor className="relative py-8 sm:py-11 md:pb-[68px] md:pt-[76px] lg:pr-8">
+        <div className="max-w-[780px]">
+          <span className="mb-5 inline-flex max-w-full items-center border border-gpar-orange-border bg-gpar-orange-soft px-4 py-3 sm:px-5 sm:py-3.5">
+            <span className="whitespace-nowrap font-display text-[clamp(18px,4.1vw,40px)] font-extrabold uppercase leading-none tracking-[0.02em] text-gpar-orange">
+              Soluciones para la industria
+            </span>
           </span>
-          <h1 className="font-display text-[clamp(30px,5.4vw,62px)] font-extrabold uppercase leading-[0.97] tracking-[0.02em] text-gpar-ink">
-            Todo para tu
+          <h1 className="font-display text-[length:var(--gp-h1-hero)] font-extrabold uppercase leading-none tracking-[0.02em] text-gpar-ink">
+            Todo en transmisión de
             <br />
-            planta y tu taller,
+            potencia mecánica
             <br />
             <em className="not-italic text-gpar-orange">en un solo lugar</em>
           </h1>
@@ -77,18 +79,18 @@ export function HeroInicio() {
       </Contenedor>
 
       <div
-        className="relative overflow-hidden whitespace-nowrap border-t border-gpar-line bg-gpar-bg py-[11px]"
+        className="relative overflow-hidden whitespace-nowrap border-y border-gpar-orange-edge bg-gpar-ink py-[22px]"
         aria-hidden="true"
       >
         <div
           data-strip
-          className="inline-flex gap-6 font-display text-[15px] font-bold uppercase tracking-[0.05em] text-gpar-ink-4"
-          style={{ animation: "gp-strip 42s linear infinite" }}
+          className="inline-flex gap-6 font-display text-[21px] font-bold uppercase tracking-[0.05em] text-white"
+          style={{ animation: "gp-strip var(--gp-strip-dur) linear infinite" }}
         >
           {stripDuplicado.map((nombre, i) => (
             <span key={`${nombre}-${i}`} className="inline-flex items-center gap-6">
               <span>{nombre}</span>
-              <i className="not-italic text-gpar-orange">/</i>
+              <i className="not-italic text-gpar-orange-light">/</i>
             </span>
           ))}
         </div>

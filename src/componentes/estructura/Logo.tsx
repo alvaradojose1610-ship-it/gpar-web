@@ -6,18 +6,14 @@ import { cn } from "@/utilidades/cn";
 type LogoProps = {
   className?: string;
   prioridad?: boolean;
-  conTexto?: boolean;
 };
 
-export function Logo({
-  className,
-  prioridad = false,
-  conTexto = false,
-}: LogoProps) {
+/** Solo el isotipo circular; el nombre de marca vive en el hero. */
+export function Logo({ className, prioridad = false }: LogoProps) {
   return (
     <Link
       href="/"
-      className={cn("inline-flex items-center gap-[11px]", className)}
+      className={cn("inline-flex shrink-0 items-center", className)}
       aria-label={empresa.nombreLegal}
     >
       <Image
@@ -28,16 +24,6 @@ export function Logo({
         priority={prioridad}
         className="size-11 rounded-full object-contain sm:size-[46px]"
       />
-      {conTexto ? (
-        <span className="leading-none">
-          <span className="block font-display text-[11px] font-semibold uppercase tracking-[0.14em] text-gpar-orange">
-            Distribuidora
-          </span>
-          <span className="font-display text-[26px] font-extrabold uppercase tracking-[0.02em] text-gpar-ink">
-            GPAR
-          </span>
-        </span>
-      ) : null}
     </Link>
   );
 }

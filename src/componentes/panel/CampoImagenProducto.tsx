@@ -117,8 +117,9 @@ export function CampoImagenProducto({
             : "Foto del producto (opcional)"}
         </p>
         <p className="mt-1 text-xs text-[#8A94A2]">
-          Tomá con el celular o elegí de la galería. JPG/PNG/WebP · se optimiza
-          sola antes de subir (máx. 1.5 MB).
+          Tomá con el celular o elegí de la galería. Se optimiza sola antes de
+          subir (máx. 1.5 MB). En iPhone: Cámara → Formatos → «Más compatible»
+          (JPG).
         </p>
       </div>
 
@@ -161,7 +162,7 @@ export function CampoImagenProducto({
         key={`galeria-${inputKey}`}
         id={galeriaId}
         type="file"
-        accept="image/*"
+        accept="image/jpeg,image/png,image/webp,image/*"
         onChange={alCambiar}
         disabled={procesando}
         className="sr-only"
@@ -170,7 +171,7 @@ export function CampoImagenProducto({
         key={`camara-${inputKey}`}
         id={camaraId}
         type="file"
-        accept="image/*"
+        accept="image/jpeg,image/png"
         capture="environment"
         onChange={alCambiar}
         disabled={procesando}

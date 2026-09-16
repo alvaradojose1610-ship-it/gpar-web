@@ -1,6 +1,8 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  // Evita que Turbopack empaquete mal los binarios nativos de sharp en Vercel.
+  serverExternalPackages: ["sharp"],
   experimental: {
     // Multipart con imagen ya comprimida en cliente (~1 MB) + resto de campos.
     serverActions: {

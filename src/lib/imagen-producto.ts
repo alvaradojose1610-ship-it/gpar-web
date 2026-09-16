@@ -2,7 +2,6 @@ import "server-only";
 
 import { randomUUID } from "crypto";
 import { del, put } from "@vercel/blob";
-import sharp from "sharp";
 
 import {
   ANCHO_IMAGEN_PRODUCTO,
@@ -24,6 +23,13 @@ export type ImagenProductoSubida = {
   thumbUrl: string;
 };
 
+type VariantesImagen = {
+  principal: Buffer;
+  thumb: Buffer;
+  contentType: string;
+  extension: string;
+};
+
 function tokenBlob() {
   return process.env.BLOB_READ_WRITE_TOKEN?.trim() || null;
 }
@@ -41,33 +47,65 @@ export function esUrlBlobImagen(imagenUrl?: string | null) {
   return !!imagenUrl && imagenUrl.includes(".blob.vercel-storage.com");
 }
 
-async function comprimirVariantes(buffer: Buffer) {
-  const base = sharp(buffer).rotate();
+/**
+ * Import dinámico: no cargar sharp al abrir formularios de editar/nuevo.
+ * sharp@0.35 + Next 16.2/Turbopack en Vercel omite libvips y tumba la ruta entera.
+ */
+async function comprimirVariantes(
+  buffer: Buffer,
+  extensionOrigen: string,
+): Promise<VariantesImagen> {
+  try {
+    const { default: sharp } = await import("sharp");
+    const base = sharp(buffer).rotate();
 
-  const [principal, thumb] = await Promise.all([
-    base
-      .clone()
-      .resize({
-        width: ANCHO_IMAGEN_PRODUCTO,
-        height: ANCHO_IMAGEN_PRODUCTO,
-        fit: "inside",
-        withoutEnlargement: true,
-      })
-      .webp({ quality: 78 })
-      .toBuffer(),
-    base
-      .clone()
-      .resize({
-        width: ANCHO_THUMB_PRODUCTO,
-        height: ANCHO_THUMB_PRODUCTO,
-        fit: "inside",
-        withoutEnlargement: true,
-      })
-      .webp({ quality: 70 })
-      .toBuffer(),
-  ]);
+    const [principal, thumb] = await Promise.all([
+      base
+        .clone()
+        .resize({
+          width: ANCHO_IMAGEN_PRODUCTO,
+          height: ANCHO_IMAGEN_PRODUCTO,
+          fit: "inside",
+          withoutEnlargement: true,
+        })
+        .webp({ quality: 78 })
+        .toBuffer(),
+      base
+        .clone()
+        .resize({
+          width: ANCHO_THUMB_PRODUCTO,
+          height: ANCHO_THUMB_PRODUCTO,
+          fit: "inside",
+          withoutEnlargement: true,
+        })
+        .webp({ quality: 70 })
+        .toBuffer(),
+    ]);
 
-  return { principal, thumb };
+    return {
+      principal,
+      thumb,
+      contentType: "image/webp",
+      extension: "webp",
+    };
+  } catch (error) {
+    console.error(
+      "[imagen-producto] sharp no disponible; se sube la imagen ya comprimida en el cliente.",
+      error,
+    );
+    const contentType =
+      extensionOrigen === "png"
+        ? "image/png"
+        : extensionOrigen === "webp"
+          ? "image/webp"
+          : "image/jpeg";
+    return {
+      principal: buffer,
+      thumb: buffer,
+      contentType,
+      extension: extensionOrigen,
+    };
+  }
 }
 
 /** Sube `imagen` del FormData a Vercel Blob (WebP + thumb). Sin archivo → null. */
@@ -106,24 +144,24 @@ export async function guardarImagenProducto(
   }
 
   const buffer = Buffer.from(await archivo.arrayBuffer());
-  const { principal, thumb } = await comprimirVariantes(buffer);
+  const variantes = await comprimirVariantes(buffer, extension);
 
   const id = randomUUID();
   const prefijo = entidadId
     ? `gpar/${carpeta}/${entidadId}`
     : `gpar/${carpeta}`;
-  const keyPrincipal = `${prefijo}/${id}.webp`;
-  const keyThumb = `${prefijo}/${id}-thumb.webp`;
+  const keyPrincipal = `${prefijo}/${id}.${variantes.extension}`;
+  const keyThumb = `${prefijo}/${id}-thumb.${variantes.extension}`;
 
   const [blob, blobThumb] = await Promise.all([
-    put(keyPrincipal, principal, {
+    put(keyPrincipal, variantes.principal, {
       access: "public",
-      contentType: "image/webp",
+      contentType: variantes.contentType,
       token,
     }),
-    put(keyThumb, thumb, {
+    put(keyThumb, variantes.thumb, {
       access: "public",
-      contentType: "image/webp",
+      contentType: variantes.contentType,
       token,
     }),
   ]);

@@ -8,6 +8,8 @@
   --gp-orange-ink:    #D96A00; /* naranja oscuro — texto/enlaces sobre blanco (AA) */
   --gp-orange-soft:   #FFF3E6; /* fondo de badge/píldora */
   --gp-orange-border: #FBD3A8; /* borde de badge/píldora */
+  --gp-orange-edge:   #C25E00; /* filo del cintillo oscuro */
+  --gp-orange-light:  #FF9A3C; /* separadores sobre fondo ink */
 
   /* ---------- Tinta / neutros ---------- */
   --gp-ink:        #1D2430; /* texto principal, footer, botón secundario */
@@ -36,7 +38,8 @@
   --gp-h3:        21px;   /* título de tarjeta de categoría (display) */
   --gp-h2:        clamp(28px, 3.4vw, 38px);
   --gp-h1-list:   clamp(32px, 4.4vw, 46px);
-  --gp-h1-hero:   clamp(34px, 5.4vw, 62px);
+  --gp-h1-hero:   clamp(31px, 4.2vw, 48px);
+  --gp-lockup:    clamp(48px, 6.2vw, 70px); /* nombre de marca en el hero */
 
   --gp-lh-tight: 1;
   --gp-lh-head:  1.05;

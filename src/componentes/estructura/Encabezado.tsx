@@ -59,14 +59,14 @@ export function Encabezado() {
         ref={headerRef}
         className="sticky top-0 z-[60] border-b border-gpar-line bg-gpar-bg"
       >
-        <Contenedor className="grid grid-cols-[auto_1fr_auto] items-center gap-3 py-3 lg:grid-cols-[auto_minmax(220px,430px)_1fr_auto]">
-          <Logo prioridad conTexto />
+        <Contenedor className="grid grid-cols-[auto_1fr_auto] items-center gap-3 py-3 lg:grid-cols-[auto_minmax(220px,1fr)_auto_auto] lg:gap-x-0">
+          <Logo prioridad className="shrink-0" />
 
           <form
             role="search"
             action="/buscar"
             onSubmit={manejarBusqueda}
-            className="col-span-full order-3 flex items-center gap-1.5 border border-gpar-line bg-gpar-surface px-2.5 py-1.5 sm:gap-2 sm:px-3 sm:py-2 lg:col-auto lg:order-none"
+            className="col-span-full order-3 flex min-w-[220px] items-center gap-1.5 border border-gpar-line bg-gpar-surface px-2.5 py-1.5 sm:gap-2 sm:px-3 sm:py-2 lg:col-auto lg:order-none lg:ml-3"
           >
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img src="/assets/iconos/buscar.svg" alt="" width={18} height={18} />
@@ -87,7 +87,7 @@ export function Encabezado() {
           </form>
 
           <nav
-            className="hidden items-center gap-[18px] text-sm font-medium text-gpar-ink-2 md:flex"
+            className="hidden shrink-0 items-center gap-[18px] text-sm font-medium text-gpar-ink-2 md:flex lg:pl-4"
             aria-label="Principal"
           >
             {nav.map((enlace) => {
@@ -112,7 +112,7 @@ export function Encabezado() {
             })}
           </nav>
 
-          <div className="flex items-center gap-2 justify-self-end">
+          <div className="flex shrink-0 items-center gap-2 justify-self-end lg:pl-3">
             <button
               type="button"
               aria-haspopup="dialog"
