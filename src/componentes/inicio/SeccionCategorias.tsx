@@ -1,7 +1,8 @@
 import { ConmutadorLinea } from "@/componentes/catalogo/ConmutadorLinea";
 import { TarjetaCategoria } from "@/componentes/catalogo/TarjetaCategoria";
 import { Contenedor } from "@/componentes/interfaz/Contenedor";
-import type { CategoriaCatalogo, LineaCatalogo } from "@/datos/tipos-catalogo";
+import { etiquetaLinea, lineaPorSlug, type LineaCatalogo } from "@/datos/lineas";
+import type { CategoriaCatalogo } from "@/datos/tipos-catalogo";
 
 type SeccionCategoriasProps = {
   linea?: LineaCatalogo;
@@ -18,8 +19,8 @@ export function SeccionCategorias({
   referencias,
   conteos,
 }: SeccionCategoriasProps) {
-  const etiquetaLinea =
-    linea === "industrial" ? "Repuestos industriales" : "Carga pesada";
+  const nombreLinea = etiquetaLinea(linea);
+  const resumenLinea = lineaPorSlug(linea)?.resumen;
 
   return (
     <section id="catalogo" className="seccion scroll-mt-28">
@@ -35,14 +36,18 @@ export function SeccionCategorias({
             </p>
           </div>
           <span className="font-mono text-[11.5px] text-gpar-ink-3">
-            {referencias > 0 ? `${referencias}+ referencias` : etiquetaLinea} ·{" "}
+            {referencias > 0 ? `${referencias}+ referencias` : nombreLinea} ·{" "}
             {categorias.length} categorías
           </span>
         </div>
 
         <ConmutadorLinea lineaActiva={linea} modo={modoConmutador} />
 
-        {linea === "carga-pesada" && referencias === 0 ? (
+        {categorias.length === 0 ? (
+          <p className="mb-[18px] text-[15.5px] text-gpar-ink-2">
+            {resumenLinea} Todavía no hay categorías publicadas en esta línea.
+          </p>
+        ) : linea === "carga-pesada" && referencias === 0 ? (
           <p className="mb-[18px] text-[15.5px] text-gpar-ink-2">
             Línea en construcción. Escríbenos y te decimos qué tenemos disponible
             hoy.

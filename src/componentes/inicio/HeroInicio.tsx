@@ -1,82 +1,230 @@
-import Image from "next/image";
+"use client";
+
 import Link from "next/link";
-import { Contenedor } from "@/componentes/interfaz/Contenedor";
+import { useEffect, useRef, useState } from "react";
 import { categoriasPorLinea } from "@/datos/catalogo";
 
-const chips = [
-  { etiqueta: "Rodamientos", href: "/industrial/rodamientos" },
-  { etiqueta: "Chumaceras", href: "/industrial/chumaceras" },
-  { etiqueta: "Correas", href: "/industrial/correas" },
-  { etiqueta: "Motores", href: "/industrial/motores-reductores" },
-  { etiqueta: "Mangueras", href: "/industrial/mangueras-industriales" },
-] as const;
+type Props = {
+  titulo: string;
+  subtitulo: string;
+};
 
-export function HeroInicio() {
+function clasesLineaTitulo(indice: number, total: number): string {
+  if (total === 1) {
+    return "text-[length:clamp(54px,6.8vw,128px)] font-extrabold";
+  }
+  if (indice === 0) {
+    return "text-[length:clamp(40px,4.4vw,84px)] font-light tracking-[0.02em]";
+  }
+  if (indice === 1) {
+    return "text-[length:clamp(54px,6.8vw,128px)] font-extrabold";
+  }
+  return "text-[length:clamp(36px,4.1vw,78px)] font-extrabold text-gpar-orange";
+}
+
+export function HeroInicio({ titulo, subtitulo }: Props) {
   const nombresStrip = categoriasPorLinea("industrial").map((c) => c.nombre);
   const stripDuplicado = [...nombresStrip, ...nombresStrip];
+  const lineasTitulo = titulo
+    .split(/\r?\n/)
+    .map((linea) => linea.trim())
+    .filter(Boolean);
+
+  const videoFondoRef = useRef<HTMLVideoElement>(null);
+  const videoPrincipalRef = useRef<HTMLVideoElement>(null);
+  const [sonidoActivo, setSonidoActivo] = useState(false);
+  const [reducirMovimiento, setReducirMovimiento] = useState(false);
+
+  useEffect(() => {
+    const media = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const actualizar = () => setReducirMovimiento(media.matches);
+    actualizar();
+    media.addEventListener("change", actualizar);
+    return () => media.removeEventListener("change", actualizar);
+  }, []);
+
+  useEffect(() => {
+    if (reducirMovimiento) return;
+
+    const fondo = videoFondoRef.current;
+    const principal = videoPrincipalRef.current;
+    if (!fondo || !principal) return;
+
+    const silenciarFondo = () => {
+      fondo.defaultMuted = true;
+      fondo.muted = true;
+      fondo.volume = 0;
+    };
+
+    silenciarFondo();
+    const guardarFondoMudo = () => silenciarFondo();
+    fondo.addEventListener("volumechange", guardarFondoMudo);
+    void fondo.play().catch(() => {});
+
+    const sincronizar = (activo: boolean) => {
+      silenciarFondo();
+      principal.muted = !activo;
+      if (activo) {
+        principal.volume = 1;
+        void principal.play().catch(() => {});
+      }
+      setSonidoActivo(activo);
+    };
+
+    principal.muted = false;
+    void principal
+      .play()
+      .then(() => sincronizar(true))
+      .catch(() => {
+        principal.muted = true;
+        void principal.play().catch(() => {});
+        sincronizar(false);
+      });
+
+    const primerToque = (evento: PointerEvent) => {
+      document.removeEventListener("pointerdown", primerToque, true);
+      const destino = evento.target;
+      if (
+        destino instanceof Element &&
+        destino.closest("button, a, input, textarea, select, label")
+      ) {
+        return;
+      }
+      if (principal.muted) sincronizar(true);
+    };
+
+    document.addEventListener("pointerdown", primerToque, true);
+    return () => {
+      document.removeEventListener("pointerdown", primerToque, true);
+      fondo.removeEventListener("volumechange", guardarFondoMudo);
+      fondo.pause();
+      principal.pause();
+      silenciarFondo();
+      principal.muted = true;
+      principal.volume = 0;
+    };
+  }, [reducirMovimiento]);
+
+  function alternarSonido() {
+    const fondo = videoFondoRef.current;
+    const principal = videoPrincipalRef.current;
+    if (!principal) return;
+    if (fondo) {
+      fondo.muted = true;
+      fondo.volume = 0;
+    }
+    const activar = principal.muted;
+    principal.muted = !activar;
+    principal.volume = activar ? 1 : 0;
+    if (activar) void principal.play().catch(() => {});
+    setSonidoActivo(activar);
+  }
 
   return (
-    <section className="relative border-b border-gpar-line bg-gpar-surface">
-      <Image
-        src="/assets/hero/hero-principal.webp"
-        alt=""
-        fill
-        priority
-        className="object-cover object-[70%_center]"
-        sizes="100vw"
-        aria-hidden
-      />
-      <div
-        className="pointer-events-none absolute inset-0 bg-[linear-gradient(180deg,rgba(255,255,255,0.95)_0%,rgba(255,255,255,0.88)_60%,rgba(255,255,255,0.72)_100%)] md:inset-[0_0_46px_0] md:bg-[linear-gradient(100deg,rgba(255,255,255,0.97)_0%,rgba(255,255,255,0.93)_46%,rgba(255,255,255,0.62)_72%,rgba(255,255,255,0.30)_100%)]"
-        aria-hidden
-      />
+    <>
+      <section className="relative h-auto overflow-hidden bg-[#07090C] min-[821px]:h-[clamp(560px,calc(100vh-130px),900px)]">
+        {!reducirMovimiento ? (
+          <video
+            ref={videoFondoRef}
+            className="pointer-events-none absolute inset-[-40px] h-[calc(100%+80px)] w-[calc(100%+80px)] object-cover brightness-[0.35] blur-[36px]"
+            src="/video/hero-gpar.mp4"
+            muted
+            loop
+            playsInline
+            autoPlay
+            preload="metadata"
+            aria-hidden
+          />
+        ) : (
+          <div className="absolute inset-0 bg-[#07090C]" aria-hidden />
+        )}
 
-      <Contenedor className="relative py-8 sm:py-11 md:pb-[68px] md:pt-[76px] lg:pr-8">
-        <div className="max-w-[780px]">
-          <span className="mb-5 inline-flex max-w-full items-center border border-gpar-orange-border bg-gpar-orange-soft px-4 py-3 sm:px-5 sm:py-3.5">
-            <span className="whitespace-nowrap font-display text-[clamp(18px,4.1vw,40px)] font-extrabold uppercase leading-none tracking-[0.02em] text-gpar-orange">
+        <div className="relative mx-auto flex h-full max-w-[1680px] flex-col-reverse items-stretch gap-0 pl-0 min-[821px]:flex-row min-[821px]:items-center min-[821px]:gap-[clamp(24px,4vw,72px)] min-[821px]:pl-[clamp(20px,2.4vw,40px)]">
+          <div className="flex min-w-0 flex-1 flex-col items-start px-5 py-10 text-white min-[821px]:px-0 min-[821px]:py-[clamp(40px,5vw,80px)]">
+            <div className="flex items-center gap-4 font-display text-[length:clamp(15px,1.25vw,22px)] font-bold tracking-[0.32em] uppercase">
+              <span className="h-[3px] w-[46px] bg-gpar-orange" aria-hidden />
               Soluciones para la industria
-            </span>
-          </span>
-          <h1 className="font-display text-[length:var(--gp-h1-hero)] font-extrabold uppercase leading-none tracking-[0.02em] text-gpar-ink">
-            Todo en transmisión de
-            <br />
-            potencia mecánica
-            <br />
-            <em className="not-italic text-gpar-orange">en un solo lugar</em>
-          </h1>
-          <p className="mt-3 max-w-[50ch] text-[15.5px] text-gpar-ink-2 sm:mt-4 sm:text-[17px]">
-            Rodamientos, correas, chumaceras, motores, mangueras y repuestos
-            de carga pesada. Arma tu lista y te cotizamos con precio, disponibilidad
-            y tiempo de entrega.
-          </p>
-          <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
-            <Link
-              href="/cotizar"
-              className="inline-flex min-h-11 items-center justify-center bg-gpar-orange px-6 text-sm font-bold text-gpar-ink hover:bg-gpar-orange-ink"
-            >
-              Solicitar cotización
-            </Link>
-            <Link
-              href="#catalogo"
-              className="inline-flex min-h-11 items-center justify-center border border-gpar-ink bg-gpar-bg px-6 text-sm font-semibold text-gpar-ink hover:bg-gpar-ink hover:text-white"
-            >
-              Ver el catálogo
-            </Link>
-          </div>
-          <div className="mt-5 grid grid-cols-2 gap-2 sm:grid-cols-5">
-            {chips.map((chip) => (
+            </div>
+
+            <h1 className="mt-[clamp(20px,2vw,34px)] flex flex-col font-display leading-[0.92] uppercase">
+              {lineasTitulo.map((linea, indice) => (
+                <span
+                  key={`${indice}-${linea}`}
+                  className={clasesLineaTitulo(indice, lineasTitulo.length)}
+                >
+                  {linea}
+                </span>
+              ))}
+            </h1>
+
+            <p className="mt-[clamp(22px,2.2vw,38px)] max-w-[44ch] text-[length:clamp(16px,1.3vw,23px)] leading-relaxed text-pretty">
+              {subtitulo}
+            </p>
+
+            <div className="mt-[clamp(26px,2.4vw,42px)] flex flex-wrap gap-[18px]">
               <Link
-                key={chip.etiqueta}
-                href={chip.href}
-                className="inline-flex min-h-9 items-center justify-center border border-gpar-line bg-gpar-bg px-2 py-[7px] text-center text-[12.5px] font-semibold text-gpar-ink hover:border-gpar-orange"
+                href="/cotizar"
+                className="inline-flex items-center justify-center bg-gpar-orange px-[clamp(26px,2.2vw,42px)] py-[clamp(16px,1.2vw,22px)] text-[length:clamp(15px,1vw,19px)] font-bold tracking-[0.08em] whitespace-nowrap text-gpar-ink uppercase hover:bg-gpar-orange-ink"
               >
-                {chip.etiqueta}
+                Solicitar cotización
               </Link>
-            ))}
+              <Link
+                href="#catalogo"
+                className="inline-flex items-center justify-center border-2 border-white px-[clamp(24px,2.1vw,40px)] py-[clamp(14px,1.1vw,20px)] text-[length:clamp(15px,1vw,19px)] font-bold tracking-[0.08em] whitespace-nowrap text-white uppercase hover:bg-white hover:text-gpar-ink"
+              >
+                Ver el catálogo
+              </Link>
+            </div>
+          </div>
+
+          <div className="relative aspect-[9/16] w-full max-h-[80vh] shrink-0 border-b-4 border-gpar-orange min-[821px]:aspect-[9/8] min-[821px]:h-full min-[821px]:w-auto min-[821px]:max-h-none min-[821px]:border-b-0 min-[821px]:border-l-4">
+            {!reducirMovimiento ? (
+              <video
+                ref={videoPrincipalRef}
+                className="block h-full w-full bg-black object-cover"
+                src="/video/hero-gpar.mp4"
+                loop
+                playsInline
+                preload="auto"
+              />
+            ) : (
+              <div className="h-full w-full bg-black" aria-hidden />
+            )}
+
+            {!reducirMovimiento ? (
+              <button
+                type="button"
+                className="absolute right-4 bottom-4 flex items-center gap-2.5 bg-white px-4 py-3 text-[15px] font-bold text-gpar-ink shadow-[0_4px_18px_rgba(0,0,0,0.4)]"
+                aria-pressed={sonidoActivo}
+                onClick={alternarSonido}
+              >
+                <svg
+                  width="20"
+                  height="20"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2.2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  aria-hidden
+                >
+                  <path d="M4 9h4l5-4v14l-5-4H4z" />
+                  {sonidoActivo ? (
+                    <>
+                      <path d="M16.5 8.5a5 5 0 0 1 0 7" />
+                      <path d="M18.5 6a8 8 0 0 1 0 12" />
+                    </>
+                  ) : (
+                    <path d="M16.5 8.5a5 5 0 0 1 0 7" />
+                  )}
+                </svg>
+                <span>{sonidoActivo ? "Silenciar" : "Activar sonido"}</span>
+              </button>
+            ) : null}
           </div>
         </div>
-      </Contenedor>
+      </section>
 
       <div
         className="relative overflow-hidden whitespace-nowrap border-y border-gpar-orange-edge bg-gpar-ink py-[22px]"
@@ -84,7 +232,7 @@ export function HeroInicio() {
       >
         <div
           data-strip
-          className="inline-flex gap-6 font-display text-[21px] font-bold uppercase tracking-[0.05em] text-white"
+          className="inline-flex gap-6 font-display text-[21px] font-bold tracking-[0.05em] text-white uppercase"
           style={{ animation: "gp-strip var(--gp-strip-dur) linear infinite" }}
         >
           {stripDuplicado.map((nombre, i) => (
@@ -95,6 +243,6 @@ export function HeroInicio() {
           ))}
         </div>
       </div>
-    </section>
+    </>
   );
 }

@@ -2,8 +2,8 @@ import { Contenedor } from "@/componentes/interfaz/Contenedor";
 
 const razones = [
   {
-    titulo: "Dos líneas, un proveedor",
-    desc: "Repuestos industriales y automotrices en el mismo catálogo.",
+    titulo: "Tres líneas, un proveedor",
+    desc: "Rodamientos industriales, automatización y carga pesada en el mismo catálogo.",
   },
   {
     titulo: "Inventario real",

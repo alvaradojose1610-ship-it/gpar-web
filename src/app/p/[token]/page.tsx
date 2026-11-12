@@ -6,6 +6,7 @@ import { notFound } from "next/navigation";
 import { BotonAgregarCotizacion } from "@/componentes/catalogo/BotonAgregarCotizacion";
 import { Contenedor } from "@/componentes/interfaz/Contenedor";
 import { productosCatalogo } from "@/datos/catalogo";
+import { etiquetaLinea, etiquetaLineaPrisma } from "@/datos/lineas";
 import { empresa } from "@/configuracion/empresa";
 
 export const dynamic = "force-dynamic";
@@ -34,7 +35,7 @@ async function resolverProducto(token: string) {
         nombre: desdeBd.nombre,
         descripcion: desdeBd.descripcion ?? "",
         aplicacion: desdeBd.aplicacion,
-        linea: desdeBd.linea === "CARGA_PESADA" ? "carga-pesada" : "industrial",
+        linea: etiquetaLineaPrisma(desdeBd.linea),
         categoria: desdeBd.categoria.nombre,
         marca: desdeBd.marca?.nombre ?? null,
         tamano: desdeBd.tamano,
@@ -52,7 +53,7 @@ async function resolverProducto(token: string) {
     nombre: desdeCatalogo.nombre,
     descripcion: desdeCatalogo.descripcion,
     aplicacion: desdeCatalogo.aplicacion ?? null,
-    linea: desdeCatalogo.linea,
+    linea: etiquetaLinea(desdeCatalogo.linea),
     categoria: desdeCatalogo.categoriaId,
     marca: desdeCatalogo.marca ?? null,
     tamano: "tamano" in desdeCatalogo ? (desdeCatalogo.tamano ?? null) : null,

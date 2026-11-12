@@ -5,6 +5,7 @@ import { revalidatePath, updateTag } from "next/cache";
 import { redirect } from "next/navigation";
 import { z } from "zod";
 
+import { lineaPorPrisma, VALORES_LINEA_PRISMA } from "@/datos/lineas";
 import { TAG_CATALOGO_PUBLICO } from "@/lib/imagen-producto-constantes";
 import {
   eliminarImagenesProducto,
@@ -17,7 +18,7 @@ import { requerirPermiso } from "@/modulos/autenticacion/servicio-sesion";
 const esquema = z.object({
   codigo: z.string().trim().min(2).max(64),
   nombre: z.string().trim().min(2).max(200),
-  linea: z.enum(["INDUSTRIAL", "CARGA_PESADA"]),
+  linea: z.enum(VALORES_LINEA_PRISMA),
   categoriaId: z.string().min(1),
   descripcion: z.string().trim().max(2000).optional(),
   aplicacion: z.string().trim().max(500).optional(),
@@ -114,8 +115,7 @@ async function revalidarCatalogoPublico(
   categoriaCodigo: string,
   tokenPublico?: string,
 ) {
-  const lineaPath =
-    linea === LineaNegocio.CARGA_PESADA ? "carga-pesada" : "industrial";
+  const lineaPath = lineaPorPrisma(linea)?.slug ?? "industrial";
 
   updateTag(TAG_CATALOGO_PUBLICO);
   revalidatePath("/panel/productos");
@@ -132,7 +132,7 @@ async function revalidarCatalogoPublico(
 const esquemaEditar = z.object({
   id: z.string().min(1),
   nombre: z.string().trim().min(2).max(200),
-  linea: z.enum(["INDUSTRIAL", "CARGA_PESADA"]),
+  linea: z.enum(VALORES_LINEA_PRISMA),
   categoriaId: z.string().min(1),
   descripcion: z.string().trim().max(2000).optional(),
   aplicacion: z.string().trim().max(500).optional(),

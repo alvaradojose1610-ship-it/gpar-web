@@ -19,6 +19,7 @@ import type {
 import {
   buscarProductosBd,
   contarProductosBdCache,
+  contarProductosPorCategoriasBdCache,
   listarCategoriasBdCache,
   listarProductosBdCache,
 } from "@/modulos/catalogo/servicio-catalogo";
@@ -110,6 +111,21 @@ export async function contarEnCategoria(
     });
     return n > 0 ? n : contarLocal(linea, categoriaId);
   }, contarLocal(linea, categoriaId));
+}
+
+export async function obtenerConteosPorLinea(
+  linea: LineaCatalogo,
+): Promise<Record<string, number>> {
+  return conFallback(async () => {
+    const conteos = await contarProductosPorCategoriasBdCache(linea);
+    if (Object.keys(conteos).length > 0) return conteos;
+    const locales = categoriasLineaLocal(linea);
+    return Object.fromEntries(
+      locales.map((c) => [c.id, contarLocal(linea, c.id)]),
+    );
+  }, Object.fromEntries(
+    categoriasLineaLocal(linea).map((c) => [c.id, contarLocal(linea, c.id)]),
+  ));
 }
 
 export async function totalPorLinea(linea: LineaCatalogo): Promise<number> {

@@ -55,9 +55,9 @@
   --gp-gutter: 20px;         /* padding lateral móvil */
   --gp-gutter-lg: 24px;      /* padding lateral desktop */
   --gp-container: 1220px;    /* ancho máximo de contenido */
-  --gp-header-h: 152px;      /* FALLBACK del alto del header sticky. El valor real se mide en
-                                runtime (ResizeObserver sobre .header → :root). Es el `top` de
-                                la barra de subfiltros; nunca dejarlo fijo. */
+  --gp-header-h: 168px;      /* FALLBACK del alto del header sticky (logo grande + barra 4px).
+                                El valor real se mide en runtime (ResizeObserver → :root).
+                                Es el `top` de la barra de subfiltros; nunca dejarlo fijo. */
   --gp-section-y: 40px;      /* padding vertical de sección — móvil */
   --gp-section-y-lg: 60px;   /* padding vertical de sección — desktop */
 

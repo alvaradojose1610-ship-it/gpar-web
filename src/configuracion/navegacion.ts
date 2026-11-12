@@ -1,3 +1,5 @@
+import { LINEAS_CATALOGO } from "@/datos/lineas";
+
 export type EnlaceNavegacion = {
   etiqueta: string;
   href: string;
@@ -5,8 +7,10 @@ export type EnlaceNavegacion = {
 
 export const navegacionPrincipal: EnlaceNavegacion[] = [
   { etiqueta: "Inicio", href: "/" },
-  { etiqueta: "Industrial", href: "/industrial" },
-  { etiqueta: "Carga Pesada", href: "/carga-pesada" },
+  ...LINEAS_CATALOGO.map((linea) => ({
+    etiqueta: linea.etiquetaNav,
+    href: linea.href,
+  })),
   { etiqueta: "Contacto", href: "/cotizar" },
 ];
 

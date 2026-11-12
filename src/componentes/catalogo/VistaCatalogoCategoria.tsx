@@ -4,11 +4,12 @@ import Link from "next/link";
 import { useMemo, useState } from "react";
 import { TarjetaProducto } from "@/componentes/catalogo/TarjetaProducto";
 import { Contenedor } from "@/componentes/interfaz/Contenedor";
+import { lineaPorSlug, type LineaCatalogo } from "@/datos/lineas";
 import type { ProductoCatalogo } from "@/datos/tipos-catalogo";
 import { cn } from "@/utilidades/cn";
 
 type VistaCatalogoCategoriaProps = {
-  linea: "industrial" | "carga-pesada";
+  linea: LineaCatalogo;
   categoriaNombre: string;
   categoriaDescripcion: string;
   subcategorias: string[];
@@ -29,12 +30,14 @@ export function VistaCatalogoCategoria({
   const filtrados = useMemo(() => {
     if (!subfiltro) return productos;
     return productos.filter((p) => {
-      if (p.linea === "industrial") {
+      if (p.linea !== "carga-pesada") {
         return p.subcategoria === subfiltro;
       }
       return p.tipo === subfiltro;
     });
   }, [productos, subfiltro]);
+
+  const infoLinea = lineaPorSlug(linea);
 
   return (
     <>
@@ -44,8 +47,8 @@ export function VistaCatalogoCategoria({
             Inicio
           </Link>
           <span>/</span>
-          <Link href={`/${linea}`} className="hover:text-gpar-ink">
-            {linea === "industrial" ? "Industrial" : "Carga Pesada"}
+          <Link href={infoLinea?.href ?? `/${linea}`} className="hover:text-gpar-ink">
+            {infoLinea?.etiquetaNav ?? "Catálogo"}
           </Link>
           <span>/</span>
           <b className="text-gpar-ink">{categoriaNombre}</b>
@@ -56,9 +59,7 @@ export function VistaCatalogoCategoria({
         <Contenedor className="flex flex-wrap items-end justify-between gap-3 py-5 sm:gap-6 sm:py-8">
           <div className="min-w-0 flex-1">
             <p className="mb-2 font-mono text-[11.5px] uppercase tracking-[0.12em] text-gpar-orange-ink">
-              {linea === "industrial"
-                ? "Repuestos industriales"
-                : "Carga pesada"}
+              {infoLinea?.etiqueta ?? "Catálogo"}
             </p>
             <h1 className="font-display text-[clamp(28px,4.4vw,46px)] font-extrabold uppercase leading-none text-gpar-ink">
               {categoriaNombre}

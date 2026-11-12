@@ -3,7 +3,9 @@
  * Preparado para sustituir datos simulados por inventario real / BD.
  */
 
-export type LineaCatalogo = "industrial" | "carga-pesada";
+import type { LineaCatalogo } from "@/datos/lineas";
+
+export type { LineaCatalogo };
 
 export type CategoriaCatalogo = {
   id: string;
@@ -43,7 +45,7 @@ export type ProductoBase = {
  * + campos web útiles (marca, specs, subcategoría).
  */
 export type ProductoIndustrial = ProductoBase & {
-  linea: "industrial";
+  linea: Exclude<LineaCatalogo, "carga-pesada">;
   /** Columna "Modelo" del listado; a menudo vacía. */
   modelo?: string | null;
   subcategoria?: string | null;

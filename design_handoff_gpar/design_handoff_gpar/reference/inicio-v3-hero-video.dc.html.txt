@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@300;700;800&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'IBM Plex Sans',sans-serif;color:#1D2430;background:#FFFFFF}
+  a{color:#D96A00;text-decoration:none}
+  a:hover{color:#A85200}
+  input,button{font-family:inherit}
+</style>
+</helmet>
+
+<div style="min-height:100vh;display:flex;flex-direction:column">
+
+  <div style="height:4px;background:#A3245E"></div>
+
+  <header style="position:sticky;top:0;z-index:50;background:#FFFFFF;border-bottom:1px solid #E4E7EC">
+    <div style="max-width:1680px;margin:0 auto;padding:clamp(14px,1.3vw,22px) clamp(20px,2.4vw,40px);display:flex;align-items:center;gap:clamp(14px,1.6vw,28px)">
+      <img src="./assets/logo-header.png" alt="Distribuidora GPar" style="width:clamp(66px,5.4vw,104px);height:clamp(66px,5.4vw,104px);border-radius:50%;flex-shrink:0">
+      <div style="flex:1 1 420px;display:flex;align-items:center;gap:clamp(8px,0.8vw,14px);background:#F4F5F7;border:1px solid #E4E7EC;padding:clamp(6px,0.55vw,10px) clamp(6px,0.55vw,10px) clamp(6px,0.55vw,10px) clamp(12px,1.2vw,22px);min-width:170px">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#1D2430" stroke-width="2.4" stroke-linecap="round"><circle cx="10.5" cy="10.5" r="6.5"></circle><path d="M15.5 15.5L21 21"></path></svg>
+        <input placeholder="Código, producto o marca" style="flex:1;min-width:0;border:none;background:transparent;outline:none;font-size:clamp(14px,1.05vw,20px);color:#1D2430">
+        <button style="border:none;background:#F57C00;color:#1D2430;font-size:clamp(14px,1vw,19px);font-weight:700;padding:clamp(9px,0.8vw,15px) clamp(14px,1.5vw,28px);cursor:pointer;flex-shrink:0">Buscar</button>
+      </div>
+      <nav style="display:flex;align-items:center;gap:clamp(14px,1.7vw,32px);font-size:clamp(14.5px,1.1vw,21px);font-weight:500;color:#4A5463;white-space:nowrap;flex-shrink:0">
+        <a href="#" style="color:#1D2430">Inicio</a>
+        <a href="#" style="color:#4A5463">Industrial</a>
+        <a href="#" style="color:#4A5463">Carga Pesada</a>
+        <a href="#" style="color:#4A5463">Contacto</a>
+      </nav>
+      <button style="display:flex;align-items:center;gap:clamp(9px,0.85vw,16px);border:1px solid #1D2430;background:#FFFFFF;color:#1D2430;padding:clamp(11px,1.05vw,20px) clamp(14px,1.4vw,26px);font-size:clamp(14px,1.05vw,20px);font-weight:600;white-space:nowrap;cursor:pointer;flex-shrink:0">
+        Mi cotización
+        <span style="min-width:clamp(24px,1.9vw,36px);height:clamp(24px,1.9vw,36px);padding:0 6px;background:#F57C00;font-family:'IBM Plex Mono',monospace;font-size:clamp(13px,0.95vw,18px);font-weight:600;display:flex;align-items:center;justify-content:center">0</span>
+      </button>
+    </div>
+  </header>
+
+  <section style="position:relative;overflow:hidden;background:#07090C;height:clamp(560px,calc(100vh - 130px),900px)">
+    <video ref="{{ bgRef }}" src="./assets/video-gpar.mp4" muted="{{ true }}" loop="{{ true }}" playsInline="{{ true }}" autoPlay="{{ true }}" style="position:absolute;inset:-40px;width:calc(100% + 80px);height:calc(100% + 80px);object-fit:cover;filter:blur(36px) brightness(0.35);pointer-events:none"></video>
+    <div style="position:relative;height:100%;max-width:1680px;margin:0 auto;display:flex;align-items:center;gap:clamp(24px,4vw,72px);padding-left:clamp(20px,2.4vw,40px)">
+      <div style="flex:1;min-width:0;display:flex;flex-direction:column;align-items:flex-start;padding:clamp(40px,5vw,80px) 0">
+        <div style="display:flex;align-items:center;gap:16px">
+          <span style="width:46px;height:3px;background:#F57C00"></span>
+          <span style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:clamp(15px,1.25vw,22px);letter-spacing:0.32em;text-transform:uppercase;color:#FFFFFF">Soluciones para la industria</span>
+        </div>
+        <h1 style="margin-top:clamp(20px,2vw,34px);font-family:'Barlow Condensed',sans-serif;text-transform:uppercase;color:#FFFFFF;line-height:0.92;display:flex;flex-direction:column">
+          <span style="font-weight:300;font-size:clamp(40px,4.4vw,84px);letter-spacing:0.02em">Todo en</span>
+          <span style="font-weight:800;font-size:clamp(54px,6.8vw,128px)">Transmisión</span>
+          <span style="font-weight:800;font-size:clamp(36px,4.1vw,78px);color:#F57C00">de potencia mecánica</span>
+        </h1>
+        <p style="margin-top:clamp(22px,2.2vw,38px);max-width:44ch;font-size:clamp(16px,1.3vw,23px);line-height:1.6;color:#FFFFFF;text-wrap:pretty">Rodamientos, correas, chumaceras, motores, mangueras y repuestos de carga pesada. Arma tu lista y te cotizamos con precio, disponibilidad y tiempo de entrega.</p>
+        <div style="margin-top:clamp(26px,2.4vw,42px);display:flex;gap:18px;flex-wrap:wrap">
+          <button style="border:none;background:#F57C00;color:#1D2430;font-size:clamp(15px,1vw,19px);font-weight:700;letter-spacing:0.08em;text-transform:uppercase;padding:clamp(16px,1.2vw,22px) clamp(26px,2.2vw,42px);white-space:nowrap;cursor:pointer">Solicitar cotización</button>
+          <button style="border:2px solid #FFFFFF;background:transparent;color:#FFFFFF;font-size:clamp(15px,1vw,19px);font-weight:700;letter-spacing:0.08em;text-transform:uppercase;padding:clamp(14px,1.1vw,20px) clamp(24px,2.1vw,40px);white-space:nowrap;cursor:pointer" style-hover="background:#FFFFFF;color:#1D2430">Ver el catálogo</button>
+        </div>
+      </div>
+      <div style="position:relative;height:100%;aspect-ratio:9/16;flex-shrink:0;border-left:4px solid #F57C00">
+        <video ref="{{ mainRef }}" src="./assets/video-gpar.mp4" loop="{{ true }}" playsInline="{{ true }}" style="width:100%;height:100%;object-fit:cover;display:block;background:#000000"></video>
+        <button onClick="{{ toggle }}" style="position:absolute;right:16px;bottom:16px;display:flex;align-items:center;gap:10px;border:none;background:#FFFFFF;color:#1D2430;font-size:15px;font-weight:700;padding:12px 16px;cursor:pointer;box-shadow:0 4px 18px rgba(0,0,0,0.4)">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#1D2430" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9h4l5-4v14l-5-4H4z"></path><path d="M16.5 8.5a5 5 0 0 1 0 7"></path></svg>
+          {{ label }}
+        </button>
+      </div>
+    </div>
+  </section>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  state = { sound: false };
+  bgRef = React.createRef();
+  mainRef = React.createRef();
+  componentDidMount() {
+    const v = this.mainRef.current, bg = this.bgRef.current;
+    if (bg) { bg.muted = true; bg.play().catch(() => {}); }
+    if (v) {
+      v.muted = false;
+      v.play().then(() => this.setState({ sound: true })).catch(() => { v.muted = true; v.play().catch(() => {}); });
+    }
+    this.firstClick = (e) => {
+      document.removeEventListener('pointerdown', this.firstClick, true);
+      if (e.target.closest && e.target.closest('button')) return;
+      if (!this.state.sound) this.setSound(true);
+    };
+    document.addEventListener('pointerdown', this.firstClick, true);
+  }
+  componentWillUnmount() { document.removeEventListener('pointerdown', this.firstClick, true); }
+  setSound(on) {
+    const v = this.mainRef.current;
+    if (v) { v.muted = !on; if (on) v.play().catch(() => {}); }
+    this.setState({ sound: on });
+  }
+  renderVals() {
+    return {
+      bgRef: this.bgRef, mainRef: this.mainRef,
+      toggle: () => this.setSound(!this.state.sound),
+      label: this.state.sound ? 'Silenciar' : 'Activar sonido'
+    };
+  }
+}
+</script>
+</body>
+</html>

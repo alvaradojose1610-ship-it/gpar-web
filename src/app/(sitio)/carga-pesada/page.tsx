@@ -2,8 +2,8 @@ import type { Metadata } from "next";
 import { SeccionCategorias } from "@/componentes/inicio/SeccionCategorias";
 import { Contenedor } from "@/componentes/interfaz/Contenedor";
 import {
-  contarEnCategoria,
   obtenerCategoriasPorLinea,
+  obtenerConteosPorLinea,
   totalPorLinea,
 } from "@/modulos/catalogo/catalogo-publico";
 
@@ -15,14 +15,11 @@ export const metadata: Metadata = {
 
 export default async function PaginaCargaPesada() {
   const linea = "carga-pesada" as const;
-  const [categorias, referencias] = await Promise.all([
+  const [categorias, referencias, conteos] = await Promise.all([
     obtenerCategoriasPorLinea(linea),
     totalPorLinea(linea),
+    obtenerConteosPorLinea(linea),
   ]);
-  const conteosEntries = await Promise.all(
-    categorias.map(async (c) => [c.id, await contarEnCategoria(linea, c.id)] as const),
-  );
-  const conteos = Object.fromEntries(conteosEntries);
 
   return (
     <>

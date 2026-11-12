@@ -15,6 +15,12 @@ function crearCliente(): PrismaClient {
     globalParaPrisma.poolGpar ??
     new Pool({
       connectionString,
+      // Con pooler de Neon: pocas conexiones, liberar idle rápido
+      // para no mantener el compute despierto sin tráfico.
+      max: process.env.NODE_ENV === "production" ? 3 : 2,
+      idleTimeoutMillis: 10_000,
+      connectionTimeoutMillis: 20_000,
+      allowExitOnIdle: true,
     });
 
   if (process.env.NODE_ENV !== "production") {

@@ -12,7 +12,7 @@ type TarjetaProductoProps = {
 };
 
 function specsDe(producto: ProductoCatalogo): string[] {
-  if (producto.linea === "industrial") {
+  if (producto.linea !== "carga-pesada") {
     return producto.especificaciones?.slice(0, 3) ?? [];
   }
   const specs: string[] = [];
@@ -23,7 +23,7 @@ function specsDe(producto: ProductoCatalogo): string[] {
 }
 
 function pillPrincipal(producto: ProductoCatalogo): string | null {
-  if (producto.linea === "industrial") {
+  if (producto.linea !== "carga-pesada") {
     return producto.subcategoria ?? null;
   }
   return producto.tipo || null;

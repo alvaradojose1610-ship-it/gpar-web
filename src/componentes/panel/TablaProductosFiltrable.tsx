@@ -12,6 +12,7 @@ import {
   type FormEvent,
 } from "react";
 
+import { etiquetaLineaPrisma, LINEAS_CATALOGO } from "@/datos/lineas";
 import { COL_LG, COL_MD } from "@/utilidades/tabla-panel";
 
 type FilaProducto = {
@@ -302,8 +303,11 @@ export function TablaProductosFiltrable({
               className="min-h-10 border border-[#E4E7EC] bg-[#F7F8FA] px-2 text-sm"
             >
               <option value="">Todas</option>
-              <option value="INDUSTRIAL">Industrial</option>
-              <option value="CARGA_PESADA">Carga Pesada</option>
+              {LINEAS_CATALOGO.map((opcion) => (
+                <option key={opcion.prisma} value={opcion.prisma}>
+                  {opcion.etiqueta}
+                </option>
+              ))}
             </select>
           </label>
           <label className="grid gap-1 text-xs">
@@ -385,10 +389,10 @@ export function TablaProductosFiltrable({
                 onAplicar={(v) => guardarFiltros({ ...filtros, linea: v })}
                 onCerrar={() => setAbierto(null)}
                 className={COL_MD}
-                opciones={[
-                  { valor: "INDUSTRIAL", etiqueta: "Industrial" },
-                  { valor: "CARGA_PESADA", etiqueta: "Carga Pesada" },
-                ]}
+                opciones={LINEAS_CATALOGO.map((opcion) => ({
+                  valor: opcion.prisma,
+                  etiqueta: opcion.etiqueta,
+                }))}
               />
               <CabeceraConLapiz
                 etiqueta="Categoría"
@@ -459,12 +463,12 @@ export function TablaProductosFiltrable({
                     {producto.nombre}
                   </div>
                   <div className="mt-0.5 text-[11px] capitalize text-[#5C6675] md:hidden">
-                    {producto.linea.toLowerCase().replace("_", " ")} ·{" "}
+                    {etiquetaLineaPrisma(producto.linea)} ·{" "}
                     {producto.categoriaNombre}
                   </div>
                 </td>
-                <td className={`${COL_MD} px-2 py-2 capitalize text-[#5C6675] sm:px-3`}>
-                  {producto.linea.toLowerCase().replace("_", " ")}
+                <td className={`${COL_MD} px-2 py-2 text-[#5C6675] sm:px-3`}>
+                  {etiquetaLineaPrisma(producto.linea)}
                 </td>
                 <td className={`${COL_MD} px-2 py-2 text-[#5C6675] sm:px-3`}>
                   {producto.categoriaNombre}

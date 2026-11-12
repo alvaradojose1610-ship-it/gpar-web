@@ -3,6 +3,7 @@ import Link from "next/link";
 import { Contenedor } from "@/componentes/interfaz/Contenedor";
 import { empresa } from "@/configuracion/empresa";
 import { categoriasPorLinea } from "@/datos/catalogo";
+import { LINEAS_CATALOGO } from "@/datos/lineas";
 
 export function PieDePagina() {
   const anio = new Date().getFullYear();
@@ -27,8 +28,8 @@ export function PieDePagina() {
               </b>
             </div>
             <p className="text-[13.5px]">
-              Repuestos industriales y automotrices. Catálogo en línea, asesoría
-              técnica y cotización por WhatsApp.
+              Rodamientos industriales, automatización y carga pesada. Catálogo
+              en línea, asesoría técnica y cotización por WhatsApp.
             </p>
           </div>
 
@@ -37,16 +38,13 @@ export function PieDePagina() {
               Navegación
             </h5>
             <ul className="flex flex-col gap-2 text-[13.5px]">
-              <li>
-                <Link href="/industrial" className="hover:text-white">
-                  Industrial
-                </Link>
-              </li>
-              <li>
-                <Link href="/carga-pesada" className="hover:text-white">
-                  Carga Pesada
-                </Link>
-              </li>
+              {LINEAS_CATALOGO.map((linea) => (
+                <li key={linea.slug}>
+                  <Link href={linea.href} className="hover:text-white">
+                    {linea.etiquetaNav}
+                  </Link>
+                </li>
+              ))}
               <li>
                 <Link href="/#marcas" className="hover:text-white">
                   Marcas

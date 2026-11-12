@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
+import { EnlaceWhatsAppCotizacion } from "@/componentes/panel/EnlaceWhatsAppCotizacion";
 import { PaginaPlaceholderPanel } from "@/componentes/panel/PaginaPlaceholderPanel";
 import { CODIGOS_PERMISO } from "@/configuracion/permisos";
 import { prisma } from "@/lib/prisma";
@@ -12,6 +13,7 @@ import {
   accionActualizarEstadoCotizacion,
   accionConvertirCotizacionAVenta,
 } from "@/modulos/cotizaciones/acciones";
+import { lineasWhatsAppDesdeDetalles } from "@/utilidades/whatsapp";
 
 export const dynamic = "force-dynamic";
 
@@ -142,6 +144,15 @@ export default async function PaginaDetalleCotizacion({
           {cotizacion.empresa ? (
             <p className="text-sm text-[#5C6675]">{cotizacion.empresa}</p>
           ) : null}
+          <div className="mt-3">
+            <EnlaceWhatsAppCotizacion
+              telefono={cotizacion.telefono}
+              nombreContacto={cotizacion.nombreContacto}
+              numero={cotizacion.numero}
+              mensaje={cotizacion.mensaje}
+              detalles={lineasWhatsAppDesdeDetalles(cotizacion.detalles)}
+            />
+          </div>
         </div>
         <div>
           <p className="text-xs uppercase tracking-wider text-[#8A94A2]">

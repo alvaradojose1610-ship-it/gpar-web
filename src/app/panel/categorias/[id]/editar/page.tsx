@@ -6,6 +6,7 @@ import { CODIGOS_PERMISO } from "@/configuracion/permisos";
 import { prisma } from "@/lib/prisma";
 import { requerirPermiso } from "@/modulos/autenticacion/servicio-sesion";
 import { accionActualizarCategoria } from "@/modulos/categorias/acciones";
+import { LINEAS_CATALOGO } from "@/datos/lineas";
 
 export const dynamic = "force-dynamic";
 
@@ -68,8 +69,11 @@ export default async function PaginaEditarCategoria({
             defaultValue={categoria.linea}
             className="border border-[#E4E7EC] bg-[#F7F8FA] px-3 py-2"
           >
-            <option value="INDUSTRIAL">Industrial</option>
-            <option value="CARGA_PESADA">Carga Pesada</option>
+            {LINEAS_CATALOGO.map((opcion) => (
+              <option key={opcion.prisma} value={opcion.prisma}>
+                {opcion.etiqueta}
+              </option>
+            ))}
           </select>
         </label>
         <label className="grid gap-1 text-sm">

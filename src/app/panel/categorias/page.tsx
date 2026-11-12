@@ -2,6 +2,7 @@ import Link from "next/link";
 
 import { PaginaPlaceholderPanel } from "@/componentes/panel/PaginaPlaceholderPanel";
 import { CODIGOS_PERMISO } from "@/configuracion/permisos";
+import { etiquetaLineaPrisma } from "@/datos/lineas";
 import { prisma } from "@/lib/prisma";
 import { requerirPermiso } from "@/modulos/autenticacion/servicio-sesion";
 import { COL_MD } from "@/utilidades/tabla-panel";
@@ -31,7 +32,7 @@ export default async function PaginaPanelCategorias({ searchParams }: Props) {
   return (
     <PaginaPlaceholderPanel
       titulo="Categorías"
-      descripcion="Publicación y orden del catálogo web industrial y carga pesada."
+      descripcion="Publicación y orden del catálogo web: rodamientos industriales, automatización industrial y carga pesada."
     >
       <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
         <p className="text-sm text-[#5C6675]">
@@ -80,14 +81,12 @@ export default async function PaginaPanelCategorias({ searchParams }: Props) {
               >
                 <td className="px-2 py-2 font-medium text-[#1D2430] sm:px-3">
                   <div>{c.nombre}</div>
-                  <div className="mt-0.5 text-[11px] capitalize text-[#5C6675] md:hidden">
-                    {c.linea.toLowerCase().replace("_", " ")} · {c.codigo}
+                  <div className="mt-0.5 text-[11px] text-[#5C6675] md:hidden">
+                    {etiquetaLineaPrisma(c.linea)} · {c.codigo}
                   </div>
                 </td>
-                <td
-                  className={`${COL_MD} px-2 py-2 capitalize text-[#5C6675] sm:px-3`}
-                >
-                  {c.linea.toLowerCase().replace("_", " ")}
+                <td className={`${COL_MD} px-2 py-2 text-[#5C6675] sm:px-3`}>
+                  {etiquetaLineaPrisma(c.linea)}
                 </td>
                 <td
                   className={`${COL_MD} px-2 py-2 font-mono text-[12px] text-[#5C6675] sm:px-3`}

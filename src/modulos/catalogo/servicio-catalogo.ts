@@ -6,6 +6,7 @@ import { unstable_cache } from "next/cache";
 import { TAG_CATALOGO_PUBLICO } from "@/lib/imagen-producto-constantes";
 import { prisma } from "@/lib/prisma";
 import { imagenCategoria } from "@/datos/imagenes-categorias";
+import { lineaPorPrisma, lineaPorSlug } from "@/datos/lineas";
 import type {
   CategoriaCatalogo,
   LineaCatalogo,
@@ -13,13 +14,14 @@ import type {
 } from "@/datos/tipos-catalogo";
 
 function lineaAEnum(linea: LineaCatalogo): LineaNegocio {
-  return linea === "carga-pesada"
-    ? LineaNegocio.CARGA_PESADA
-    : LineaNegocio.INDUSTRIAL;
+  const prismaLinea = lineaPorSlug(linea)?.prisma;
+  if (prismaLinea === "CARGA_PESADA") return LineaNegocio.CARGA_PESADA;
+  if (prismaLinea === "AUTOMATIZACION") return LineaNegocio.AUTOMATIZACION;
+  return LineaNegocio.INDUSTRIAL;
 }
 
 function enumALinea(linea: LineaNegocio): LineaCatalogo {
-  return linea === LineaNegocio.CARGA_PESADA ? "carga-pesada" : "industrial";
+  return lineaPorPrisma(linea)?.slug ?? "industrial";
 }
 
 const selectProductoCatalogo = {
@@ -70,10 +72,12 @@ export function mapearProductoBd(
     imagen,
   };
 
-  if (p.linea === LineaNegocio.CARGA_PESADA) {
+  const lineaPublica = enumALinea(p.linea);
+
+  if (lineaPublica === "carga-pesada") {
     return {
       ...base,
-      linea: "carga-pesada",
+      linea: lineaPublica,
       tipo: p.tipo ?? p.categoria.nombre,
       marca: p.marca?.nombre ?? "Por confirmar",
       tamano: p.tamano,
@@ -91,7 +95,7 @@ export function mapearProductoBd(
 
   return {
     ...base,
-    linea: "industrial",
+    linea: lineaPublica,
     modelo: p.modelo,
     subcategoria: p.subcategoria,
     especificaciones: specs,
@@ -171,6 +175,32 @@ export async function contarProductosBd(opciones?: {
   });
 }
 
+/** Un solo round-trip: conteo visible por código de categoría. */
+export async function contarProductosPorCategoriasBd(
+  linea: LineaCatalogo,
+): Promise<Record<string, number>> {
+  const filas = await prisma.categoria.findMany({
+    where: {
+      estado: "ACTIVO",
+      linea: lineaAEnum(linea),
+    },
+    select: {
+      codigo: true,
+      _count: {
+        select: {
+          productos: {
+            where: { estado: "ACTIVO", visibleWeb: true },
+          },
+        },
+      },
+    },
+  });
+
+  return Object.fromEntries(
+    filas.map((fila) => [fila.codigo, fila._count.productos]),
+  );
+}
+
 export async function buscarProductosBd(
   consulta: string,
 ): Promise<ProductoCatalogo[]> {
@@ -230,6 +260,14 @@ export function contarProductosBdCache(opciones?: {
   return unstable_cache(
     () => contarProductosBd(opciones),
     ["catalogo-conteo", claveCache(opciones)],
+    { tags: [TAG_CATALOGO_PUBLICO], revalidate: 300 },
+  )();
+}
+
+export function contarProductosPorCategoriasBdCache(linea: LineaCatalogo) {
+  return unstable_cache(
+    () => contarProductosPorCategoriasBd(linea),
+    ["catalogo-conteos-linea", claveCache(linea)],
     { tags: [TAG_CATALOGO_PUBLICO], revalidate: 300 },
   )();
 }

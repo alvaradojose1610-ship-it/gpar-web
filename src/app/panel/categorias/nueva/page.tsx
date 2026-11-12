@@ -5,6 +5,7 @@ import { PaginaPlaceholderPanel } from "@/componentes/panel/PaginaPlaceholderPan
 import { CODIGOS_PERMISO } from "@/configuracion/permisos";
 import { requerirPermiso } from "@/modulos/autenticacion/servicio-sesion";
 import { accionCrearCategoria } from "@/modulos/categorias/acciones";
+import { LINEAS_CATALOGO } from "@/datos/lineas";
 
 export const dynamic = "force-dynamic";
 
@@ -60,8 +61,11 @@ export default async function PaginaNuevaCategoria({ searchParams }: Props) {
             className="border border-[#E4E7EC] bg-[#F7F8FA] px-3 py-2"
             defaultValue="INDUSTRIAL"
           >
-            <option value="INDUSTRIAL">Industrial</option>
-            <option value="CARGA_PESADA">Carga Pesada</option>
+            {LINEAS_CATALOGO.map((opcion) => (
+              <option key={opcion.prisma} value={opcion.prisma}>
+                {opcion.etiqueta}
+              </option>
+            ))}
           </select>
         </label>
         <label className="grid gap-1 text-sm">

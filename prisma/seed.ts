@@ -253,6 +253,9 @@ async function main() {
           whatsapp: empresa.contacto.whatsapp.valor,
           instagram: empresa.redes.instagram.valor,
           mapsUrl: empresa.redes.maps.href,
+          tituloHero: "Todo en\nTransmisión\nde potencia mecánica",
+          subtituloHero:
+            "Rodamientos, correas, chumaceras, motores, mangueras y repuestos de carga pesada. Arma tu lista y te cotizamos con precio, disponibilidad y tiempo de entrega.",
           monedaPrincipal: "USD",
           monedaSecundaria: "VES",
         },

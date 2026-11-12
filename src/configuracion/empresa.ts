@@ -38,7 +38,7 @@ export const empresa: Empresa = {
   nombreLegal: "Distribuidora GPar",
   eslogan: "Soluciones industriales que mantienen tu operación en movimiento.",
   descripcion:
-    "Consulta categorías de repuestos industriales y automotrices, y solicita cotizaciones a Distribuidora GPar.",
+    "Consulta rodamientos industriales, automatización y carga pesada, y solicita cotizaciones a Distribuidora GPar.",
   urlSitio: "https://gparsoluciones.com",
   desarrollador: "ITConectados",
   contacto: {

@@ -19,12 +19,13 @@ export const metadata: Metadata = {
 export default async function PaginaBuscar({ searchParams }: Props) {
   const params = searchParams ? await searchParams : {};
   const q = (params.q ?? "").trim();
-  const [resultados, catsInd, catsAuto] = await Promise.all([
+  const [resultados, catsInd, catsAuto, catsCarga] = await Promise.all([
     q ? obtenerBusqueda(q) : Promise.resolve([]),
     obtenerCategoriasPorLinea("industrial"),
+    obtenerCategoriasPorLinea("automatizacion"),
     obtenerCategoriasPorLinea("carga-pesada"),
   ]);
-  const categorias = [...catsInd, ...catsAuto];
+  const categorias = [...catsInd, ...catsAuto, ...catsCarga];
 
   return (
     <>

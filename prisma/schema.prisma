@@ -12,6 +12,7 @@ datasource db {
 
 enum LineaNegocio {
   INDUSTRIAL
+  AUTOMATIZACION
   CARGA_PESADA
 }
 
@@ -111,6 +112,10 @@ model ConfiguracionEmpresa {
   whatsapp         String?
   instagram        String?
   mapsUrl          String?
+  /** Título del hero de inicio (líneas separadas por salto de línea). */
+  tituloHero       String   @default("Todo en\nTransmisión\nde potencia mecánica")
+  /** Párrafo de apoyo bajo el título del hero. */
+  subtituloHero    String   @default("Rodamientos, correas, chumaceras, motores, mangueras y repuestos de carga pesada. Arma tu lista y te cotizamos con precio, disponibilidad y tiempo de entrega.")
   monedaPrincipal  String   @default("USD")
   monedaSecundaria String?  @default("VES")
   aplicarIva       Boolean  @default(true)

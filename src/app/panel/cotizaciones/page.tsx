@@ -1,10 +1,12 @@
 import Link from "next/link";
 
+import { EnlaceWhatsAppCotizacion } from "@/componentes/panel/EnlaceWhatsAppCotizacion";
 import { PaginaPlaceholderPanel } from "@/componentes/panel/PaginaPlaceholderPanel";
 import { prisma } from "@/lib/prisma";
 import { CODIGOS_PERMISO } from "@/configuracion/permisos";
 import { requerirPermiso } from "@/modulos/autenticacion/servicio-sesion";
 import { COL_MD } from "@/utilidades/tabla-panel";
+import { lineasWhatsAppDesdeDetalles } from "@/utilidades/whatsapp";
 
 export const dynamic = "force-dynamic";
 
@@ -27,7 +29,14 @@ export default async function PaginaPanelCotizaciones() {
     orderBy: { creadoEn: "desc" },
     take: 100,
     include: {
-      _count: { select: { detalles: true } },
+      detalles: {
+        select: {
+          codigo: true,
+          nombre: true,
+          cantidad: true,
+          precioUnitario: true,
+        },
+      },
     },
   });
 
@@ -77,7 +86,7 @@ export default async function PaginaPanelCotizaciones() {
                     {etiquetasEstado[c.estado] ?? c.estado}
                   </td>
                   <td className={`${COL_MD} px-2 py-2 text-[#5C6675] sm:px-3`}>
-                    {c._count.detalles}
+                    {c.detalles.length}
                   </td>
                   <td
                     className={`${COL_MD} px-2 py-2 text-xs text-[#8A94A2] sm:px-3`}
@@ -85,12 +94,22 @@ export default async function PaginaPanelCotizaciones() {
                     {c.creadoEn.toLocaleString("es-VE")}
                   </td>
                   <td className="px-2 py-2 sm:px-3">
-                    <Link
-                      href={`/panel/cotizaciones/${c.id}`}
-                      className="text-sm font-semibold text-[#D96A00] hover:underline"
-                    >
-                      Ver
-                    </Link>
+                    <div className="flex flex-col items-start gap-1">
+                      <Link
+                        href={`/panel/cotizaciones/${c.id}`}
+                        className="text-sm font-semibold text-[#D96A00] hover:underline"
+                      >
+                        Ver
+                      </Link>
+                      <EnlaceWhatsAppCotizacion
+                        variante="enlace"
+                        telefono={c.telefono}
+                        nombreContacto={c.nombreContacto}
+                        numero={c.numero}
+                        mensaje={c.mensaje}
+                        detalles={lineasWhatsAppDesdeDetalles(c.detalles)}
+                      />
+                    </div>
                   </td>
                 </tr>
               ))}

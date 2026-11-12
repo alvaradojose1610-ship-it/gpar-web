@@ -6,6 +6,7 @@ import { redirect } from "next/navigation";
 import { z } from "zod";
 
 import { CODIGOS_PERMISO } from "@/configuracion/permisos";
+import { LINEAS_CATALOGO, VALORES_LINEA_PRISMA } from "@/datos/lineas";
 import {
   eliminarImagenProducto,
   guardarImagenProducto,
@@ -25,7 +26,7 @@ function slugCodigo(valor: string): string {
 }
 
 const esquema = z.object({
-  linea: z.enum(["INDUSTRIAL", "CARGA_PESADA"]),
+  linea: z.enum(VALORES_LINEA_PRISMA),
   codigo: z.string().trim().min(2).max(64),
   nombre: z.string().trim().min(2).max(120),
   descripcion: z.string().trim().max(500).optional(),
@@ -36,8 +37,10 @@ const esquema = z.object({
 
 function invalidarCatalogo(categoriaId?: string) {
   updateTag(TAG_CATALOGO_PUBLICO);
-  revalidatePath("/industrial");
-  revalidatePath("/carga-pesada");
+  revalidatePath("/");
+  for (const linea of LINEAS_CATALOGO) {
+    revalidatePath(linea.href);
+  }
   revalidatePath("/panel/categorias");
   revalidatePath("/panel/productos");
   if (categoriaId) {

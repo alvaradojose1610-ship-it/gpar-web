@@ -2,15 +2,17 @@
 
 import { useMemo, useState } from "react";
 
+import { LINEAS_CATALOGO, type LineaPrisma } from "@/datos/lineas";
+
 export type CategoriaOpcion = {
   id: string;
   nombre: string;
-  linea: "INDUSTRIAL" | "CARGA_PESADA";
+  linea: LineaPrisma;
 };
 
 type Props = {
   categorias: CategoriaOpcion[];
-  lineaInicial?: "INDUSTRIAL" | "CARGA_PESADA";
+  lineaInicial?: LineaPrisma;
   categoriaIdInicial?: string;
 };
 
@@ -19,7 +21,7 @@ export function CamposLineaCategoria({
   lineaInicial = "INDUSTRIAL",
   categoriaIdInicial = "",
 }: Props) {
-  const [linea, setLinea] = useState(lineaInicial);
+  const [linea, setLinea] = useState<LineaPrisma>(lineaInicial);
   const filtradas = useMemo(
     () => categorias.filter((c) => c.linea === linea),
     [categorias, linea],
@@ -36,13 +38,14 @@ export function CamposLineaCategoria({
           name="linea"
           required
           value={linea}
-          onChange={(e) =>
-            setLinea(e.target.value as "INDUSTRIAL" | "CARGA_PESADA")
-          }
+          onChange={(e) => setLinea(e.target.value as LineaPrisma)}
           className="border border-[#E4E7EC] bg-[#F7F8FA] px-3 py-2"
         >
-          <option value="INDUSTRIAL">Industrial</option>
-          <option value="CARGA_PESADA">Carga Pesada</option>
+          {LINEAS_CATALOGO.map((opcion) => (
+            <option key={opcion.prisma} value={opcion.prisma}>
+              {opcion.etiqueta}
+            </option>
+          ))}
         </select>
       </label>
       <label className="grid gap-1 text-sm">

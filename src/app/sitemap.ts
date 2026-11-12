@@ -1,6 +1,7 @@
 import type { MetadataRoute } from "next";
 import { empresa } from "@/configuracion/empresa";
 import { categoriasCatalogo } from "@/datos/catalogo";
+import { LINEAS_CATALOGO } from "@/datos/lineas";
 
 export const dynamic = "force-static";
 
@@ -24,18 +25,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: "weekly",
       priority: 1,
     },
-    {
-      url: `${base}/industrial`,
+    ...LINEAS_CATALOGO.map((linea) => ({
+      url: `${base}${linea.href}`,
       lastModified: ahora,
-      changeFrequency: "weekly",
-      priority: 0.9,
-    },
-    {
-      url: `${base}/carga-pesada`,
-      lastModified: ahora,
-      changeFrequency: "weekly",
-      priority: 0.8,
-    },
+      changeFrequency: "weekly" as const,
+      priority: linea.slug === "industrial" ? 0.9 : 0.8,
+    })),
     {
       url: `${base}/buscar`,
       lastModified: ahora,

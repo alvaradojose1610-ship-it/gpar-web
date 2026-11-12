@@ -6,15 +6,8 @@ import { FormEvent, useEffect, useRef, useState } from "react";
 import { DrawerCotizacion } from "@/componentes/cotizacion/DrawerCotizacion";
 import { useCotizacion } from "@/componentes/cotizacion/ProveedorCotizacion";
 import { Logo } from "@/componentes/estructura/Logo";
-import { Contenedor } from "@/componentes/interfaz/Contenedor";
+import { navegacionPrincipal } from "@/configuracion/navegacion";
 import { cn } from "@/utilidades/cn";
-
-const nav = [
-  { etiqueta: "Inicio", href: "/" },
-  { etiqueta: "Industrial", href: "/industrial" },
-  { etiqueta: "Carga Pesada", href: "/carga-pesada" },
-  { etiqueta: "Contacto", href: "/cotizar" },
-] as const;
 
 export function Encabezado() {
   const pathname = usePathname();
@@ -59,38 +52,40 @@ export function Encabezado() {
         ref={headerRef}
         className="sticky top-0 z-[60] border-b border-gpar-line bg-gpar-bg"
       >
-        <Contenedor className="grid grid-cols-[auto_1fr_auto] items-center gap-3 py-3 lg:grid-cols-[auto_minmax(220px,1fr)_auto_auto] lg:gap-x-0">
+        <div className="h-1 bg-[#A3245E]" aria-hidden />
+
+        <div className="mx-auto grid max-w-[1680px] grid-cols-[auto_1fr_auto] items-center gap-x-[clamp(14px,1.6vw,28px)] gap-y-3 px-[clamp(20px,2.4vw,40px)] py-[clamp(14px,1.3vw,22px)] lg:grid-cols-[auto_minmax(170px,1fr)_auto_auto]">
           <Logo prioridad className="shrink-0" />
 
           <form
             role="search"
             action="/buscar"
             onSubmit={manejarBusqueda}
-            className="col-span-full order-3 flex min-w-[220px] items-center gap-1.5 border border-gpar-line bg-gpar-surface px-2.5 py-1.5 sm:gap-2 sm:px-3 sm:py-2 lg:col-auto lg:order-none lg:ml-3"
+            className="col-span-full order-3 flex min-w-[170px] flex-[1_1_420px] items-center gap-[clamp(8px,0.8vw,14px)] border border-gpar-line bg-gpar-surface py-[clamp(6px,0.55vw,10px)] pl-[clamp(12px,1.2vw,22px)] pr-[clamp(6px,0.55vw,10px)] lg:col-auto lg:order-none"
           >
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src="/assets/iconos/buscar.svg" alt="" width={18} height={18} />
+            <img src="/assets/iconos/buscar.svg" alt="" width={22} height={22} />
             <input
               type="search"
               name="q"
               placeholder="Código, producto o marca"
               aria-label="Buscar en el catálogo"
-              className="min-w-0 flex-1 border-0 bg-transparent text-sm outline-none"
+              className="min-w-0 flex-1 border-0 bg-transparent text-[length:clamp(14px,1.05vw,20px)] text-gpar-ink outline-none"
               autoComplete="off"
             />
             <button
               type="submit"
-              className="min-h-9 shrink-0 bg-gpar-orange px-3 text-[12.5px] font-semibold text-gpar-ink hover:bg-gpar-orange-ink sm:px-3.5"
+              className="min-h-9 shrink-0 bg-gpar-orange px-[clamp(14px,1.5vw,28px)] py-[clamp(9px,0.8vw,15px)] text-[length:clamp(14px,1vw,19px)] font-bold text-gpar-ink hover:bg-gpar-orange-ink"
             >
               Buscar
             </button>
           </form>
 
           <nav
-            className="hidden shrink-0 items-center gap-[18px] text-sm font-medium text-gpar-ink-2 md:flex lg:pl-4"
+            className="hidden shrink-0 items-center gap-[clamp(12px,1.4vw,28px)] whitespace-nowrap text-[length:clamp(14.5px,1.05vw,20px)] font-medium text-gpar-ink-2 lg:flex"
             aria-label="Principal"
           >
-            {nav.map((enlace) => {
+            {navegacionPrincipal.map((enlace) => {
               const activo =
                 enlace.href === "/"
                   ? pathname === "/"
@@ -112,23 +107,23 @@ export function Encabezado() {
             })}
           </nav>
 
-          <div className="flex shrink-0 items-center gap-2 justify-self-end lg:pl-3">
+          <div className="flex shrink-0 items-center gap-2 justify-self-end">
             <button
               type="button"
               aria-haspopup="dialog"
               aria-label={`Mi cotización, ${totalUnidades} ítems`}
-              className="flex min-h-11 items-center gap-1.5 border border-gpar-ink bg-gpar-bg px-2.5 text-[13px] font-semibold text-gpar-ink hover:bg-gpar-ink hover:text-white sm:gap-2 sm:px-3.5 sm:text-[13.5px]"
+              className="flex min-h-11 items-center gap-[clamp(9px,0.85vw,16px)] border border-gpar-ink bg-gpar-bg px-[clamp(14px,1.4vw,26px)] py-[clamp(11px,1.05vw,20px)] text-[length:clamp(14px,1.05vw,20px)] font-semibold whitespace-nowrap text-gpar-ink hover:bg-gpar-ink hover:text-white"
               onClick={abrirDrawer}
             >
               <span className="hidden sm:inline">Mi cotización</span>
-              <span className="sm:hidden">Cotizar</span>{" "}
-              <span className="inline-flex h-[22px] min-w-[22px] items-center justify-center bg-gpar-orange px-1 font-mono text-xs text-gpar-ink">
+              <span className="sm:hidden">Cotizar</span>
+              <span className="inline-flex h-[clamp(24px,1.9vw,36px)] min-w-[clamp(24px,1.9vw,36px)] items-center justify-center bg-gpar-orange px-1.5 font-mono text-[length:clamp(13px,0.95vw,18px)] font-semibold text-gpar-ink">
                 {totalUnidades}
               </span>
             </button>
             <button
               type="button"
-              className="inline-flex size-11 items-center justify-center border border-gpar-line bg-gpar-bg md:hidden"
+              className="inline-flex size-11 items-center justify-center border border-gpar-line bg-gpar-bg lg:hidden"
               aria-expanded={menuAbierto}
               aria-controls="menu-movil"
               aria-label={menuAbierto ? "Cerrar menú" : "Abrir menú"}
@@ -138,17 +133,17 @@ export function Encabezado() {
               <img src="/assets/iconos/menu.svg" alt="" width={22} height={22} />
             </button>
           </div>
-        </Contenedor>
+        </div>
 
         <div
           id="menu-movil"
           className={cn(
-            "border-t border-gpar-line bg-gpar-bg md:hidden",
+            "border-t border-gpar-line bg-gpar-bg lg:hidden",
             menuAbierto ? "block" : "hidden",
           )}
         >
-          <Contenedor className="flex flex-col gap-0.5 py-2">
-            {nav.map((enlace) => (
+          <div className="mx-auto flex max-w-[1680px] flex-col gap-0.5 px-[clamp(20px,2.4vw,40px)] py-2">
+            {navegacionPrincipal.map((enlace) => (
               <Link
                 key={enlace.href}
                 href={enlace.href}
@@ -158,7 +153,7 @@ export function Encabezado() {
                 {enlace.etiqueta}
               </Link>
             ))}
-          </Contenedor>
+          </div>
         </div>
       </header>
       <DrawerCotizacion />

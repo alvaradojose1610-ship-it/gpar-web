@@ -10,7 +10,7 @@ import "./globals.css";
 
 const barlowCondensed = Barlow_Condensed({
   subsets: ["latin"],
-  weight: ["600", "700", "800"],
+  weight: ["300", "600", "700", "800"],
   variable: "--gp-font-display",
   display: "swap",
 });
@@ -32,7 +32,7 @@ const ibmPlexMono = IBM_Plex_Mono({
 export const metadata: Metadata = {
   metadataBase: new URL(empresa.urlSitio),
   title: {
-    default: "Distribuidora GPar | Repuestos industriales y automotrices",
+    default: "Distribuidora GPar | Rodamientos, automatización y carga pesada",
     template: "%s | Distribuidora GPar",
   },
   description: empresa.descripcion,
@@ -44,7 +44,7 @@ export const metadata: Metadata = {
     locale: "es_VE",
     url: empresa.urlSitio,
     siteName: empresa.nombreLegal,
-    title: "Distribuidora GPar | Repuestos industriales y automotrices",
+    title: "Distribuidora GPar | Rodamientos, automatización y carga pesada",
     description: empresa.descripcion,
     images: [
       {

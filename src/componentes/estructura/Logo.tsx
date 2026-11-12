@@ -19,10 +19,12 @@ export function Logo({ className, prioridad = false }: LogoProps) {
       <Image
         src="/assets/identidad/logo-gpar.png"
         alt={empresa.nombreLegal}
-        width={46}
-        height={46}
+        width={208}
+        height={208}
         priority={prioridad}
-        className="size-11 rounded-full object-contain sm:size-[46px]"
+        quality={95}
+        sizes="104px"
+        className="size-[clamp(66px,5.4vw,104px)] rounded-full object-contain"
       />
     </Link>
   );
