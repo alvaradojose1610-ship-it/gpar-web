@@ -50,36 +50,51 @@ export function HeroInicio({ titulo, subtitulo }: Props) {
     const principal = videoPrincipalRef.current;
     if (!fondo || !principal) return;
 
+    let cancelado = false;
+
     const silenciarFondo = () => {
       fondo.defaultMuted = true;
       fondo.muted = true;
       fondo.volume = 0;
     };
 
+    const asegurarReproduccion = (
+      video: HTMLVideoElement,
+      conSonido = false,
+    ) => {
+      if (cancelado) return;
+      video.defaultMuted = !conSonido;
+      video.muted = !conSonido;
+      if (!conSonido) video.volume = 0;
+
+      const intentar = () => {
+        if (cancelado) return;
+        void video.play().catch(() => {});
+      };
+
+      if (video.readyState >= HTMLMediaElement.HAVE_CURRENT_DATA) {
+        intentar();
+      } else {
+        video.addEventListener("canplay", intentar, { once: true });
+      }
+    };
+
     silenciarFondo();
     const guardarFondoMudo = () => silenciarFondo();
     fondo.addEventListener("volumechange", guardarFondoMudo);
-    void fondo.play().catch(() => {});
+    asegurarReproduccion(fondo, false);
 
     const sincronizar = (activo: boolean) => {
+      if (cancelado) return;
       silenciarFondo();
       principal.muted = !activo;
-      if (activo) {
-        principal.volume = 1;
-        void principal.play().catch(() => {});
-      }
+      principal.volume = activo ? 1 : 0;
+      asegurarReproduccion(principal, activo);
       setSonidoActivo(activo);
     };
 
-    principal.muted = false;
-    void principal
-      .play()
-      .then(() => sincronizar(true))
-      .catch(() => {
-        principal.muted = true;
-        void principal.play().catch(() => {});
-        sincronizar(false);
-      });
+    // Autoplay fiable: siempre arrancar mudo; el sonido requiere gesto.
+    sincronizar(false);
 
     const primerToque = (evento: PointerEvent) => {
       document.removeEventListener("pointerdown", primerToque, true);
@@ -95,6 +110,7 @@ export function HeroInicio({ titulo, subtitulo }: Props) {
 
     document.addEventListener("pointerdown", primerToque, true);
     return () => {
+      cancelado = true;
       document.removeEventListener("pointerdown", primerToque, true);
       fondo.removeEventListener("volumechange", guardarFondoMudo);
       fondo.pause();
@@ -132,7 +148,7 @@ export function HeroInicio({ titulo, subtitulo }: Props) {
             loop
             playsInline
             autoPlay
-            preload="metadata"
+            preload="auto"
             aria-hidden
           />
         ) : (
@@ -183,8 +199,10 @@ export function HeroInicio({ titulo, subtitulo }: Props) {
                 ref={videoPrincipalRef}
                 className="block h-full w-full bg-black object-cover"
                 src="/video/hero-gpar.mp4"
+                muted
                 loop
                 playsInline
+                autoPlay
                 preload="auto"
               />
             ) : (
