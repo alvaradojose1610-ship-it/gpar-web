@@ -44,8 +44,8 @@ export const empresa: Empresa = {
   contacto: {
     whatsapp: {
       etiqueta: "WhatsApp",
-      valor: "+58 424-5140003",
-      href: "https://wa.me/584245140003",
+      valor: "0412-3770003",
+      href: "https://wa.me/584123770003",
       disponible: true,
     },
     correo: {
@@ -62,8 +62,8 @@ export const empresa: Empresa = {
     },
     telefono: {
       etiqueta: "Teléfono",
-      valor: "+58 424-5140003",
-      href: "tel:+584245140003",
+      valor: "0412-3770003",
+      href: "tel:+584123770003",
       disponible: true,
     },
   },

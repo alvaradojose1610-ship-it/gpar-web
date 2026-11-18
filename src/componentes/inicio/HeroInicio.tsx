@@ -197,7 +197,7 @@ export function HeroInicio({ titulo, subtitulo }: Props) {
             {!reducirMovimiento ? (
               <video
                 ref={videoPrincipalRef}
-                className="block h-full w-full bg-black object-cover"
+                className="block h-full w-full bg-black object-cover brightness-[0.78]"
                 src="/video/hero-gpar.mp4"
                 muted
                 loop
