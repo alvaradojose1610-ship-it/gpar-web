@@ -1,3 +1,4 @@
+import { BotonesFlotantes } from "@/componentes/estructura/BotonesFlotantes";
 import { Encabezado } from "@/componentes/estructura/Encabezado";
 import { PieDePagina } from "@/componentes/estructura/PieDePagina";
 import { BarraFlotanteCotizacion } from "@/componentes/cotizacion/BarraFlotanteCotizacion";
@@ -9,6 +10,7 @@ export function EstructuraSitio({ children }: { children: React.ReactNode }) {
       <main className="flex-1 overflow-x-hidden pb-20">{children}</main>
       <PieDePagina />
       <BarraFlotanteCotizacion />
+      <BotonesFlotantes />
     </>
   );
 }
